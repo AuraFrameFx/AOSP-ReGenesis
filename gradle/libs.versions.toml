@@ -221,9 +221,13 @@ room = [
 ]
 
 # ===== TESTING =====
-junit = "4.13.2"
-junitJupiter = "5.10.2"
-androidxTestJunit = "1.1.5"
-espressoCore = "3.6.1"
-mockk = "1.13.12"
-turbine = "1.1.0"
+testing = [
+    "junit",
+    "junit-jupiter",
+    "junit-jupiter-api",
+    "junit-jupiter-engine",
+    "androidx-test-ext-junit",
+    "androidx-test-espresso-core",
+    "mockk",
+    "turbine"
+]

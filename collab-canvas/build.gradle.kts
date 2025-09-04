@@ -27,10 +27,10 @@ android {
 
     // Kotlin compiler options for Compose
     kotlin {
-        jvmToolchain(17)
+        jvmToolchain(24)
 
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
             freeCompilerArgs.addAll(
                 "-Xcontext-receivers",
                 "-opt-in=kotlin.RequiresOptIn"

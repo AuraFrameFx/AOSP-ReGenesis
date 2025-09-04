@@ -6,7 +6,7 @@ android {
     namespace = "dev.aurakai.auraframefx.module.c"
     compileSdk = 36
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "24"
     }
 }
 dependencies {

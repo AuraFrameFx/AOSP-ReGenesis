@@ -30,8 +30,8 @@ dependencies {
 
 // Set Java compatibility using compileOptions or JavaPluginExtension.
 extensions.configure<JavaPluginExtension>("java") {
-    sourceCompatibility = JavaVersion.VERSION_24
-    targetCompatibility = JavaVersion.VERSION_24
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 // Removed unsupported 'kotlin { jvmToolchain(24) }' block. JVM toolchain must be set in build scripts, not convention plugins.

@@ -40,6 +40,8 @@ androidxTestJunit = "1.1.5"
 espressoCore = "3.6.1"
 mockk = "1.13.12"
 turbine = "1.1.0"
+androidxTestExtJunit = "1.1.5"
+androidxTestEspresso = "3.5.1"
 
 # ===== UTILITIES (added) =====
 coilCompose = "2.7.0"
@@ -51,6 +53,9 @@ spotlessPluginGradle = "7.2.1"
 
 # ===== FIREBASE =====
 firebaseBom = "34.2.0"
+firebaseAnalytics = "22.0.4"
+firebaseCrashlytics = "19.0.0"
+firebasePerformance = "21.0.0"
 
 [plugins]
 # ===== ANDROID =====
@@ -138,6 +143,9 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx"
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-perf-ktx = { module = "com.google.firebase:firebase-perf-ktx" }
+
+# Firebase BOM
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 openapi-generator-gradle-plugin = { module = "org.openapitools:openapi-generator-gradle-plugin", version.ref = "openapiGeneratorGradlePlugin" }
 org-jlleitschuh-gradle-ktlint-gradle-plugin = { module = "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin", version.ref = "ktlint" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
@@ -177,6 +185,16 @@ xposed = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed
 # LSPosed LSPlant
 lsposed-lsplant = { group = "org.lsposed.lsplant", name = "lsplant", version.ref = "lsposed" }
 
+# ===== TESTING =====
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junitJupiter" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxTestEspresso" }
+
 [bundles]
 # ===== ANDROID CORE =====
 androidx-core = [
@@ -202,8 +220,17 @@ coroutines = [
 
 # ===== FIREBASE =====
 firebase = [
-    "firebase-analytics",
-    "firebase-crashlytics"
+    "firebase-analytics-ktx",
+    "firebase-crashlytics-ktx",
+    "firebase-perf-ktx"
+]
+
+# ===== TESTING =====
+testing = [
+    "junit",
+    "mockk",
+    "mockk-android",
+    "turbine"
 ]
 
 # ===== NETWORKING =====
@@ -220,14 +247,4 @@ room = [
     "room-compiler"
 ]
 
-# ===== TESTING =====
-testing = [
-    "junit",
-    "junit-jupiter",
-    "junit-jupiter-api",
-    "junit-jupiter-engine",
-    "androidx-test-ext-junit",
-    "androidx-test-espresso-core",
-    "mockk",
-    "turbine"
-]
+

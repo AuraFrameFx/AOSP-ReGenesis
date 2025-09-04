@@ -1,8 +1,7 @@
 // Apply plugins without version to avoid conflicts
 // Versions are managed in the root build.gradle.kts and version catalog
 plugins {
-    id("com.android.library")  // Apply without version
-    alias(libs.plugins.kotlin.android)
+    id("com.android.library") version "9.0.0-alpha02"  // Apply without version
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.dokka)
@@ -10,7 +9,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     // YukiHook API KSP plugin
-    id("com.highcapable.yukihookapi") version "2.1.1"
 }
 android {
     namespace = "dev.aurakai.auraframefx.collabcanvas"
@@ -24,10 +22,6 @@ android {
         compose = true
         buildConfig = true
     }
-
-    // Kotlin compiler options for Compose
-    kotlin {
-        jvmToolchain(17)
 
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
@@ -43,7 +37,7 @@ android {
     }
         // Optionally, set composeOptions if not managed by version catalog
         // composeOptions { kotlinCompilerExtensionVersion = "1.5.0" }
-    }
+
 
     dependencies {
         // Core AndroidX

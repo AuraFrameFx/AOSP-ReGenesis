@@ -10,6 +10,8 @@ plugins {
     kotlin("kapt") version "2.2.20-RC"
 }
 
+
+
 android {
     namespace = "dev.aurakai.auraframefx.benchmark"
     compileSdk = 36 // Required for AGP 9 compatibility and dependency resolution
@@ -39,13 +41,7 @@ android {
     }
 
     // Kotlin compiler options
-    kotlinOptions {
-        jvmTarget = "24"
-        freeCompilerArgs = freeCompilerArgs + listOf(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-Xjvm-default=all"
-        )
-    }
+
 
 
     // Enable build features
@@ -82,8 +78,7 @@ android {
         // Benchmark dependencies - using only what's available in the version catalog
         androidTestImplementation(libs.androidx.test.ext.junit)
         androidTestImplementation(libs.androidx.test.espresso.core)
-        androidTestImplementation(libs.androidx.test.uiautomator)
-        
+
         // Testing
         testImplementation(libs.junit)
         testImplementation(libs.mockk)

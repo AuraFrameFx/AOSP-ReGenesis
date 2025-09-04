@@ -15,6 +15,13 @@ pluginManagement {
     repositories {
         // Primary repositories - Google Maven must be first for Hilt
         google()
+        
+        // Android alpha/preview versions
+        maven {
+            url = uri("https://androidx.dev/kmp/builds/11950322/artifacts/snapshots/repository")
+            name = "AndroidX Snapshot"
+        }
+        
         gradlePluginPortal()
         mavenCentral()
 

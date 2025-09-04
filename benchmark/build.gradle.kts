@@ -2,17 +2,17 @@
 // Performance testing for AI consciousness operations
 
 plugins {
-    id("com.android.library") version "9.0.0-alpha02"
-    id("org.jetbrains.kotlin.android") version "2.2.20-RC"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20-RC"
-    id("com.google.dagger.hilt.android") version "2.57.1"
-    id("com.google.devtools.ksp") version "2.2.20-RC-2.0.2"
-    kotlin("kapt") version "2.2.20-RC"
+    id("com.android.library") version "7.4.2"
+    id("org.jetbrains.kotlin.android") version "1.8.22"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.22"
+    id("com.google.dagger.hilt.android") version "2.51.1"
+    id("com.google.devtools.ksp") version "1.8.22-1.0.11"
+    kotlin("kapt") version "1.8.22"
 }
 
 android {
     namespace = "dev.aurakai.auraframefx.benchmark"
-    compileSdk = 36 // Required for AGP 9 compatibility and dependency resolution
+    compileSdk = 34 // Updated for stable AGP compatibility
 
     // Enable benchmark optimizations
     buildTypes {
@@ -31,16 +31,16 @@ android {
         testInstrumentationRunnerArguments["android.experimental.self-instrumenting"] = "true"
     }
 
-    // Enable Java 24 toolchain for future compatibility
+    // Enable Java 21 toolchain for compatibility
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
     }
 
-    // Kotlin compiler options
+    // Modern Kotlin compiler options using kotlinOptions (compilerOptions requires Kotlin 2.0+)
     kotlinOptions {
-        jvmTarget = "24"
+        jvmTarget = "21"
         freeCompilerArgs = freeCompilerArgs + listOf(
             "-opt-in=kotlin.RequiresOptIn",
             "-Xjvm-default=all"

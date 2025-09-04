@@ -13,7 +13,7 @@ plugins {
 }
     android {
         namespace = "com.aura.memoria"
-        compileSdk = 36
+        compileSdk = 34
 
         defaultConfig {
             applicationId = "com.aura.memoria"

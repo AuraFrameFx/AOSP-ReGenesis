@@ -1,6 +1,6 @@
 [versions]
 # ===== GRADLE & KOTLIN =====
-agp = "9.0.0-alpha02"
+agp = "7.4.2"
 xposed = "82"  # Xposed Framework API version
 api = "82"
 lsposed = "6.4"  # LSPosed LSPlant version
@@ -10,8 +10,8 @@ converterScalars = "3.0.0"
 desugar_jdk_libs = "2.1.5"
 detektGradlePlugin = "1.23.8"
 dokkaGradlePlugin = "2.0.0"
-kotlin = "2.2.20-RC"
-ksp = "2.2.20-RC-2.0.2"
+kotlin = "1.8.22"
+ksp = "1.8.22-1.0.11"
 serialization = "1.9.0"
 
 # ===== YUKIHOOK =====
@@ -176,7 +176,9 @@ datastore-core = { group = "androidx.datastore", name = "datastore-core", versio
 # ===== TESTING =====
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunit" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version = "2.3.0" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 # ===== XPosed =====
 # Xposed Framework

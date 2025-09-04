@@ -16,7 +16,7 @@ android {
     namespace = "dev.aurakai.auraframefx.romtools"
     compileSdk = 36
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "24"
     }
     // Required for AGP 9 and dependency resolution
 }

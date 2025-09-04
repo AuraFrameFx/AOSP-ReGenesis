@@ -133,6 +133,7 @@ desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref 
 detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detektGradlePlugin" }
 dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokkaGradlePlugin" }
 # Add Firebase aliases to match bundles
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
@@ -171,6 +172,11 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson-vers
 # ===== DATASTORE =====
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version = "1.1.1" }
 datastore-core = { group = "androidx.datastore", name = "datastore-core", version = "1.1.1" }
+
+# ===== TESTING =====
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunit" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 # ===== XPosed =====
 # Xposed Framework
@@ -222,6 +228,6 @@ room = [
 ]
 
 # ===== TESTING =====
-# Note: Testing dependencies removed as requested in cleanup
-# Keeping bundle empty but available for future use
-testing = []
+testing = [
+    "junit"
+]

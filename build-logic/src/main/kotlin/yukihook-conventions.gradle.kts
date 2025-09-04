@@ -28,12 +28,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     kotlinOptions {
-        jvmTarget = "24"
+        jvmTarget = "21"
         freeCompilerArgs = freeCompilerArgs + listOf(
             "-Xjvm-default=all",
             "-opt-in=kotlin.RequiresOptIn"

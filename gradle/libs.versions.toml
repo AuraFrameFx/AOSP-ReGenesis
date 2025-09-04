@@ -221,13 +221,6 @@ room = [
 ]
 
 # ===== TESTING =====
-testing = [
-    "junit",
-    "junit-jupiter",
-    "junit-jupiter-api",
-    "junit-jupiter-engine",
-    "androidx-test-ext-junit",
-    "androidx-test-espresso-core",
-    "mockk",
-    "turbine"
-]
+# Note: Testing dependencies removed as requested in cleanup
+# Keeping bundle empty but available for future use
+testing = []

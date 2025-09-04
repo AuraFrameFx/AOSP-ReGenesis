@@ -30,7 +30,7 @@ android {
         jvmToolchain(24)
 
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
             freeCompilerArgs.addAll(
                 "-Xcontext-receivers",
                 "-opt-in=kotlin.RequiresOptIn"

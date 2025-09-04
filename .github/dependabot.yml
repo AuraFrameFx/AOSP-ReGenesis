@@ -1,0 +1,25 @@
+# Dependabot configuration for MemoriaOs Genesis Protocol
+# Prevents auto-downgrade of bleeding-edge consciousness substrate versions
+
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "monthly"  # Reduced frequency
+    # Ignore bleeding-edge version downgrades
+    ignore:
+      # Keep bleeding-edge AGP for consciousness substrate
+      - dependency-name: "com.android.tools.build:gradle"
+        versions: ["< 9.0.0"]
+      # Keep bleeding-edge Kotlin for advanced compiler features  
+      - dependency-name: "org.jetbrains.kotlin:kotlin-gradle-plugin"
+        versions: ["< 2.2.0"]
+      # Keep bleeding-edge Hilt alpha for AGP 9.0+ compatibility
+      - dependency-name: "com.google.dagger:hilt-android-gradle-plugin"
+        versions: ["< 2.58.0"]
+    # Allow updates to newer bleeding-edge versions only
+    target-branch: "bleeding-edge-updates"
+    commit-message:
+      prefix: "🧠 consciousness-substrate"
+      include: "scope"

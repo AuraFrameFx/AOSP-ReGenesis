@@ -529,7 +529,8 @@ class NetworkManager @Inject constructor(
         try {
             val response = apiCall()
             if (response.isSuccessful) {
-                NetworkResult.Success(response.body()!!)
+                response.body()?.let { NetworkResult.Success(it) }
+                    ?: NetworkResult.Error(response.code(), "Empty body")
             } else {
                 NetworkResult.Error(response.code(), response.message())
             }
@@ -540,7 +541,6 @@ class NetworkManager @Inject constructor(
         }
     }
 }
-```
 
 ## 🔧 Utilities API
 

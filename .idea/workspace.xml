@@ -10,8 +10,13 @@
   <component name="ChangeListManager">
     <list default="true" id="d221b707-190c-44e0-ab34-6ba5bf7098d9" name="Changes" comment="Update build.gradle.kts for benchmark support and plugin management">
       <change beforePath="$PROJECT_DIR$/.gradle/9.1.0-rc-1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.1.0-rc-1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/7n111c3r/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/7n111c3r/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/generate_cxx_metadata_49_timing.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/generate_cxx_metadata_49_timing.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/buildSrc/.gradle/9.1.0-rc-1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/buildSrc/.gradle/9.1.0-rc-1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/buildSrc/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/buildSrc/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/.cxx/Debug/4h2x4445/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/datavein-oracle-native/.cxx/Debug/4h2x4445/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/generate_cxx_metadata_49_timing.txt" beforeDir="false" afterPath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/generate_cxx_metadata_49_timing.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

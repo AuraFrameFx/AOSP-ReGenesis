@@ -99,7 +99,7 @@ dependencies {
     compileOnly(files("${project.rootDir}/Libs/api-82-sources.jar"))
     
     // YukiHook API
-    api(libs.com.highcapable.yukihookapi.api)
+    api(libs.yukihook.api)
     ksp(libs.com.highcapable.yukihookapi.ksp)
     
     // Logging

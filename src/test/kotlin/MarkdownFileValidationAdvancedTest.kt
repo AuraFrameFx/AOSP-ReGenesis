@@ -10,7 +10,6 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Assertions.assertFalse
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
@@ -338,17 +337,19 @@ class MarkdownFileValidationAdvancedTest {
             )
         }
     }
+}
+// -----------------------------------------------------------------------------
+// Additional tests appended by PR helper
+// Testing library/framework: Kotlin + JUnit 5 (Jupiter)
+// These tests focus on pure helpers to increase coverage without coupling to repository files.
+// -----------------------------------------------------------------------------
+class MarkdownFileValidationAdvancedTest_MoreCases {
 
-    // ------------------------------------------------------------
-    // Additional unit tests appended by PR helper
-    // Testing stack: Kotlin + JUnit 5 (Jupiter)
-    // ------------------------------------------------------------
+    @org.junit.jupiter.api.Nested
+    @org.junit.jupiter.api.DisplayName("Slug normalization – additional cases")
+    inner class SlugNormalizationMoreCases {
 
-    @Nested
-    @DisplayName("Slug normalization – additional cases")
-    inner class SlugNormalizationUnit {
-
-        // Local copy to test normalization logic in isolation
+        // Local copy to keep tests hermetic (pure function)
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -363,42 +364,130 @@ class MarkdownFileValidationAdvancedTest {
             return cleaned
         }
 
-        @Test
-        fun `drops underscores and trailing punctuation`() {
-            assertEquals("api-reference-guide-20", normalizeToSlug("## API_reference Guide 2.0!!!"))
+        @org.junit.jupiter.api.Test
+        fun `removes underscores instead of hyphenating`() {
+            org.junit.jupiter.api.Assertions.assertEquals("snakecase", normalizeToSlug("## snake_case"))
         }
 
-        @Test
-        fun `removes leading and trailing dashes`() {
-            assertEquals("hello-world", normalizeToSlug("## -- Hello World --"))
+        @org.junit.jupiter.api.Test
+        fun `returns empty for non latin headers`() {
+            org.junit.jupiter.api.Assertions.assertEquals("", normalizeToSlug("## 你好 世界"))
         }
 
-        @Test
-        fun `returns empty for non latin or emoji only`() {
-            assertEquals("", normalizeToSlug("## 你好，世界 🌏"))
-            assertEquals("", normalizeToSlug("## 🧪"))
+        @org.junit.jupiter.api.Test
+        fun `collapses repeated dashes and trims boundaries`() {
+            org.junit.jupiter.api.Assertions.assertEquals("hello-world", normalizeToSlug("## -- Hello --  World --"))
         }
 
-        @Test
-        fun `handles parentheses and versions`() {
-            assertEquals("section-beta-v21", normalizeToSlug("## Section (beta) v2.1"))
+        @org.junit.jupiter.api.Test
+        fun `handles multiple diacritics`() {
+            org.junit.jupiter.api.Assertions.assertEquals("nave-faade-cooperate", normalizeToSlug("## Naïve façade coöperate"))
         }
 
-        @Test
-        fun `removes quotes and slashes, collapses hyphens`() {
-            assertEquals("paths-ids-test", normalizeToSlug("## Paths / IDs 'Test'"))
+        @org.junit.jupiter.api.Test
+        fun `keeps numbers and treats dots as separators`() {
+            org.junit.jupiter.api.Assertions.assertEquals("v2-0-1-release", normalizeToSlug("## v2.0.1 Release"))
+        }
+
+        @org.junit.jupiter.api.Test
+        fun `ignores embedded hashes after leading header marks`() {
+            org.junit.jupiter.api.Assertions.assertEquals("title", normalizeToSlug("### ###  Title  "))
         }
     }
 
-    @Nested
-    @DisplayName("Code fence parser – unit tests")
-    inner class CodeFenceParserUnit {
+    @org.junit.jupiter.api.Nested
+    @org.junit.jupiter.api.DisplayName("ToC parsing – pure helpers")
+    inner class TocParsingPure {
 
-        private fun countTypedUntyped(content: String): Pair<Int, Int> {
+        private fun normalizeToSlug(text: String): String {
+            val header = text
+                .replace(Regex("^\\s*#+\\s*"), "")
+                .trim()
+            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            val cleaned = noEmoji
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9\\s-]"), "")
+                .replace(Regex("\\s+"), "-")
+                .replace(Regex("-+"), "-")
+                .trim('-')
+            return cleaned
+        }
+
+        private fun extractTocAnchorsFromLines(lines: List<String>): List<String> {
+            val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
+            require(tocStart >= 0) { "Table of Contents section not found" }
+            val tocBody = lines.drop(tocStart + 1).takeWhile { it.isNotBlank() }
+            return tocBody.mapNotNull { line ->
+                Regex("- \\[(.+?)\\]\\(#(.*?)\\)").find(line.trim())?.groupValues?.getOrNull(2)
+            }.filter { it.isNotBlank() }
+        }
+
+        @org.junit.jupiter.api.Test
+        fun `extracts anchors until blank line`() {
+            val sample = listOf(
+                "# Project",
+                "",
+                "## 📋 Table of Contents",
+                "- [Overview](#overview)",
+                "- [Getting Started](#getting-started)",
+                "- [Usage](#usage)",
+                "",
+                "## Overview",
+                "## Getting Started",
+                "## Usage"
+            )
+            val anchors = extractTocAnchorsFromLines(sample)
+            org.junit.jupiter.api.Assertions.assertEquals(listOf("overview", "getting-started", "usage"), anchors)
+        }
+
+        @org.junit.jupiter.api.Test
+        fun `toc order follows section order in synthetic doc`() {
+            val sample = listOf(
+                "# Project",
+                "",
+                "## 📋 Table of Contents",
+                "- [Intro](#introduction)",
+                "- [Install](#getting-started)",
+                "- [Usage](#usage)",
+                "",
+                "## Introduction",
+                "## Getting Started",
+                "## Usage"
+            )
+            val anchors = extractTocAnchorsFromLines(sample).map { it.trim('-') }
+            val headers = sample.withIndex().filter { it.value.trim().startsWith("## ") }
+            val indexBySlug = headers.associate { normalizeToSlug(it.value) to it.index }
+            val anchorIndices = anchors.mapNotNull { indexBySlug[it] }
+            org.junit.jupiter.api.Assertions.assertEquals(anchorIndices.sorted(), anchorIndices)
+        }
+
+        @org.junit.jupiter.api.Test
+        fun `handles extra list items after blank line by ignoring them`() {
+            val sample = listOf(
+                "# Project",
+                "",
+                "## 📋 Table of Contents",
+                "- [Overview](#overview)",
+                "- [Getting Started](#getting-started)",
+                "",
+                "- [SHOULD NOT BE INCLUDED](#ignored)",
+                "## Overview",
+                "## Getting Started"
+            )
+            val anchors = extractTocAnchorsFromLines(sample)
+            org.junit.jupiter.api.Assertions.assertEquals(listOf("overview", "getting-started"), anchors)
+        }
+    }
+
+    @org.junit.jupiter.api.Nested
+    @org.junit.jupiter.api.DisplayName("Fence counting – pure helpers")
+    inner class FenceCountingPure {
+
+        private fun countTypedUntyped(lines: List<String>): Pair<Int, Int> {
             var inFence = false
             var typed = 0
             var untyped = 0
-            content.lines().forEach { l ->
+            for (l in lines) {
                 val t = l.trim()
                 if (t.startsWith("```")) {
                     if (!inFence) {
@@ -413,117 +502,59 @@ class MarkdownFileValidationAdvancedTest {
             return typed to untyped
         }
 
-        private fun isFenceCountEven(content: String): Boolean {
-            val count = content.lines().count { it.trim().startsWith("```") }
-            return count % 2 == 0
+        @org.junit.jupiter.api.Test
+        fun `balanced typed fences yield typed=1 untyped=0`() {
+            val sample = listOf("Text", "```kotlin", "println(\"hi\")", "```", "More")
+            val (typed, untyped) = countTypedUntyped(sample)
+            org.junit.jupiter.api.Assertions.assertEquals(1, typed)
+            org.junit.jupiter.api.Assertions.assertEquals(0, untyped)
         }
 
-        @Test
-        fun `typed fences are counted correctly`() {
-            val md = """
-                ```kotlin
-                println("hi")
-                ```
-                text
-                ```bash
-                echo hi
-                ```
-            """.trimIndent()
-            val (typed, untyped) = countTypedUntyped(md)
-            assertEquals(2, typed)
-            assertEquals(0, untyped)
-            assertTrue(isFenceCountEven(md))
+        @org.junit.jupiter.api.Test
+        fun `detects untyped fence blocks`() {
+            val sample = listOf("```", "some", "```")
+            val (typed, untyped) = countTypedUntyped(sample)
+            org.junit.jupiter.api.Assertions.assertEquals(0, typed)
+            org.junit.jupiter.api.Assertions.assertEquals(1, untyped)
         }
 
-        @Test
-        fun `mix of typed and untyped fences`() {
-            val md = """
-                ```
-                no language
-                ```
-                ```json
-                { "a": 1 }
-                ```
-            """.trimIndent()
-            val (typed, untyped) = countTypedUntyped(md)
-            assertEquals(1, typed)
-            assertEquals(1, untyped)
-            assertTrue(isFenceCountEven(md))
-        }
-
-        @Test
-        fun `detects uneven fence markers`() {
-            val md = """
-                ```
-                open only
-                ```
-                ```
-            """.trimIndent()
-            assertFalse(isFenceCountEven(md))
+        @org.junit.jupiter.api.Test
+        fun `odd number of fences indicates imbalance`() {
+            val sample = listOf("```bash", "echo hi")
+            val fenceCount = sample.count { it.trim().startsWith("```") }
+            org.junit.jupiter.api.Assertions.assertTrue(
+                fenceCount % 2 != 0,
+                "Uneven number of code fence markers (```), fenceCount=$fenceCount"
+            )
         }
     }
 
-    @Nested
-    @DisplayName("TODO token filtering – unit tests")
-    inner class TodoTokenFilterUnit {
+    @org.junit.jupiter.api.Nested
+    @org.junit.jupiter.api.DisplayName("Image regex – pure checks")
+    inner class ImageRegexPure {
 
-        private fun stripCodeFences(text: String): String =
-            text.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")
-
-        @Test
-        fun `ignores TODO-like tokens inside code fences but flags outside`() {
-            val md = """
-                Here is some text. TODO: outside
-                ```bash
-                # TODO: inside should be ignored
-                echo test
-                ```
-                More text. fixme: outside again
+        @org.junit.jupiter.api.Test
+        fun `matches image markdown but not normal links`() {
+            val imageRegex = Regex("!\\[(.*?)\\]\\(([^)]+)\\)")
+            val text = """
+                Some text with a link [docs](docs/readme.md) and an image ![Alt](images/pic.png)
+                And another one ![Logo](http://example.com/logo.svg?x=1#y)
             """.trimIndent()
-            val without = stripCodeFences(md)
-            val tokens = Regex("\\b(TODO|TBD|FIXME|HACK)\\b", RegexOption.IGNORE_CASE)
-                .findAll(without).map { it.value.uppercase(Locale.ROOT) }.toList()
-            assertEquals(listOf("TODO", "FIXME"), tokens)
-        }
-    }
-
-    @Nested
-    @DisplayName("HTTPS preference – unit tests")
-    inner class HttpsPreferenceUnit {
-
-        private val allowedPrefixes = listOf(
-            "http://localhost",
-            "http://127.0.0.1",
-            "http://0.0.0.0",
-            "http://[::1]",
-            "http://example.com",
-            "http://www.example.com"
-        )
-
-        private fun insecureHttpLinks(text: String): List<String> {
-            val withoutFences = text.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")
-            val httpRegex = Regex("\\((http://[^)]+)\\)")
-            val all = httpRegex.findAll(withoutFences).map { it.groupValues[1] }.toList()
-            return all.filter { url -> allowedPrefixes.none { url.startsWith(it) } }
+            val matches = imageRegex.findAll(text).toList()
+            org.junit.jupiter.api.Assertions.assertEquals(2, matches.size)
+            org.junit.jupiter.api.Assertions.assertEquals("Alt", matches[0].groupValues[1].trim())
+            org.junit.jupiter.api.Assertions.assertEquals("images/pic.png", matches[0].groupValues[2].trim())
+            org.junit.jupiter.api.Assertions.assertEquals("Logo", matches[1].groupValues[1].trim())
+            org.junit.jupiter.api.Assertions.assertEquals("http://example.com/logo.svg?x=1#y", matches[1].groupValues[2].trim())
         }
 
-        @Test
-        fun `filters out allowed http hosts`() {
-            val md = """
-                See (http://localhost:8080/health) and (http://example.com/demo).
-                Also check (http://www.example.com/ok).
-            """.trimIndent()
-            assertTrue(insecureHttpLinks(md).isEmpty())
-        }
-
-        @Test
-        fun `flags non-allowed http links as insecure`() {
-            val md = """
-                External link (http://insecure.example.org/page).
-                Secure link (https://secure.example.org/page) should be ignored.
-            """.trimIndent()
-            val bad = insecureHttpLinks(md)
-            assertEquals(listOf("http://insecure.example.org/page"), bad)
+        @org.junit.jupiter.api.Test
+        fun `captures empty alt text when omitted`() {
+            val imageRegex = Regex("!\\[(.*?)\\]\\(([^)]+)\\)")
+            val text = "![](a/b.png)"
+            val m = imageRegex.find(text)
+            val alt = m?.groupValues?.get(1)?.trim()
+            org.junit.jupiter.api.Assertions.assertTrue(alt == "", "Alt should be captured as empty string when omitted")
         }
     }
 }

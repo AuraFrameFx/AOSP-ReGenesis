@@ -114,12 +114,12 @@ class MarkdownFileValidationTest {
             val headers = lines.filter { it.trim().startsWith("## ") }
             val headerSlugs = headers.map { normalizeToSlug(it) }.toSet()
             // Validate that each ToC anchor maps to a known header slug (allow leading/trailing hyphens)
-            val unknown = tocAnchors.filter { anchor ->
+            val unknown = tocAnchors.filterNot { anchor ->
                 val normalized = anchor.trim('-')
                 normalized in headerSlugs
             }.size
 
-            assertEquals(tocAnchors.size, unknown, "Some ToC anchors do not match any header slugs. " +
+            assertEquals(0, unknown, "Some ToC anchors do not match any header slugs. " +
                     "Check emoji/slug formatting; expected anchors like #overview, #architecture, etc.")
         }
     }

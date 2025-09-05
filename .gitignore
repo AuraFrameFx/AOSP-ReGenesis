@@ -1,0 +1,58 @@
+# Gradle build artifacts
+.gradle/
+build/
+*/build/
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Android build artifacts
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+
+# Local configuration files
+local.properties
+*.keystore
+*.jks
+key.properties
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.project
+.classpath
+.settings/
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# NDK
+obj/
+.externalNativeBuild/
+.cxx/
+
+# Firebase
+google-services.json

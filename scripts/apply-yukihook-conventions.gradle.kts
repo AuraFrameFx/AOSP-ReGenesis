@@ -45,20 +45,14 @@ subprojects { subproject ->
                     targetCompatibility = JavaVersion.VERSION_24
                 }
 
-                // Modern Kotlin configuration (Kotlin 2.2+)
-                kotlin {
-                    jvmToolchain {
-                        languageVersion.set(JavaLanguageVersion.of(24))
-                    }
-                    
+                // Modern Kotlin configuration (project-level)
+                the<org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension>().apply {
+                    jvmToolchain { languageVersion.set(JavaLanguageVersion.of(24)) }
                     compilerOptions {
                         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
                         languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
                         apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-                        freeCompilerArgs.addAll(
-                            "-Xjvm-default=all",
-                            "-opt-in=kotlin.RequiresOptIn"
-                        )
+                        freeCompilerArgs.addAll("-Xjvm-default=all","-opt-in=kotlin.RequiresOptIn")
                     }
                 }
             }

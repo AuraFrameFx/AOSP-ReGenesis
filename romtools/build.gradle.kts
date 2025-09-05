@@ -1,10 +1,11 @@
 import dev.aurakai.gradle.tasks.VerifyRomToolsTask
 plugins {
-    id("com.google.devtools.ksp")
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.dagger.hilt.android")
-    id("org.openapi.generator")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.openapi.generator)
 }
 
 android {

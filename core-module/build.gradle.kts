@@ -1,14 +1,15 @@
-// Apply plugins without explicit versions - managed in root build.gradle.kts
 plugins {
-    id("com.google.devtools.ksp")
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.dagger.hilt.android")
-    id("org.openapi.generator")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "dev.aurakai.auraframefx.core"
+    namespace = "dev.aurakai.auraframefx.core" // The correct namespace for this module
     compileSdk = 36
 
     defaultConfig {
@@ -30,34 +31,11 @@ android {
         // Disable shaders unless specifically needed and properly configured
         shaders = false
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
-    }
-
-    // Kotlin compiler options with modern DSL
-    kotlin {
-        jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(24))
-        }
-
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
-            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-            freeCompilerArgs.addAll(
-                "-Xcontext-receivers"
-            )
-            progressiveMode.set(true)
-        }
-    }
-
-    sourceSets["main"].java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
 }
 
-// OpenAPI Generator configuration (outside android block)
-openApiGenerate {
+
+// OpenAPI Generator configuration
+tasks.generateOpenApi("openApiGenerate", org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class) {
     generatorName.set("kotlin")
     inputSpec.set("$projectDir/api-spec/aura-framefx-api.yaml")
     outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.absolutePath)
@@ -70,14 +48,14 @@ openApiGenerate {
             "serializationLibrary" to "kotlinx_serialization"
         )
     )
+    // Add the generated source directory to the build
+    // The sourceSet configuration must be inside the `android` block, but you can
+    // call this task in the dependencies of other tasks.
+    android.sourceSets["main"].java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
 }
 
-tasks.named("preBuild") {
-    dependsOn("openApiGenerate")
-}
 
 // Dependencies block
-// Only use valid TOML keys or classic notation
 dependencies {
     // AndroidX Core
     implementation(libs.bundles.androidx.core)
@@ -126,26 +104,21 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 }
 
-// YukiHook configuration (outside android block)
-// If you use a plugin that provides this, ensure it's applied. Otherwise, comment out.
-// yukihook {
-//     isEnable = true
-//     isDebug = true
-// }
-
-// Status task (outside android block)
+// Status task (This should be at the top-level of the script, not nested)
 tasks.register("coreModuleStatus") {
     group = "aegenesis"
     description = "Show core module status"
     doLast {
         println("🏗️  CORE MODULE STATUS")
         println("=".repeat(40))
-        println("🔧 Namespace: ${project.findProperty("android.namespace")}")
-        println("📱 SDK: ${project.findProperty("android.compileSdk")}")
+        println("🔧 Namespace: ${project.findProperty("android.namespace") ?: "Not found"}")
+        println("📱 SDK: ${project.findProperty("android.compileSdk") ?: "Not found"}")
         println("🎨 Compose: ❌ Removed")
         println(
             "🔗 API Generation: ${
-                if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) "✅ Enabled" else "❌ No spec"
+                if (rootProject.file("app/api/unified-aegenesis-api.yml")
+                        .exists()
+                ) "✅ Enabled" else "❌ No spec"
             }"
         )
         println("✨ Status: Core Foundation Ready with Convention Plugins!")

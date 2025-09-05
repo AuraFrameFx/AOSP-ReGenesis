@@ -66,7 +66,9 @@ subprojects { subproject ->
             // Add YukiHook dependencies
             dependencies {
                 // Xposed Framework - YukiHookAPI (Standardized)
-                implementation(libs.bundles.xposed)
+                implementation(libs.yukihook.api)
+                ksp(libs.yukihook.ksp)
+                implementation(libs.xposed.api)
 
                 // Legacy Xposed API (compatibility)
                 implementation(files("${project.rootDir}/Libs/api-82.jar"))
@@ -76,7 +78,7 @@ subprojects { subproject ->
                 implementation(libs.bundles.androidx.core)
 
                 // Testing
-                testImplementation(libs.junit)
+                testImplementation(libs.junit4)
                 androidTestImplementation(libs.androidx.test.ext.junit)
                 androidTestImplementation(libs.espresso.core)
             }

@@ -19,6 +19,7 @@ firebaseBom = "34.2.0"
 # ===== ANDROIDX =====
 coreKtx = "1.13.1"
 appcompat = "1.7.1"
+multidx = "2.0.1"
 composeBom = "2024.10.00"
 activityCompose = "1.9.2"
 navigationCompose = "2.8.3"
@@ -47,6 +48,7 @@ junit = "4.13.2"
 junitJupiter = "5.10.2"
 androidxTestJunit = "1.1.5"
 espressoCore = "3.6.1"
+uiautomator = "2.3.0"
 mockk = "1.13.12"
 turbine = "1.1.0"
 
@@ -89,6 +91,7 @@ lsposed-lsplant = { group = "org.lsposed.lsplant", name = "lsplant", version.ref
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-material = { group = "com.google.android.material", name = "material", version = "1.12.0" }
+androidx-multidx = { group = "androidx.multidx", name = "multidx", version.ref = "multidx" }
 
 # ===== COMPOSE =====
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -158,6 +161,7 @@ junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", v
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunit" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 mockk = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 

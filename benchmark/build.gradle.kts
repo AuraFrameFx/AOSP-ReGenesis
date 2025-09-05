@@ -28,6 +28,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "EMULATOR,LOW_BATTERY,DEBUGGABLE"
         testInstrumentationRunnerArguments["android.experimental.self-instrumenting"] = "true"
+        multiDexEnabled = true
     }
 
     // Enable Java 24 toolchain for future compatibility
@@ -71,10 +72,11 @@ android {
     dependencies {
         // Core AndroidX
         implementation(libs.androidx.core.ktx)
+        implementation(libs.androidx.multidx)
         
         // Coroutines
-        implementation(libs.ktx.coroutines.core)
-        implementation(libs.ktx.coroutines.android)
+        implementation(libs.kotlinx.coroutines.core)
+        implementation(libs.kotlinx.coroutines.android)
         
         // Hilt
         implementation(libs.hilt.android)
@@ -92,7 +94,7 @@ android {
         androidTestImplementation(libs.androidx.test.uiautomator)
         
         // Testing
-        testImplementation(libs.junit)
+        testImplementation(libs.junit4)
         testImplementation(libs.mockk)
         
         // Core library desugaring - using direct version since it's not in the version catalog

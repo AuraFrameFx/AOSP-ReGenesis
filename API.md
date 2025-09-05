@@ -81,8 +81,9 @@ class SecureCommunicationImpl @Inject constructor(
         recipient: DeviceId
     ): Result<MessageId> = withContext(Dispatchers.IO) {
         try {
-            val publicKey = keyManager.getPublicKey(recipient)
-            val encryptedMessage = cryptoManager.encrypt(message, publicKey)
+            val keyAlias = "msg-${recipient.value}"
+            val secretKey = keyManager.getOrCreateAesKey(alias = keyAlias)
+            val encryptedMessage = cryptoManager.encrypt(message, secretKey)
             val messageId = networkManager.sendMessage(encryptedMessage, recipient)
             Result.success(messageId)
         } catch (e: Exception) {

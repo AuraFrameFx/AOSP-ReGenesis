@@ -409,13 +409,12 @@ dependencies {
     
     // Dependency Injection
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     
     // Testing
     testImplementation(libs.bundles.testing)
     androidTestImplementation(libs.bundles.android.testing)
 }
-```
 
 ---
 

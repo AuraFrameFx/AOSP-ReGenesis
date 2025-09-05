@@ -12,6 +12,11 @@ class FakeLibraryExtension : LibraryExtension {
     override val buildFeatures: BuildFeatures
         get() = features
 
+    /**
+     * Applies the given [Action] to the internal [BuildFeatures] instance.
+     *
+     * @param action Action that will be executed with the fake extension's `buildFeatures` instance.
+     */
     override fun buildFeatures(action: Action<BuildFeatures>) {
         action.execute(features)
     }

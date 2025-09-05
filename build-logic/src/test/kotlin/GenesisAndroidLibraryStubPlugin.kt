@@ -5,6 +5,15 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Delete
 
 class GenesisAndroidLibraryStubPlugin : Plugin<Project> {
+    /**
+     * Applies the stub plugin to the given Gradle project.
+     *
+     * Registers a no-op "cleanGeneratedSources" Delete task in the project's task container so
+     * the convention plugin (used in tests) can locate and enhance that task later. The task is
+     * created without default delete targets; the convention plugin is responsible for configuring
+     * what gets deleted. The plugin deliberately does not add Android library extensions to keep
+     * test setups lightweight.
+     */
     override fun apply(target: Project) {
         with(target) {
             // Provide a dummy cleanGeneratedSources task so the convention plugin can enhance it.

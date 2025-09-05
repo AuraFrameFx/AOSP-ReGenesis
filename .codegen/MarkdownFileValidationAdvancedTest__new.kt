@@ -32,7 +32,21 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Table of Contents – edge cases")
     inner class TableOfContentsEdgeCases {
 
-        // Local copy to keep tests pure and avoid changing production code
+        /**
+         * Convert a Markdown header line or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
+         *
+         * The function:
+         * - Removes leading Markdown header markers (`#`) and surrounding whitespace.
+         * - Strips emoji and symbol characters.
+         * - Lowercases ASCII letters.
+         * - Removes characters except ASCII letters, digits, spaces, and hyphens.
+         * - Collapses whitespace to single hyphens, collapses multiple hyphens, and trims leading/trailing hyphens.
+         *
+         * Resulting slugs may be an empty string for input that contains no ASCII alphanumeric characters after normalization.
+         *
+         * @param text The input header or text to normalize (may include leading `#` markers).
+         * @return The normalized slug (kebab-case) for use as an anchor target.
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -67,6 +81,21 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Internal anchors validity")
     inner class InternalAnchors {
 
+        /**
+         * Convert a Markdown header line or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
+         *
+         * The function:
+         * - Removes leading Markdown header markers (`#`) and surrounding whitespace.
+         * - Strips emoji and symbol characters.
+         * - Lowercases ASCII letters.
+         * - Removes characters except ASCII letters, digits, spaces, and hyphens.
+         * - Collapses whitespace to single hyphens, collapses multiple hyphens, and trims leading/trailing hyphens.
+         *
+         * Resulting slugs may be an empty string for input that contains no ASCII alphanumeric characters after normalization.
+         *
+         * @param text The input header or text to normalize (may include leading `#` markers).
+         * @return The normalized slug (kebab-case) for use as an anchor target.
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -81,6 +110,15 @@ class MarkdownFileValidationAdvancedTest {
             return cleaned
         }
 
+        /**
+         * Collects the set of Markdown header slugs present in the loaded README.
+         *
+         * Scans the file lines for Markdown headings (levels 1–6), converts each matching
+         * header to its normalized slug using `normalizeToSlug`, and returns the unique
+         * slugs as a set.
+         *
+         * @return a set of normalized header slugs found in the README (duplicates removed).
+         */
         private fun headerSlugs(): Set<String> {
             return lines
                 .filter { it.trim().matches(Regex("^#{1,6}\\s+.*$")) }
@@ -103,6 +141,12 @@ class MarkdownFileValidationAdvancedTest {
     @Nested
     @DisplayName("Code fences integrity")
     inner class FenceIntegrity {
+        /**
+         * Verifies that all fenced code blocks in the README are properly closed.
+         *
+         * Counts lines that start with triple backticks (```) and asserts the total is even,
+         * failing the test if there is an unmatched/open fence marker.
+         */
         @Test
         fun `all code fences are properly closed`() {
             val fenceCount = lines.count { it.trim().startsWith("```") }
@@ -129,6 +173,12 @@ class MarkdownFileValidationAdvancedTest {
             assertTrue(offenders.isEmpty(), "Trailing whitespace at lines: $offenders")
         }
 
+        /**
+         * Ensures the README contains no non-HTTPS external links (outside allowed local/example prefixes).
+         *
+         * Removes fenced code blocks, extracts URLs using the `http://` scheme, and fails the test if any found
+         * that do not start with an allowed prefix such as localhost or example.com.
+         */
         @Test
         fun `prefer HTTPS for external links`() {
             val withoutFences = readme.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")
@@ -162,6 +212,14 @@ class MarkdownFileValidationAdvancedTest {
     private lateinit var readme: String
     private lateinit var lines: List<String>
 
+    /**
+     * Locates and loads the repository README into shared test state before all tests run.
+     *
+     * Searches several candidate paths (README.md, Readme.md, readme.md, docs/README.md) for an existing file,
+     * reads its UTF-8 contents into `readme`, splits it into `lines`, and stores the resolved path in `readmePath`.
+     *
+     * Fails the test suite with an error if no README is found, and asserts that the loaded README is not blank.
+     */
     @BeforeAll
     fun loadReadme() {
         val candidates = listOf(
@@ -181,6 +239,21 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Table of Contents – advanced checks")
     inner class TableOfContentsAdvanced {
 
+        /**
+         * Convert a Markdown header line or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
+         *
+         * The function:
+         * - Removes leading Markdown header markers (`#`) and surrounding whitespace.
+         * - Strips emoji and symbol characters.
+         * - Lowercases ASCII letters.
+         * - Removes characters except ASCII letters, digits, spaces, and hyphens.
+         * - Collapses whitespace to single hyphens, collapses multiple hyphens, and trims leading/trailing hyphens.
+         *
+         * Resulting slugs may be an empty string for input that contains no ASCII alphanumeric characters after normalization.
+         *
+         * @param text The input header or text to normalize (may include leading `#` markers).
+         * @return The normalized slug (kebab-case) for use as an anchor target.
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -195,6 +268,16 @@ class MarkdownFileValidationAdvancedTest {
             return cleaned
         }
 
+        /**
+         * Extracts anchor targets listed in the README's "## 📋 Table of Contents" section.
+         *
+         * Searches for a heading that exactly matches `## 📋 Table of Contents` (spacing around emoji and text is permissive),
+         * asserts that the section exists, then collects consecutive non-blank lines after that heading until the first blank line.
+         * From those lines it extracts Markdown list entry anchors of the form `- [text](#anchor)` and returns the non-empty
+         * anchor strings (the part after `#`).
+         *
+         * Note: the function asserts the presence of the ToC heading and will fail the test if it's not found.
+         */
         private fun extractTocAnchors(): List<String> {
             val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
             assertTrue(tocStart >= 0, "Table of Contents section not found")
@@ -233,6 +316,13 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Images and links hygiene")
     inner class ImagesAndLinks {
 
+        /**
+         * Verifies that every Markdown image in the README has non-empty alt text and that local image files exist.
+         *
+         * Scans the README for image tags (`![alt](url)`), asserts the captured alt text is not empty, and for non-remote
+         * URLs resolves the path relative to the README file (ignoring any fragment `#...` or query `?...`) and asserts the
+         * target file exists.
+         */
         @Test
         fun `images have alt text and local images exist`() {
             val imageRegex = Regex("!\\[(.*?)\\]\\(([^)]+)\\)")
@@ -346,7 +436,21 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Slug normalization – additional cases")
     inner class SlugNormalizationAdditionalCases {
 
-        // Local copy to keep tests pure and avoid changing production code
+        /**
+         * Convert a Markdown header line or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
+         *
+         * The function:
+         * - Removes leading Markdown header markers (`#`) and surrounding whitespace.
+         * - Strips emoji and symbol characters.
+         * - Lowercases ASCII letters.
+         * - Removes characters except ASCII letters, digits, spaces, and hyphens.
+         * - Collapses whitespace to single hyphens, collapses multiple hyphens, and trims leading/trailing hyphens.
+         *
+         * Resulting slugs may be an empty string for input that contains no ASCII alphanumeric characters after normalization.
+         *
+         * @param text The input header or text to normalize (may include leading `#` markers).
+         * @return The normalized slug (kebab-case) for use as an anchor target.
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -429,6 +533,12 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Table of Contents – presence check")
     inner class TableOfContentsPresence {
 
+        /**
+         * Verifies the README contains exactly one "## 📋 Table of Contents" heading.
+         *
+         * Counts lines that match the exact heading pattern (level-2 header with the clipboard emoji
+         * followed by "Table of Contents") and asserts the count is 1.
+         */
         @Test
         fun `README contains exactly one ToC section`() {
             val count = lines.count { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }

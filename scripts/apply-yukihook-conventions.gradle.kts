@@ -41,18 +41,18 @@ subprojects { subproject ->
                 }
 
                 compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_24
-                    targetCompatibility = JavaVersion.VERSION_24
+                    sourceCompatibility = JavaVersion.VERSION_17
+                    targetCompatibility = JavaVersion.VERSION_17
                 }
 
                 // Modern Kotlin configuration (Kotlin 2.2+)
                 kotlin {
                     jvmToolchain {
-                        languageVersion.set(JavaLanguageVersion.of(24))
+                        languageVersion.set(JavaLanguageVersion.of(17))
                     }
                     
                     compilerOptions {
-                        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+                        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
                         languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
                         apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
                         freeCompilerArgs.addAll(
@@ -66,7 +66,9 @@ subprojects { subproject ->
             // Add YukiHook dependencies
             dependencies {
                 // Xposed Framework - YukiHookAPI (Standardized)
-                implementation(libs.bundles.xposed)
+                implementation(libs.xposed.api)
+                implementation(libs.yukihook.api)
+                ksp(libs.yukihook.ksp)
 
                 // Legacy Xposed API (compatibility)
                 implementation(files("${project.rootDir}/Libs/api-82.jar"))
@@ -76,9 +78,9 @@ subprojects { subproject ->
                 implementation(libs.bundles.androidx.core)
 
                 // Testing
-                testImplementation(libs.junit)
+                testImplementation(libs.junit4)
                 androidTestImplementation(libs.androidx.test.ext.junit)
-                androidTestImplementation(libs.androidx.test.espresso.core)
+                androidTestImplementation(libs.espresso.core)
             }
 
             // Configure LSParanoid

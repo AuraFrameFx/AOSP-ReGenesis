@@ -10,8 +10,8 @@ converterScalars = "3.0.0"
 desugar_jdk_libs = "2.1.5"
 detektGradlePlugin = "1.23.8"
 dokkaGradlePlugin = "2.0.0"
-kotlin = "2.2.20-RC"
-ksp = "2.2.20-RC-2.0.2"
+kotlin = "2.2.10"
+ksp = "2.2.10-2.2.10"
 serialization = "1.9.0"
 
 # ===== YUKIHOOK =====
@@ -177,6 +177,9 @@ datastore-core = { group = "androidx.datastore", name = "datastore-core", versio
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunit" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 # ===== XPosed =====
 # Xposed Framework

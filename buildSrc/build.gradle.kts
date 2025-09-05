@@ -62,6 +62,7 @@ publishing {
 }
 
 dependencies {
+
     // Testing dependencies
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.4")

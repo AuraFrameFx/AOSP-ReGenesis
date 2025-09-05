@@ -17,18 +17,15 @@ plugins {
 }
 android {
     namespace = "dev.aurakai.auraframefx.app"
-    compileSdk = 36
-
+    
+    // Application-specific overrides
     defaultConfig {
         applicationId = "dev.aurakai.auraframefx.app"
-        minSdk = 34
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
-
+        vectorDrawables.useSupportLibrary = true
+        
         // NDK configuration
         if (project.file("src/main/cpp/CMakeLists.txt").exists()) {
             ndk {
@@ -36,11 +33,10 @@ android {
             }
         }
     }
-
+    
     buildFeatures {
-        buildConfig = true
+        // Enable only what's not covered by the base conventions
         viewBinding = true
-        compose = true
         aidl = true
         renderScript = true
         shaders = false  // Disabled shaders to resolve build error

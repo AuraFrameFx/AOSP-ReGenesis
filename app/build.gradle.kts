@@ -3,7 +3,9 @@
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.services)
     // Quality plugins
@@ -59,9 +61,25 @@ plugins {
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_24
+            targetCompatibility = JavaVersion.VERSION_24
             isCoreLibraryDesugaringEnabled = true
+        }
+
+        // Java toolchain configuration
+        java {
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(24))
+            }
+        }
+
+        // Modern Kotlin compiler configuration (Kotlin 2.2+)
+        kotlin {
+            compilerOptions {
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+                languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+                apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            }
         }
 
         packaging {
@@ -127,7 +145,6 @@ plugins {
     compileOnly(libs.xposed.api)
     
     // YukiHook API
-    implementation(libs.yukihook.core)
     ksp(libs.yukihook.ksp)
     implementation(libs.yukihook.prefs)
 
@@ -198,7 +215,6 @@ plugins {
         testImplementation(libs.hilt.android.testing)
 
         androidTestImplementation(libs.androidx.test.ext.junit)
-        androidTestImplementation(libs.androidx.test.espresso.core)
         androidTestImplementation(platform(libs.androidx.compose.bom))
         androidTestImplementation(libs.hilt.android.testing)
 

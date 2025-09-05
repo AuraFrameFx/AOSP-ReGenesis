@@ -1,3 +1,5 @@
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
+
 // ==== GENESIS PROTOCOL - ANDROID COMPOSE CONVENTION ====
 // Compose-enabled Android library configuration
 

@@ -5,8 +5,22 @@ plugins { id("genesis.android.compose"); alias(libs.plugins.ksp); alias(libs.plu
 android {
     namespace = "dev.aurakai.auraframefx.module.a"
     compileSdk = 36
-    kotlinOptions {
-        jvmTarget = "1.8"
+    
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
+    }
+    
+    kotlin {
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of(24))
+        }
+        
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+        }
     }
 }
 dependencies {

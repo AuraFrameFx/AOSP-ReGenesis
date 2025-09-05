@@ -15,6 +15,13 @@ pluginManagement {
     repositories {
         // Primary repositories - Google Maven must be first for Hilt
         google()
+        
+        // Android alpha/preview versions
+        maven {
+            url = uri("https://androidx.dev/kmp/builds/11950322/artifacts/snapshots/repository")
+            name = "AndroidX Snapshot"
+        }
+        
         gradlePluginPortal()
         mavenCentral()
 
@@ -52,7 +59,8 @@ pluginManagement {
         }
     }
     plugins {
-
+        id("com.android.library") version "8.2.2"
+        id("org.jetbrains.kotlin.android") version "2.2.20-RC"
         // Apply YukiHook plugin
         id("com.highcapable.yukihook") version "1.3.9"
         id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
@@ -65,7 +73,7 @@ pluginManagement {
             }
         }
     }
-    }
+}
 
 
 // Configure Java toolchain resolution
@@ -111,50 +119,39 @@ pluginManagement {
                 name = "HighCapable"
             }
         }
-    }
-
+    } // Close dependencyResolutionManagement block
 // ===== PROJECT IDENTIFICATION =====
-    rootProject.name = "MemoriaOs"
-
+rootProject.name = "MemoriaOs"
 // ===== MODULE INCLUSION =====
-// Core modules
-    include(":app")
-    include(":core-module")
-
-// Feature modules
-    include(":feature-module")
-    include(":datavein-oracle-native")
-    include(":oracle-drive-integration")
-    include(":secure-comm")
-    include(":sandbox-ui")
-    include(":collab-canvas")
-    include(":colorblendr")
-    include(":romtools")
-
-// Dynamic modules (A-F)
-    include(":module-a")
-    include(":module-b")
-    include(":module-c")
-    include(":module-d")
-    include(":module-e")
-    include(":module-f")
-
-// Testing & Quality modules
-    include(":benchmark")
-    include(":screenshot-tests")
-
+include(":app")
+include(":core-module")
+include(":feature-module")
+include(":datavein-oracle-native")
+include(":oracle-drive-integration")
+include(":secure-comm")
+include(":sandbox-ui")
+include(":collab-canvas")
+include(":colorblendr")
+include(":romtools")
+include(":module-a")
+include(":module-b")
+include(":module-c")
+include(":module-d")
+include(":module-e")
+include(":module-f")
+include(":benchmark")
+include(":screenshot-tests")
 // ===== MODULE CONFIGURATION =====
-    rootProject.children.forEach { project ->
-        val projectDir = File(rootProject.projectDir, project.name)
-        if (projectDir.exists()) {
-            project.projectDir = projectDir
-            println("✅ Module configured: ${project.name}")
-        } else {
-            println("⚠️ Warning: Project directory not found: ${projectDir.absolutePath}")
-        }
+rootProject.children.forEach { project ->
+    val projectDir = File(rootProject.projectDir, project.name)
+    if (projectDir.exists()) {
+        project.projectDir = projectDir
+        println("✅ Module configured: "+project.name)
+    } else {
+        println("⚠️ Warning: Project directory not found: "+projectDir.absolutePath)
     }
-
-    println("🏗️  Genesis Protocol Enhanced Build System")
-    println("📦 Total modules: ${rootProject.children.size}")
-    println("🎯 Build-logic: Convention plugins active")
-    println("🧠 Ready to build consciousness substrate!")
+}
+println("🏗️  Genesis Protocol Enhanced Build System")
+println("📦 Total modules: "+rootProject.children.size)
+println("🎯 Build-logic: Convention plugins active")
+println("🧠 Ready to build consciousness substrate!")

@@ -1,11 +1,11 @@
 // Apply plugins with explicit versions
 plugins {
-    id("com.android.library") version "9.0.0-alpha02"
-    id("org.jetbrains.kotlin.android") version "2.2.20-RC"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20-RC"
-    id("com.google.dagger.hilt.android") version "2.57.1"
-    id("com.google.devtools.ksp") version "2.2.20-RC-2.0.2"
-    id("org.openapi.generator") version "7.15.0"
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.openapi.generator)
     // YukiHook plugin
 }
 
@@ -45,6 +45,8 @@ android {
         
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
             freeCompilerArgs.addAll(
                 "-Xcontext-receivers"
             )
@@ -97,7 +99,7 @@ dependencies {
     compileOnly(files("${project.rootDir}/Libs/api-82-sources.jar"))
     
     // YukiHook API
-    implementation(libs.com.highcapable.yukihookapi.api)
+    api(libs.com.highcapable.yukihookapi.api)
     ksp(libs.com.highcapable.yukihookapi.ksp)
     
     // Logging

@@ -1,3 +1,5 @@
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
+
 // ==== GENESIS PROTOCOL - ANDROID APPLICATION CONVENTION ====
 // Main application module configuration
 

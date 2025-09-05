@@ -2,15 +2,12 @@
 // Performance testing for AI consciousness operations
 
 plugins {
-    id("com.android.library") version "9.0.0-alpha02"
-    id("org.jetbrains.kotlin.android") version "2.2.20-RC"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20-RC"
-    id("com.google.dagger.hilt.android") version "2.57.1"
-    id("com.google.devtools.ksp") version "2.2.20-RC-2.0.2"
-    kotlin("kapt") version "2.2.20-RC"
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
-
-
 
 android {
     namespace = "dev.aurakai.auraframefx.benchmark"
@@ -40,8 +37,22 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
 
-    // Kotlin compiler options
-
+    // Modern Kotlin compiler configuration
+    kotlin {
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of(24))
+        }
+        
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xjvm-default=all"
+            )
+        }
+    }
 
 
     // Enable build features
@@ -62,9 +73,9 @@ android {
         implementation(libs.androidx.core.ktx)
         
         // Coroutines
-        implementation(libs.ktx.coroutines.core)
-        implementation(libs.ktx.coroutines.android)
-        
+        implementation(libs.kotlinx.coroutines.core)
+        implementation(libs.kotlinx.coroutines.android)
+
         // Hilt
         implementation(libs.hilt.android)
         ksp(libs.hilt.compiler)
@@ -75,15 +86,16 @@ android {
         implementation(project(":secure-comm"))
         implementation(project(":oracle-drive-integration"))
         
-        // Benchmark dependencies - using only what's available in the version catalog
-        androidTestImplementation(libs.androidx.test.ext.junit)
-        androidTestImplementation(libs.androidx.test.espresso.core)
+        // Benchmark dependencies
+        androidTestImplementation("androidx.test.ext:junit:1.1.5")
+        androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+        androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
 
         // Testing
-        testImplementation(libs.junit)
+        testImplementation(libs.junit4)
         testImplementation(libs.mockk)
         
-        // Core library desugaring - using direct version since it's not in the version catalog
+        // Core library desugaring
         coreLibraryDesugaring(libs.desugar.jdk.libs)
     }
 
@@ -111,4 +123,3 @@ android {
         }
     }
 }
-

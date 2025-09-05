@@ -8,7 +8,7 @@ plugins {
 kotlin {
     jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(24))
-        vendor.set(JvmVendorSpec.AZUL)
+        vendor.set(JvmVendorSpec.ADOPTIUM)
     }
 }
 
@@ -19,14 +19,15 @@ repositories {
 }
 
 dependencies {
-    // Access to Android Gradle Plugin and Kotlin plugin APIs)
-    implementation("com.android.tools.build:gradle")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin")
-    implementation("com.google.dagger:hilt-android-gradle-plugin")
+    // Access to Android Gradle Plugin and Kotlin plugin APIs
+    implementation("com.android.tools.build:gradle:${libs.versions.agp.get()}")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
+    implementation("com.google.dagger:hilt-android-gradle-plugin:${libs.versions.hilt.version.get()}")
     
     // Other plugins
     implementation(libs.dokka.gradle.plugin)
-     implementation(libs.detekt.gradle.plugin)
+    implementation(libs.spotless.plugin.gradle)
+    implementation(libs.detekt.gradle.plugin)
     implementation(libs.org.jlleitschuh.gradle.ktlint.gradle.plugin)
     implementation(libs.openapi.generator.gradle.plugin)
     

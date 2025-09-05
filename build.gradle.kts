@@ -9,9 +9,6 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") apply false
     id("com.google.dagger.hilt.android") apply false
     id("com.google.devtools.ksp") apply false
-    
-    // Apply memoria conventions to all subprojects
-    id("memoria.conventions") apply false
 }
 
 

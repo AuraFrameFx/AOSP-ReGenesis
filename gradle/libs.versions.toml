@@ -69,14 +69,13 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.
 firebase-perf = { id = "com.google.firebase.firebase-perf", version = "2.0.1" }
 google-services = { id = "com.google.gms.google-services", version = "4.4.3" }
 
-# ===== CODE QUALITY =====
-detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.8" }
-dokka = { id = "org.jetbrains.dokka", version = "2.0.0" }
-spotless = { id = "com.diffplug.spotless", version = "7.2.1" }
+# ===== CODE QUALITY & TOOLS =====
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektGradlePlugin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaGradlePlugin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPluginGradle" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
-
-# ===== KOTLIN SYMBOL PROCESSING =====
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+openapi-generator = { id = "org.openapitools.openapi-generator-gradle-plugin", version.ref = "openapiGeneratorGradlePlugin" }
 
 [libraries]
 # ===== YUKIHOOK & XPOSED =====
@@ -122,9 +121,9 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 
 # ===== FIREBASE =====
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
-firebase-perf = { module = "com.google.firebase:firebase-perf-ktx" }
+firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+firebase-crashlytics-ktx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
+firebase-perf-ktx = { module = "com.google.firebase:firebase-perf-ktx" }
 
 # ===== NETWORKING =====
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -187,9 +186,9 @@ coroutines = [
 
 # ===== FIREBASE =====
 firebase = [
-    "firebase-analytics",
-    "firebase-crashlytics",
-    "firebase-perf"
+    "firebase-analytics-ktx",
+    "firebase-crashlytics-ktx",
+    "firebase-perf-ktx"
 ]
 
 # ===== NETWORKING =====

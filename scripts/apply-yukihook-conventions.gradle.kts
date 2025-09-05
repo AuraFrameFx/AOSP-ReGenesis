@@ -78,7 +78,7 @@ subprojects { subproject ->
                 // Testing
                 testImplementation(libs.junit)
                 androidTestImplementation(libs.androidx.test.ext.junit)
-                androidTestImplementation(libs.androidx.test.espresso.core)
+                androidTestImplementation(libs.espresso.core)
             }
 
             // Configure LSParanoid

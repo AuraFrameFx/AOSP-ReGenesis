@@ -1,11 +1,4 @@
-@file:Suppress("UnstableApiUsage", "JCenterRepositoryObsolete")
-
-// ===== GENESIS PROTOCOL - SETTINGS =====
-// AeGenesis Coinscience AI Ecosystem - Enhanced with Build Logic
-// Version: 2025.09.02-03 - Full Enhancement Suite
-
-// Enable Gradle features
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+("TYPESAFE_PROJECT_ACCESSORS")
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 pluginManagement {

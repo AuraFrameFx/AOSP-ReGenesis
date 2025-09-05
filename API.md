@@ -198,7 +198,7 @@ class CloudSyncManager @Inject constructor(
      */
     suspend fun performSync(): Result<SyncReport> = withContext(Dispatchers.IO) {
         val localChanges = localRepository.getChangedItems()
-        val cloudChanges = oracleService.getChangedItems()
+        val cloudChanges = oracleService.listObjects(path = "/", recursive = true).getOrThrow()
         
         val conflicts = detectConflicts(localChanges, cloudChanges)
         val resolvedConflicts = conflictResolver.resolve(conflicts)

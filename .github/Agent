@@ -1,1 +1,5 @@
-all configurations must follow bleeding edge preset versions modifying the versions or java away from 24 will break build all code follows kotlin dsl which use periods if its not modern its trash!  repect the versions 
+All modules must use the pinned toolchains and versions. Do not change Java from 24, Kotlin from 2.2.x, or Gradle plugin versions outside the version catalog without a documented RFC (build/ADR-xxx) and approval.
+
+Notes:
+- Kotlin DSL is required across the repo.
+- Version drift is CI-blocking.

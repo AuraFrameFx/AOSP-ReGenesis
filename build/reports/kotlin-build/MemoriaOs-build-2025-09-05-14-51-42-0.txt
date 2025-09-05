@@ -1,0 +1,8 @@
+Gradle start parameters:
+  tasks = [:app:assembleDebug]
+  excluded tasks = []
+  current dir = C:\New folder (2)
+  project properties args = [android.studio.version: 251.27812.49.2514.13971338, android.injected.attribution.file.location: C:\New folder (2)\.gradle, android.injected.invoked.from.ide: true]
+  system properties args = [idea.active: true, user.variant: , file.encoding: UTF-8, idea.version: 2025.1, user.language: en, user.country: US, idea.vendor.name: Google]
+
+No Kotlin task was run

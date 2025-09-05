@@ -84,7 +84,7 @@ class MarkdownFileValidationAdvancedSupplementalTest {
         @Test
         fun `slug normalization additional cases`() {
             assertEquals("section-123", normalizeToSlug("## Section 123"))
-            assertEquals("caf", normalizeToSlug("## Café"))
+            assertEquals("cafe", normalizeToSlug("## Café"))
             assertEquals("a-b-c", normalizeToSlug("## A  -  B --- C"))
         }
     }

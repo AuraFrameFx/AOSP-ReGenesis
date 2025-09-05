@@ -55,8 +55,8 @@ pluginManagement {
     plugins {
         // Only keep plugins that need to be in pluginManagement
         // Remove android and kotlin plugins that cause conflicts with version catalog
-        id("com.highcapable.yukihook") version "1.3.9"
         // Temporarily disabled to resolve Java 24 toolchain requirement
+        // id("com.highcapable.yukihook") version "1.3.9"
         // id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
     }
 

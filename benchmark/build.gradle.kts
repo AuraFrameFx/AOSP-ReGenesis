@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.library) version "9.0.0-alpha02" apply false
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)

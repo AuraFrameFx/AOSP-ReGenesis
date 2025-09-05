@@ -1,15 +1,16 @@
 // Apply plugins without version to avoid conflicts
 // Versions are managed in the root build.gradle.kts and version catalog
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20-RC"
-    id("com.google.dagger.hilt.android") version "2.51.1"
-    id("org.jetbrains.dokka") version "2.0.0"
-    id("com.diffplug.spotless") version "7.2.1"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.20-RC"
-    id("com.google.devtools.ksp") version "2.2.20-RC-2.0.2"
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 }
+
 android {
     namespace = "dev.aurakai.auraframefx.collabcanvas"
     compileSdk = 36
@@ -19,8 +20,8 @@ android {
     }
     
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     
     buildFeatures {
@@ -30,10 +31,10 @@ android {
 
     // Kotlin compiler options for Compose
     kotlin {
-        jvmToolchain(24)
+        jvmToolchain(21)
 
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
             languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
             apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
             freeCompilerArgs.addAll(
@@ -46,9 +47,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.0"
     }
-        // Optionally, set composeOptions if not managed by version catalog
-        // composeOptions { kotlinCompilerExtensionVersion = "1.5.0" }
-    }
+}
 
     dependencies {
         // Core AndroidX

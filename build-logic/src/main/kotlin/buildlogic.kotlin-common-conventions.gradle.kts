@@ -34,4 +34,4 @@ extensions.configure<JavaPluginExtension>("java") {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-// Removed unsupported 'kotlin { jvmToolchain(24) }' block. JVM toolchain must be set in build scripts, not convention plugins.
+// Removed unsupported 'kotlin { jvmToolchain(21) }' block. JVM toolchain must be set in build scripts, not convention plugins.

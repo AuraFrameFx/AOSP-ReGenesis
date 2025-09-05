@@ -32,19 +32,19 @@ android {
 
     // Enable Java 24 toolchain for future compatibility
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
     }
 
     // Modern Kotlin compiler configuration
     kotlin {
         jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(24))
+            languageVersion.set(JavaLanguageVersion.of(21))
         }
         
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
             languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
             apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
             freeCompilerArgs.addAll(

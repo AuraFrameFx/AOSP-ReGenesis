@@ -72,10 +72,6 @@ dependencies {
     implementation(libs.bundles.room)
     ksp(libs.room.compiler)
 
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
-
     // Benchmark
     implementation(libs.androidx.benchmark.junit4)
     androidTestImplementation(libs.androidx.benchmark.junit4)

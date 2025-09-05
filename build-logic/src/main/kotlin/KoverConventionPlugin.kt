@@ -1,3 +1,5 @@
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
+
 // ==== GENESIS PROTOCOL - KOVER CONVENTION ====
 // Code coverage configuration for Genesis modules
 

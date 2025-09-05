@@ -114,12 +114,12 @@ class MarkdownFileValidationTest {
             val headers = lines.filter { it.trim().startsWith("## ") }
             val headerSlugs = headers.map { normalizeToSlug(it) }.toSet()
             // Validate that each ToC anchor maps to a known header slug (allow leading/trailing hyphens)
-            val unknown = tocAnchors.filterNot { anchor ->
+            val unknown = tocAnchors.filter { anchor ->
                 val normalized = anchor.trim('-')
                 normalized in headerSlugs
             }.size
 
-            assertEquals(0, unknown, "Some ToC anchors do not match any header slugs. " +
+            assertEquals(tocAnchors.size, unknown, "Some ToC anchors do not match any header slugs. " +
                     "Check emoji/slug formatting; expected anchors like #overview, #architecture, etc.")
         }
     }
@@ -234,4 +234,184 @@ class MarkdownFileValidationTest {
             )
         }
     }
+
+    // --- Additional tests generated to broaden coverage of README diff content ---
+    /*
+     Testing stack: Kotlin + JUnit 5 (Jupiter). These tests extend the existing suite
+     and focus on link/anchor integrity, media, headings, code fences, table format,
+     and the presence of critical files mentioned in the README.
+    */
+
+    @Nested
+    @DisplayName("Link integrity (dynamic)")
+    inner class LinkIntegrityDynamic {
+
+        private fun normalizeToSlug(text: String): String {
+            val header = text
+                .replace(Regex("^\\s*#+\\s*"), "")
+                .trim()
+            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            return noEmoji
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9\\s-]"), "")
+                .replace(Regex("\\s+"), "-")
+                .replace(Regex("-+"), "-")
+                .trim('-')
+        }
+
+        @Test
+        fun `relative markdown links resolve to existing paths`() {
+            val linkRegex = Regex("""(?<!!)\[[^\]]+]\(((?![a-z]+://|#)[^)]+)\)""", RegexOption.IGNORE_CASE)
+            val links = linkRegex.findAll(readme)
+                .map { it.groupValues[1] }
+                .map { it.substringBefore('#').removePrefix("./").trim() }
+                .filter { it.isNotBlank() }
+                .toSet()
+
+            val ignoredPrefixes = listOf("build/", "out/", "target/", ".gradle/", ".github/")
+            val missing = links.filter { rel ->
+                if (ignoredPrefixes.any { rel.startsWith(it) }) return@filter false
+                val p = (readmePath.parent ?: Path.of(".")).resolve(rel).normalize()
+                !Files.exists(p)
+            }
+            assertTrue(missing.isEmpty(), "Missing relative link targets: $missing")
+        }
+
+        @Test
+        fun `in-document anchors resolve to existing headers`() {
+            val anchorRx = Regex("""\[[^\]]+]\(#([^)]+)\)""")
+            val anchors = anchorRx.findAll(readme)
+                .map { it.groupValues[1].trim('-') }
+                .toSet()
+            val headerSlugs = lines
+                .filter { it.trim().matches(Regex("^#{2,6}\\s+.*$")) }
+                .map { normalizeToSlug(it) }
+                .toSet()
+            val missing = anchors.filterNot { it in headerSlugs }
+            assertTrue(missing.isEmpty(), "Anchor links not found among header slugs: $missing")
+        }
+    }
+
+    @Nested
+    @DisplayName("Images and media")
+    inner class ImagesAndMedia {
+        @Test
+        fun `images have alt text and local image paths exist`() {
+            val imgRx = Regex("""!\[([^\]]*)]\(([^)\s]+)(?:\s+"[^"]*")?\)""")
+            val matches = imgRx.findAll(readme).toList()
+            val noAlt = matches.filter { it.groupValues[1].trim().isEmpty() }.map { it.groupValues[2] }
+            assertTrue(noAlt.isEmpty(), "Images missing alt text for: $noAlt")
+
+            val localMissing = matches.map { it.groupValues[2] }
+                .filter { !it.startsWith("http://") && !it.startsWith("https://") }
+                .map { (readmePath.parent ?: Path.of(".")).resolve(it).normalize() }
+                .filterNot { Files.exists(it) }
+            assertTrue(localMissing.isEmpty(), "Local image targets not found: $localMissing")
+        }
+    }
+
+    @Nested
+    @DisplayName("Headings and structure")
+    inner class HeadingsAndStructure {
+
+        private fun normalizeToSlug(text: String): String {
+            val header = text
+                .replace(Regex("^\\s*#+\\s*"), "")
+                .trim()
+            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            return noEmoji
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9\\s-]"), "")
+                .replace(Regex("\\s+"), "-")
+                .replace(Regex("-+"), "-")
+                .trim('-')
+        }
+
+        @Test
+        fun `has a top-level H1 header`() {
+            val hasH1 = lines.any { it.startsWith("# ") }
+            assertTrue(hasH1, "Expected a top-level H1 heading")
+        }
+
+        @Test
+        fun `contains Overview and Architecture sections`() {
+            val hasOverview = lines.any { it.trim().matches(Regex("^##\\s*.*overview.*$", RegexOption.IGNORE_CASE)) }
+            val hasArchitecture = lines.any { it.trim().matches(Regex("^##\\s*.*architecture.*$", RegexOption.IGNORE_CASE)) }
+            assertAll(
+                { assertTrue(hasOverview, "Missing 'Overview' section") },
+                { assertTrue(hasArchitecture, "Missing 'Architecture' section") }
+            )
+        }
+
+        @Test
+        fun `no duplicate header slugs`() {
+            val slugs = lines
+                .filter { it.trim().matches(Regex("^#{2,6}\\s+.*$")) }
+                .map { normalizeToSlug(it) }
+            val duplicates = slugs.groupingBy { it }.eachCount().filter { it.value > 1 }.keys
+            assertTrue(duplicates.isEmpty(), "Duplicate header anchors detected: $duplicates")
+        }
+    }
+
+    @Nested
+    @DisplayName("Code fence languages")
+    inner class CodeFenceLanguages {
+        @Test
+        fun `contains bash and gradle-related code fences`() {
+            val langs = Regex("```(\\w+)")
+                .findAll(readme)
+                .map { it.groupValues[1].lowercase(Locale.ROOT) }
+                .toSet()
+            assertTrue("bash" in langs, "Expected at least one ```bash``` fenced block")
+            val hasGradle = setOf("kotlin", "groovy", "gradle").any { it in langs }
+            assertTrue(hasGradle, "Expected code fences for Gradle build scripts (kotlin/groovy/gradle)")
+        }
+    }
+
+    @Nested
+    @DisplayName("Technology stack table format")
+    inner class TechnologyStackTableFormat {
+        @Test
+        fun `technology table rows have at least three columns`() {
+            val tableBlock = readme.substringAfter("| Component |", missingDelimiterValue = "")
+                .substringBefore("###", missingDelimiterValue = readme)
+            val rows = tableBlock.lines().filter { it.trim().startsWith("|") }
+            val invalid = rows.filter { row ->
+                val cols = row.split("|").map { it.trim() }.filter { it.isNotEmpty() }
+                cols.size < 3
+            }
+            assertTrue(invalid.isEmpty(), "Malformed rows in technology stack table: $invalid")
+        }
+    }
+
+    @Nested
+    @DisplayName("License and scripts")
+    inner class LicenseAndScripts {
+        @Test
+        fun `license file exists and mentions MIT`() {
+            val candidates = listOf("LICENSE", "LICENSE.md", "LICENSE.txt").map { Path.of(it) }
+            val path = candidates.firstOrNull { Files.exists(it) }
+            assertNotNull(path, "LICENSE file not found in project root (checked $candidates)")
+            if (path != null) {
+                val content = Files.readString(path, StandardCharsets.UTF_8)
+                assertTrue(content.contains("MIT", ignoreCase = true), "LICENSE file should mention MIT")
+            }
+        }
+
+        @Test
+        fun `nuclear clean script exists when documented`() {
+            val mentioned = readme.contains("nuclear-clean.sh") || readme.contains("nuclear-clean.bat")
+            if (!mentioned) return
+            val candidates = listOf(
+                "nuclear-clean.sh",
+                "nuclear-clean.bat",
+                "scripts/nuclear-clean.sh",
+                "scripts/nuclear-clean.bat"
+            )
+            val exists = candidates.any { Files.exists((readmePath.parent ?: Path.of(".")).resolve(it)) }
+            assertTrue(exists, "README mentions nuclear clean script, but none found among: $candidates")
+        }
+    }
+
+    // End of additional tests. Testing framework: JUnit 5 (Jupiter) with Kotlin.
 }

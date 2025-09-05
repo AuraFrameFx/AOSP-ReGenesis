@@ -1,6 +1,7 @@
 [versions]
 # ===== GRADLE & KOTLIN =====
-agp = "8.5.0"
+agp = "9.0.0-alpha02"
+benchmarkJunit4 = "1.2.4"
 kotlin = "2.2.20-RC"
 ksp = "2.2.20-RC-2.0.2"
 serialization = "1.9.0"
@@ -9,13 +10,15 @@ desugar_jdk_libs = "2.1.5"
 # ===== HOOKING FRAMEWORKS =====
 xposed = "82"
 lsposed = "6.4"
-yukihookapi = "2.1.1"
+yukihook = "1.3.0"
+kavaref = "1.0.1"
 
 # ===== GOOGLE & FIREBASE =====
 hilt-version = "2.51.1"
 gson-version = "2.11.0"
-firebaseBom = "34.2.0"
-
+firebaseBom = "33.1.2"
+androidx-test-ext-junit = "1.2.1"
+espresso-core = "3.6.1"
 # ===== ANDROIDX =====
 coreKtx = "1.13.1"
 appcompat = "1.7.1"
@@ -46,9 +49,10 @@ spotlessPluginGradle = "7.2.1"
 junit = "4.13.2"
 junitJupiter = "5.10.2"
 androidxTestJunit = "1.1.5"
-espressoCore = "3.6.1"
 mockk = "1.13.12"
 turbine = "1.1.0"
+uiautomator = "2.3.0"
+leakcanary = "2.12"
 
 [plugins]
 # ===== ANDROID =====
@@ -75,13 +79,17 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaGradlePlugin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPluginGradle" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-openapi-generator = { id = "org.openapitools.openapi-generator-gradle-plugin", version.ref = "openapiGeneratorGradlePlugin" }
+openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGeneratorGradlePlugin" }
 
 [libraries]
 # ===== YUKIHOOK & XPOSED =====
-yukihook-api = { group = "com.highcapable.yukihookapi", name = "api", version.ref = "yukihookapi" }
-yukihook-ksp = { group = "com.highcapable.yukihookapi", name = "ksp-xposed", version.ref = "yukihookapi" }
-yukihook-prefs = { group = "com.highcapable.yukihookapi", name = "prefs", version.ref = "yukihookapi" }
+androidx-benchmark-junit4 = { module = "androidx.benchmark:benchmark-junit4", version.ref = "benchmarkJunit4" }
+androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
+yukihook-api = { group = "com.highcapable.yukihookapi", name = "api", version.ref = "yukihook" }
+yukihook-ksp = { group = "com.highcapable.yukihookapi", name = "ksp-xposed", version.ref = "yukihook" }
+# Note: yukihook-prefs is deprecated in 1.3.0+, replaced by KavaRef
+kavaref-core = { group = "com.highcapable.kavaref", name = "kavaref-core", version.ref = "kavaref" }
+kavaref-extension = { group = "com.highcapable.kavaref", name = "kavaref-extension", version.ref = "kavaref" }
 xposed-api = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
 lsposed-lsplant = { group = "org.lsposed.lsplant", name = "lsplant", version.ref = "lsposed" }
 
@@ -123,7 +131,7 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 firebase-crashlytics-ktx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
-firebase-perf-ktx = { module = "com.google.firebase:firebase-perf-ktx" }
+firebase-perf-ktx = { group = "com.google.firebase", name = "firebase-perf-ktx" }
 
 # ===== NETWORKING =====
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -157,7 +165,7 @@ junit4 = { group = "junit", name = "junit", version.ref = "junit" }
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunit" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 mockk = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
@@ -209,8 +217,13 @@ testing = [
     "junit4",
     "junit-jupiter-api",
     "junit-jupiter-engine",
-    "androidx-test-ext-junit",
-    "androidx-espresso-core",
     "mockk",
     "turbine"
+]
+
+# ===== LIFECYCLE =====
+lifecycle = [
+    "androidx-lifecycle-runtime-ktx",
+    "androidx-lifecycle-viewmodel-ktx",
+    "androidx-lifecycle-viewmodel-compose"
 ]

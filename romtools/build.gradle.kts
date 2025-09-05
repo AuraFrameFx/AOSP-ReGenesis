@@ -1,15 +1,10 @@
-
 import dev.aurakai.gradle.tasks.VerifyRomToolsTask
-
-
 plugins {
-    id("genesis.android.compose")
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.spotless)
-    alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    id("org.openapi.generator")
 }
 
 android {
@@ -36,64 +31,71 @@ android {
 }
 
 // ROM Tools output directory configuration
-val romToolsOutputDirectory: DirectoryProperty = 
+val romToolsOutputDirectory: DirectoryProperty =
     project.objects.directoryProperty().convention(layout.buildDirectory.dir("rom-tools"))
 
 dependencies {
+    // Core dependencies
     api(project(":core-module"))
     implementation(project(":secure-comm"))
-    implementation(libs.androidx.core.ktx)
-    dependencies {
-        // Xposed & LSPosed Framework APIs (Provided at runtime, not bundled)
-        // Note: For YukiHookAPI, ensure jitpack.io is in your settings.gradle.kts
-        implementation(libs.hilt.android)
-        ksp(libs.hilt.compiler)
-        // Compose - Bill of Materials (BOM)
-        implementation(platform(libs.androidx.compose.bom))
-        implementation(libs.bundles.compose)
-        implementation(libs.androidx.activity.compose)
-        implementation(libs.androidx.navigation.compose)
+    implementation(libs.bundles.androidx.core)
 
-        // Core AndroidX
-        implementation(libs.bundles.androidx.core)
+    // Lifecycle
+    implementation(libs.bundles.lifecycle)
 
-        // Dependency Injection - Hilt
-        implementation(libs.hilt.android)
-        ksp(libs.hilt.compiler)
+    // Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
 
-        // Coroutines & Networking
-        implementation(libs.bundles.coroutines)
-        implementation(libs.bundles.network)
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
-        // Database - Room
-        implementation(libs.room.runtime)
-        implementation(libs.room.ktx)
-        ksp(libs.room.compiler)
+    // Coroutines
+    implementation(libs.bundles.coroutines)
 
-        // Firebase
-        implementation(libs.bundles.firebase)
+    // Networking
+    implementation(libs.bundles.network)
+    implementation(libs.kotlinx.serialization.json)
 
-        // Utilities
-        implementation(libs.timber)
-        implementation(libs.coil.compose)
+    // Room Database
+    implementation(libs.bundles.room)
+    ksp(libs.room.compiler)
 
-        // Debugging Tools
-        debugImplementation(libs.leakcanary.android)
-        debugImplementation(libs.androidx.compose.ui.tooling)
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
 
-        // Unit Testing
-        testImplementation(libs.bundles.testing)
-        testImplementation(libs.hilt.android.testing)
+    // YukiHook API 1.3.0+ with KavaRef
+    implementation(libs.yukihook.api)
+    ksp(libs.yukihook.ksp)
+    implementation(libs.kavaref.core)
+    implementation(libs.kavaref.extension)
 
-        // Instrumented Testing
-        androidTestImplementation(platform(libs.androidx.compose.bom))
-        androidTestImplementation(libs.hilt.android.testing)
-        kspAndroidTest(libs.hilt.compiler)
-    }
+    // Xposed API (compile only)
+    compileOnly(libs.xposed.api)
 
-// Define a shared directory property for ROM tools output
-val romToolsOutputDirectory: DirectoryProperty =
-    project.objects.directoryProperty().convention(layout.buildDirectory.dir("rom-tools"))
+    // DataStore
+    implementation(libs.datastore.preferences)
+    implementation(libs.datastore.core)
+
+    // UI
+    implementation(libs.timber)
+    implementation(libs.coil.compose)
+
+    // Core library desugaring
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // Testing
+    testImplementation(libs.bundles.testing)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+}
 
 // ROM Tools specific tasks
 tasks.register<Copy>("copyRomTools") {
@@ -113,7 +115,6 @@ tasks.register<Copy>("copyRomTools") {
     }
 }
 
-
 tasks.register<VerifyRomToolsTask>("verifyRomTools") {
     romToolsDir.set(romToolsOutputDirectory) // Set to the same shared property
     dependsOn("copyRomTools") // Explicitly depend on copyRomTools for clarity and reliability
@@ -126,4 +127,3 @@ tasks.named("build") {
 }
 
 tasks.register("romStatus") { group = "aegenesis"; doLast { println("🛠️ ROM TOOLS - Ready!") } }
-}

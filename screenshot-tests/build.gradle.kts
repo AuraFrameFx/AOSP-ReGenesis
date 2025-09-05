@@ -1,11 +1,10 @@
-// ==== GENESIS PROTOCOL - SCREENSHOT TESTS ====
-// Visual regression testing for Genesis UI components
-
 plugins {
-    id("genesis.android.library")
     alias(libs.plugins.ksp)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.openapi.generator)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -39,37 +38,69 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
+    // Core AndroidX dependencies
+    api(project(":core-module"))
+    implementation(libs.bundles.androidx.core)
+
+    // Lifecycle
+    implementation(libs.bundles.lifecycle)
+
     // Project modules to test
-    testImplementation(project(":core-module"))
     testImplementation(project(":sandbox-ui"))
     testImplementation(project(":colorblendr"))
     testImplementation(project(":collab-canvas"))
-    
-    // Compose testing
-    testImplementation(platform(libs.androidx.compose.bom))
-    testImplementation(libs.bundles.compose)
 
-    // Testing framework
-    testImplementation(libs.junit)
-    testImplementation(libs.androidx.test.ext.junit)
-    
-    // Hilt for DI in tests
+    // Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
+    implementation(libs.androidx.compose.material.icons.extended)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // Firebase - Add the missing BOM and bundle
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
+
+    // YukiHook API with KavaRef
+    implementation(libs.yukihook.api)
+    ksp(libs.yukihook.ksp)
+    implementation(libs.kavaref.core)
+    implementation(libs.kavaref.extension)
+
+    // Xposed API (compile only)
+    compileOnly(libs.xposed.api)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // Coroutines & Utilities
+    implementation(libs.bundles.coroutines)
+    implementation(libs.timber)
+    implementation(libs.coil.compose)
+
+    // Core library desugaring
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // Testing
+    testImplementation(libs.bundles.testing)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
-    implementation(libs.hilt.android) // Added to satisfy Hilt Gradle plugin requirement
 
-    // Robolectric for screenshot tests
-    testImplementation(libs.robolectric)
+    // Android Testing
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
 }
 
 // Custom screenshot testing tasks
 tasks.register("screenshotTestAll") {
     group = "screenshot"
     description = "Run all Genesis Protocol screenshot tests"
-    
+
     dependsOn("testDebugUnitTest")
-    
+
     doLast {
         println("📸 Genesis Protocol Screenshot Tests")
         println("🎨 Visual regression testing for:")
@@ -84,7 +115,7 @@ tasks.register("screenshotTestAll") {
 tasks.register("updateScreenshots") {
     group = "screenshot"
     description = "Update Genesis Protocol UI component screenshots"
-    
+
     doLast {
         println("📸 Genesis Protocol screenshots update ready")
         println("🎨 Configure screenshot baseline when Paparazzi is available")
@@ -94,7 +125,7 @@ tasks.register("updateScreenshots") {
 tasks.register("verifyScreenshots") {
     group = "verification"
     description = "Verify UI components match reference screenshots"
-    
+
     doLast {
         println("✅ Genesis Protocol UI visual consistency framework ready")
         println("🎨 Screenshot testing infrastructure configured")

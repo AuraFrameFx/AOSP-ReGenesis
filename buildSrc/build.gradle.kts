@@ -62,6 +62,13 @@ publishing {
 }
 
 dependencies {
+    // Kotlin Gradle Plugin - Required for ExperimentalKotlinGradlePluginApi
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.20-RC")
+
+    // Android Gradle Plugin - For Android convention plugins
+    implementation("com.android.tools.build:gradle:9.0.0-alpha02")
+
+    // Testing dependencies
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.4")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.13.4")

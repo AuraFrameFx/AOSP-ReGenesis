@@ -1,26 +1,33 @@
 // Apply plugins without version to avoid conflicts
 // Versions are managed in the root build.gradle.kts and version catalog
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20-RC"
-    id("com.google.dagger.hilt.android") version "2.51.1"
-    id("org.jetbrains.dokka") version "2.0.0"
-    id("com.diffplug.spotless") version "7.2.1"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.20-RC"
-    id("com.google.devtools.ksp") version "2.2.20-RC-2.0.2"
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 }
+
 android {
     namespace = "dev.aurakai.auraframefx.collabcanvas"
     compileSdk = 36
     
     defaultConfig {
         minSdk = 34
+
+        // Enable multidx for core library desugaring
+        multiDexEnabled = true
     }
     
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
+
+        // Enable core library desugaring
+        isCoreLibraryDesugaringEnabled = true
     }
     
     buildFeatures {
@@ -46,84 +53,66 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.0"
     }
-        // Optionally, set composeOptions if not managed by version catalog
-        // composeOptions { kotlinCompilerExtensionVersion = "1.5.0" }
-    }
+}
 
-    dependencies {
-        // Core AndroidX
-        implementation(libs.androidx.core.ktx)
-        implementation(libs.androidx.lifecycle.runtime.ktx)
-        implementation(libs.androidx.lifecycle.viewmodel.ktx)
-        implementation(libs.androidx.lifecycle.viewmodel.compose)
+dependencies {
+    // Core dependencies
+    api(project(":core-module"))
+    implementation(libs.bundles.androidx.core)
 
-        // Compose
-        implementation(platform(libs.androidx.compose.bom))
-        implementation(libs.androidx.compose.ui)
-        implementation(libs.androidx.compose.ui.graphics)
-        implementation(libs.androidx.compose.ui.tooling.preview)
-        implementation(libs.androidx.compose.material3)
-        implementation(libs.androidx.compose.material.icons.extended)
-        implementation(libs.androidx.activity.compose)
-        implementation(libs.androidx.navigation.compose)
+    // Lifecycle
+    implementation(libs.bundles.lifecycle)
 
-        // Hilt
-        implementation(libs.hilt.android)
-        ksp(libs.hilt.compiler)
+    // Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
+    implementation(libs.androidx.compose.material.icons.extended)
 
-        // Coroutines - Fix incorrect keys
-        implementation(libs.kotlinx.coroutines.core)
-        implementation(libs.kotlinx.coroutines.android)
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
-        // Network
-        implementation(libs.retrofit)
-        implementation(libs.retrofit.converter.kotlinx.serialization)
-        implementation(libs.okhttp3.logging.interceptor)
+    // Coroutines
+    implementation(libs.bundles.coroutines)
 
-        // Room
-        implementation(libs.room.runtime)
-        implementation(libs.room.ktx)
-        ksp(libs.room.compiler)
+    // Networking
+    implementation(libs.bundles.network)
+    implementation(libs.kotlinx.serialization.json)
 
-        // Firebase
-        implementation(platform(libs.firebase.bom))
-        implementation(libs.firebase.analytics.ktx)
-        implementation(libs.firebase.crashlytics.ktx)
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
 
-        // UI
-        implementation(libs.coil.compose)
-        implementation(libs.timber)
-        implementation(fileTree("../Libs") { include("*.jar") })
-        implementation(libs.gson)
+    // YukiHook API 1.3.0+ with KavaRef
+    implementation(libs.yukihook.api)
+    ksp(libs.yukihook.ksp)
+    implementation(libs.kavaref.core)
+    implementation(libs.kavaref.extension)
 
-        // Testing
-        testImplementation(libs.junit4)
-        testImplementation(libs.mockk)
+    // Xposed API (compile only)
+    compileOnly(libs.xposed.api)
 
-        // Android Testing - Fix incorrect keys
-        androidTestImplementation("androidx.test.ext:junit:1.1.5")
-        androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-        androidTestImplementation(platform(libs.androidx.compose.bom))
-        androidTestImplementation(libs.androidx.compose.ui)
+    // DataStore
+    implementation(libs.datastore.preferences)
 
-        // Debug
-        debugImplementation(libs.androidx.compose.ui.tooling)
-        debugImplementation(libs.androidx.compose.ui.tooling.preview)
-        
-        // YukiHook API - Fix incorrect keys
-        implementation(libs.yukihook.api)
-        ksp(libs.yukihook.ksp)
-        implementation(libs.yukihook.prefs)
-        
-        // Xposed API (compile only, provided by the framework at runtime)
-        compileOnly(libs.xposed.api)
+    // UI
+    implementation(libs.timber)
+    implementation(libs.coil.compose)
 
-        // Core library desugaring
-        coreLibraryDesugaring(libs.desugar.jdk.libs)
-    }
+    // Core library desugaring
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
-// Remove yukihook configuration block as it's causing errors
-// The plugin configuration should be handled through the plugin itself
+    // Testing
+    testImplementation(libs.bundles.testing)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+}
 
 tasks.register("collabStatus") {
     group = "aegenesis"

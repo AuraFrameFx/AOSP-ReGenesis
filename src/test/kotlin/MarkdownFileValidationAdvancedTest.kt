@@ -25,6 +25,139 @@ import java.util.Locale
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MarkdownFileValidationAdvancedTest {
 
+    // Additional unit tests appended by PR helper
+    // Testing framework: Kotlin + JUnit 5 (Jupiter)
+
+    @Nested
+    @DisplayName("Table of Contents – edge cases")
+    inner class TableOfContentsEdgeCases {
+
+        // Local copy to keep tests pure and avoid changing production code
+        private fun normalizeToSlug(text: String): String {
+            val header = text
+                .replace(Regex("^\\s*#+\\s*"), "")
+                .trim()
+            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            val cleaned = noEmoji
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9\\s-]"), "")
+                .replace(Regex("\\s+"), "-")
+                .replace(Regex("-+"), "-")
+                .trim('-')
+            return cleaned
+        }
+
+        @Test
+        fun `slug normalization strips diacritics and ampersands`() {
+            assertEquals("caf-rsum", normalizeToSlug("## Café & Résumé"))
+        }
+
+        @Test
+        fun `slug normalization retains numbers and collapses dots`() {
+            assertEquals("1-overview", normalizeToSlug("## 1. Overview"))
+        }
+
+        @Test
+        fun `slug normalization handles em-dashes and emojis`() {
+            assertEquals("setup-part-2", normalizeToSlug("## 🔧 Setup — Part 2"))
+        }
+    }
+
+    @Nested
+    @DisplayName("Internal anchors validity")
+    inner class InternalAnchors {
+
+        private fun normalizeToSlug(text: String): String {
+            val header = text
+                .replace(Regex("^\\s*#+\\s*"), "")
+                .trim()
+            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            val cleaned = noEmoji
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9\\s-]"), "")
+                .replace(Regex("\\s+"), "-")
+                .replace(Regex("-+"), "-")
+                .trim('-')
+            return cleaned
+        }
+
+        private fun headerSlugs(): Set<String> {
+            return lines
+                .filter { it.trim().matches(Regex("^#{1,6}\\s+.*$")) }
+                .map { normalizeToSlug(it) }
+                .toSet()
+        }
+
+        @Test
+        fun `internal markdown anchors reference existing headers`() {
+            val withoutFences = readme.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")
+            val anchorRegex = Regex("\\[[^\\]]+\\]\\(#([^)]+)\\)")
+            val anchors = anchorRegex.findAll(withoutFences).map { it.groupValues[1].trim() }.toList()
+            if (anchors.isEmpty()) return
+            val slugs = headerSlugs()
+            val missing = anchors.filter { it.isNotBlank() && it !in slugs }.distinct()
+            assertTrue(missing.isEmpty(), "Anchor(s) not found in headers: $missing")
+        }
+    }
+
+    @Nested
+    @DisplayName("Code fences integrity")
+    inner class FenceIntegrity {
+        @Test
+        fun `all code fences are properly closed`() {
+            val fenceCount = lines.count { it.trim().startsWith("```") }
+            assertTrue(fenceCount % 2 == 0, "Uneven number of code fence markers (```), fenceCount=$fenceCount")
+        }
+    }
+
+    @Nested
+    @DisplayName("README structure and style")
+    inner class ReadmeStructureAndStyle {
+
+        @Test
+        fun `has a single H1 title`() {
+            val h1Count = lines.count { it.trim().matches(Regex("^#\\s+.+$")) }
+            assertEquals(1, h1Count, "README should contain exactly one top-level '# ' title")
+        }
+
+        @Test
+        fun `no trailing whitespace on any line`() {
+            val offenders = lines.withIndex()
+                .filter { it.value.matches(Regex(".*\\s+$")) }
+                .map { it.index + 1 }
+                .toList()
+            assertTrue(offenders.isEmpty(), "Trailing whitespace at lines: $offenders")
+        }
+
+        @Test
+        fun `prefer HTTPS for external links`() {
+            val withoutFences = readme.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")
+            val httpRegex = Regex("\\((http://[^)]+)\\)")
+            val all = httpRegex.findAll(withoutFences).map { it.groupValues[1] }.toList()
+            val allowedPrefixes = listOf(
+                "http://localhost",
+                "http://127.0.0.1",
+                "http://0.0.0.0",
+                "http://[::1]",
+                "http://example.com",
+                "http://www.example.com"
+            )
+            val insecure = all.filter { url -> allowedPrefixes.none { url.startsWith(it) } }
+            assertTrue(insecure.isEmpty(), "Use HTTPS for external links where possible: $insecure")
+        }
+
+        @Test
+        fun `README has a License section when LICENSE file exists`() {
+            val lic = Path.of("LICENSE")
+            if (Files.exists(lic)) {
+                val hasLicenseSection = lines.any {
+                    it.trim().matches(Regex("^##\\s*(?:[\\p{So}\\p{Sk}]\\s*)?Licen[cs]e(s)?\\s*$", RegexOption.IGNORE_CASE))
+                }
+                assertTrue(hasLicenseSection, "Expected a '## License' section in README when LICENSE file exists")
+            }
+        }
+    }
+
     private lateinit var readmePath: Path
     private lateinit var readme: String
     private lateinit var lines: List<String>

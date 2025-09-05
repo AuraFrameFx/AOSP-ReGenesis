@@ -190,4 +190,152 @@ class MarkdownFileValidationAdvancedSupplementalTest {
             }
         }
     }
+    // ---------------------------------------------------------------------
+    // Additional supplemental tests (Testing stack: Kotlin + JUnit 5 Jupiter)
+    // ---------------------------------------------------------------------
+
+    @Nested
+    @DisplayName("Table of Contents – advanced")
+    inner class TableOfContentsAdvanced {
+
+        private fun normalizeToSlug(text: String): String {
+            val header = text
+                .replace(Regex("^\\s*#+\\s*"), "")
+                .trim()
+            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            val cleaned = noEmoji
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9\\s-]"), "")
+                .replace(Regex("\\s+"), "-")
+                .replace(Regex("-+"), "-")
+                .trim('-')
+            return cleaned
+        }
+
+        private fun extractTocEntries(): List<Pair<String, String>> {
+            val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
+            if (tocStart < 0) return emptyList()
+            val tocBody = lines.drop(tocStart + 1).takeWhile { it.isNotBlank() }
+            return tocBody.mapNotNull { line ->
+                Regex("- \\[(.+?)\\]\\(#(.*?)\\)").find(line.trim())?.let {
+                    it.groupValues[1] to it.groupValues[2]
+                }
+            }.filter { it.second.isNotBlank() }
+        }
+
+        @Test
+        fun `toc anchors are derived from entry labels`() {
+            val entries = extractTocEntries()
+            if (entries.isEmpty()) return
+            val mismatched = entries.filter { (label, anchor) ->
+                normalizeToSlug("## $label") != anchor.trim('-')
+            }.map { (_, anchor) -> anchor }
+            assertTrue(mismatched.isEmpty(), "ToC anchors not normalized from labels: $mismatched")
+        }
+
+        @Test
+        fun `toc anchors are unique and follow header order`() {
+            val entries = extractTocEntries()
+            if (entries.isEmpty()) return
+
+            val anchors = entries.map { it.second.trim('-') }
+            val duplicates = anchors.groupingBy { it }.eachCount().filter { it.value > 1 }.keys.toList()
+            assertTrue(duplicates.isEmpty(), "Duplicate ToC anchors: $duplicates")
+
+            val headerOrder = lines
+                .filter { it.trim().matches(Regex("^##\\s+.*$")) }
+                .map { normalizeToSlug(it) }
+
+            val notFound = anchors.filterNot { it in headerOrder }
+            if (notFound.isEmpty() && anchors.isNotEmpty()) {
+                val indices = anchors.map { headerOrder.indexOf(it) }
+                val outOfOrder = indices.zipWithNext()
+                    .withIndex()
+                    .filter { it.value.second < it.value.first }
+                    .map { anchors[it.index + 1] }
+                assertTrue(outOfOrder.isEmpty(), "ToC order differs from header order: $outOfOrder")
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("Images and links – advanced")
+    inner class ImagesAndLinksAdvanced {
+
+        @Test
+        fun `images have non-empty alt text`() {
+            val images = Regex("!\\[(.*?)\\]\\(([^)]+)\\)").findAll(readme).toList()
+            if (images.isEmpty()) return
+            val empties = images.map { it.groupValues[1].trim() }
+                .withIndex()
+                .filter { it.value.isEmpty() }
+                .map { it.index }
+            assertTrue(empties.isEmpty(), "Images with empty alt text at indices: $empties")
+        }
+
+        @Test
+        fun `internal markdown link text is not empty`() {
+            val links = Regex("\\[([^\\]]*)\\]\\(([^)]+)\\)").findAll(readme).toList()
+            if (links.isEmpty()) return
+            val emptyText = links.withIndex()
+                .filter { it.value.groupValues[1].trim().isEmpty() }
+                .map { it.index }
+            assertTrue(emptyText.isEmpty(), "Found markdown links with empty visible text at indices: $emptyText")
+        }
+    }
+
+    @Nested
+    @DisplayName("Code fences – advanced")
+    inner class CodeFencesAdvanced {
+
+        @Test
+        fun `at least one fenced block declares language when fences present`() {
+            var inFence = false
+            var withLang = 0
+            var blocks = 0
+            for (raw in lines) {
+                val t = raw.trim()
+                if (t.startsWith("```")) {
+                    if (!inFence) {
+                        blocks++
+                        val lang = t.removePrefix("```").trim()
+                        if (lang.isNotEmpty()) withLang++
+                        inFence = true
+                    } else {
+                        inFence = false
+                    }
+                }
+            }
+            if (blocks == 0) return
+            assertTrue(withLang >= 1, "No fenced code blocks declare a language for syntax highlighting")
+        }
+    }
+
+    @Nested
+    @DisplayName("Build tooling and licensing – advanced")
+    inner class BuildAndLicenseAdvanced {
+
+        @Test
+        fun `mit license badge matches LICENSE content`() {
+            val badgeRegex = Regex("img\\.shields\\.io/.+License-.*MIT", RegexOption.IGNORE_CASE)
+            if (!badgeRegex.containsMatchIn(readme)) return
+            val licensePath = Path.of("LICENSE")
+            assertTrue(Files.exists(licensePath), "LICENSE file missing despite MIT badge")
+            val license = Files.readString(licensePath, StandardCharsets.UTF_8)
+            val hasMit = license.contains("MIT License", ignoreCase = true) ||
+                         license.contains("Permission is hereby granted", ignoreCase = true)
+            assertTrue(hasMit, "LICENSE should include MIT license keywords")
+        }
+
+        @Test
+        fun `gpl license badge matches LICENSE content`() {
+            val badgeRegex = Regex("img\\.shields\\.io/.+License-(GPL-3\\.0|GPLv3)", RegexOption.IGNORE_CASE)
+            if (!badgeRegex.containsMatchIn(readme)) return
+            val licensePath = Path.of("LICENSE")
+            assertTrue(Files.exists(licensePath), "LICENSE file missing despite GPL badge")
+            val license = Files.readString(licensePath, StandardCharsets.UTF_8)
+            assertTrue(license.contains("GNU GENERAL PUBLIC LICENSE", ignoreCase = true),
+                "LICENSE should include GPL preamble")
+        }
+    }
 }

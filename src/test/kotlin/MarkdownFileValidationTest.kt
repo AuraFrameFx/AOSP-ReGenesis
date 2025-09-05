@@ -431,4 +431,115 @@ class MarkdownFileValidationTest {
     }
 
     // End of additional tests. Testing framework: JUnit 5 (Jupiter) with Kotlin.
+
+    // --- Additional unit tests appended by CodeRabbit Inc. ---
+    /*
+      Testing framework: Kotlin + JUnit 5 (Jupiter).
+      These tests broaden coverage for README.md structure and links,
+      with a bias for action per PR review request.
+    */
+
+    @Nested
+    @DisplayName("Additional README sanity checks")
+    inner class ReadmeSanity {
+
+        @Test
+        fun `backtick fences are balanced`() {
+            val fenceCount = Regex("^```", RegexOption.MULTILINE).findAll(readme).count()
+            assertEquals(0, fenceCount % 2, "Unbalanced triple backtick fences in README (``` count must be even)")
+        }
+
+        @Test
+        fun `no tab characters in README`() {
+            assertFalse(readme.contains('\t'), "Tabs found in README; please use spaces")
+        }
+
+        @Test
+        fun `module overview section exists`() {
+            val present = lines.any { it.trim().matches(Regex("^###\\s*Module Overview\\s*$")) }
+            assertTrue(present, "Expected '### Module Overview' section to be present")
+        }
+    }
+
+    @Nested
+    @DisplayName("Headings and structure - extra")
+    inner class HeadingsAndStructureExtra {
+
+        @Test
+        fun `exactly one top-level H1`() {
+            val h1Count = lines.count { it.startsWith("# ") }
+            assertEquals(1, h1Count, "Exactly one top-level H1 heading is expected")
+        }
+    }
+
+    @Nested
+    @DisplayName("CI workflows")
+    inner class ContinuousIntegration {
+
+        @Test
+        fun `workflow YAML exists when README references GitHub Actions workflows`() {
+            val mentionsWorkflows = readme.contains("workflows/", ignoreCase = true) ||
+                    (readme.contains("github.com", ignoreCase = true) && readme.contains("actions", ignoreCase = true))
+            if (!mentionsWorkflows) return
+
+            val candidates = listOf(
+                ".github/workflows/build.yml",
+                ".github/workflows/build.yaml",
+                ".github/workflows/ci.yml",
+                ".github/workflows/ci.yaml"
+            )
+            val exists = candidates.any { Files.exists(Path.of(it)) }
+            assertTrue(exists, "README references GitHub Actions workflows but no standard workflow YAML found: $candidates")
+        }
+    }
+
+    @Nested
+    @DisplayName("Security anchors")
+    inner class SecurityAnchors {
+
+        @Test
+        fun `security section is included in ToC when present`() {
+            val hasSecurityHeader = lines.any { it.trim().matches(Regex("^##\\s*Security\\b", RegexOption.IGNORE_CASE)) }
+            if (!hasSecurityHeader) return
+
+            val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
+            if (tocStart < 0) return
+
+            val tocBody = lines.drop(tocStart + 1).takeWhile { it.isNotBlank() }
+            val inToc = tocBody.any { it.contains("(#security", ignoreCase = true) }
+            assertTrue(inToc, "Security section exists but is missing from the Table of Contents")
+        }
+    }
+
+    @Nested
+    @DisplayName("Badges formatting")
+    inner class BadgesFormatting {
+        @Test
+        fun `badge images use https scheme`() {
+            val badgeLinks = Regex("!\\[[^\\]]*]\\((https?://[^)]+badge[^)]*)\\)")
+                .findAll(readme)
+                .map { it.groupValues[1] }
+                .toList()
+            val nonHttps = badgeLinks.filterNot { it.startsWith("https://") }
+            assertTrue(nonHttps.isEmpty(), "Badge image links should use https: $nonHttps")
+        }
+    }
+
+    @Nested
+    @DisplayName("Relative link hygiene")
+    inner class RelativeLinkHygiene {
+        @Test
+        fun `relative links do not traverse above repo root`() {
+            val linkRegex = Regex("(?<!!)\\[[^\\]]+]\\(((?![a-z]+://|#)[^)]+)\\)", RegexOption.IGNORE_CASE)
+            val links = linkRegex.findAll(readme)
+                .map { it.groupValues[1] }
+                .map { it.substringBefore('#').trim() }
+                .toList()
+            val bad = links.filter { it.startsWith("../") || it.contains("/../") }
+            assertTrue(bad.isEmpty(), "Relative links should not traverse above repository root: $bad")
+        }
+    }
+
+    // End of appended tests (JUnit 5 + Kotlin).
+
 }

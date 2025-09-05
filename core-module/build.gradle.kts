@@ -46,6 +46,13 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
             "serializationLibrary" to "kotlinx_serialization"
         )
     )
+    // Skip if no spec present to avoid failing configuration on clean repos
+    onlyIf { file("api-spec/aura-framefx-api.yaml").exists() }
+}
+
+// Ensure codegen runs before compilation when the spec exists
+tasks.matching { it.name == "preBuild" }.configureEach {
+    dependsOn("openApiGenerate")
 }
 
 // Dependencies block

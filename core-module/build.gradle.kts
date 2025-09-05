@@ -1,11 +1,11 @@
 // Apply plugins with explicit versions
 plugins {
-    id("com.android.library") version "9.0.0-alpha02"
-    id("org.jetbrains.kotlin.android") version "2.2.10"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.10"
-    id("com.google.dagger.hilt.android") version "2.51.1"
-    id("com.google.devtools.ksp") version "2.2.10-2.2.10"
-    id("org.openapi.generator") version "7.15.0"
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.openapi.generator)
     // YukiHook plugin
 }
 
@@ -33,18 +33,20 @@ android {
     }
     
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
     }
     
     // Kotlin compiler options with modern DSL
     kotlin {
         jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(21))
+            languageVersion.set(JavaLanguageVersion.of(24))
         }
         
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
             freeCompilerArgs.addAll(
                 "-Xcontext-receivers"
             )

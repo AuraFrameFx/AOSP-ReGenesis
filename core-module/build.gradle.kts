@@ -1,10 +1,10 @@
 // Apply plugins with explicit versions
 plugins {
     id("com.android.library") version "9.0.0-alpha02"
-    id("org.jetbrains.kotlin.android") version "2.2.20-RC"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20-RC"
+    id("org.jetbrains.kotlin.android") version "2.2.10"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.10"
     id("com.google.dagger.hilt.android") version "2.57.1"
-    id("com.google.devtools.ksp") version "2.2.20-RC-2.0.2"
+    id("com.google.devtools.ksp") version "2.2.10-2.2.10"
     id("org.openapi.generator") version "7.15.0"
     // YukiHook plugin
 }
@@ -97,7 +97,7 @@ dependencies {
     compileOnly(files("${project.rootDir}/Libs/api-82-sources.jar"))
     
     // YukiHook API
-    implementation(libs.com.highcapable.yukihookapi.api)
+    api(libs.com.highcapable.yukihookapi.api)
     ksp(libs.com.highcapable.yukihookapi.ksp)
     
     // Logging

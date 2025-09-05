@@ -3,7 +3,9 @@
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.services)
     // Quality plugins
@@ -59,9 +61,25 @@ plugins {
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_21
-            targetCompatibility = JavaVersion.VERSION_21
+            sourceCompatibility = JavaVersion.VERSION_24
+            targetCompatibility = JavaVersion.VERSION_24
             isCoreLibraryDesugaringEnabled = true
+        }
+
+        // Java toolchain configuration
+        java {
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(24))
+            }
+        }
+
+        // Modern Kotlin compiler configuration (Kotlin 2.2+)
+        kotlin {
+            compilerOptions {
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+                languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+                apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            }
         }
 
         packaging {

@@ -20,6 +20,11 @@ android {
         minSdk = 34
     }
     
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
+    }
+    
     buildFeatures {
         compose = true
         buildConfig = true
@@ -30,7 +35,9 @@ android {
         jvmToolchain(24)
 
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
             freeCompilerArgs.addAll(
                 "-Xcontext-receivers",
                 "-opt-in=kotlin.RequiresOptIn"

@@ -29,14 +29,14 @@ android {
     }
 
     // Add generated sources to the build configuration
-    sourceSets["main"].java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
+    sourceSets["main"].java.srcDir("$buildDir/generated/openapi/src/main/kotlin")
 }
 
 // OpenAPI Generator configuration
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerate") {
     generatorName.set("kotlin")
     inputSpec.set("$projectDir/api-spec/aura-framefx-api.yaml")
-    outputDir.set(layout.buildDirectory.dir("generated/openapi").asFile.absolutePath)
+    outputDir.set("$buildDir/generated/openapi")
     apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
     modelPackage.set("dev.aurakai.auraframefx.api.client.models")
     invokerPackage.set("dev.aurakai.auraframefx.api.client.infrastructure")
@@ -104,13 +104,13 @@ tasks.register("coreModuleStatus") {
     doLast {
         println("🏗️  CORE MODULE STATUS")
         println("=".repeat(40))
-        println("🔧 Namespace: ${project.namespace}") // Use project.namespace for modern Gradle
-        println("📱 SDK: ${project.android.compileSdk}") // Use project.android.compileSdk
+        // Use the Android extension accessor for safe access
+        println("🔧 Namespace: ${android.namespace}")
+        println("📱 SDK: ${android.compileSdk}")
         println("🎨 Compose: ❌ Removed")
         println(
             "🔗 API Generation: ${
-                if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()
-                ) "✅ Enabled" else "❌ No spec"
+                if (file("api-spec/aura-framefx-api.yaml").exists()) "✅ Enabled" else "❌ No spec"
             }"
         )
         println("✨ Status: Core Foundation Ready with Convention Plugins!")

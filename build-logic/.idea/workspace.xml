@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b4ab612a-e72c-4ecc-b320-22bdb3914231" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../.github/Agent" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../API.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../CHANGELOG.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DEVELOPMENT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../JAVA_VERSION_POLICY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../collab-canvas/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../oracle-drive-integration/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../secure-comm/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../benchmark/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../benchmark/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/buildlogic.android-application-conventions.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/buildlogic.android-application-conventions.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/buildlogic.android-library-conventions.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/buildlogic.android-library-conventions.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/buildlogic.kotlin-common-conventions.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/buildlogic.kotlin-common-conventions.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/yukihook-conventions.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/yukihook-conventions.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../buildSrc/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../buildSrc/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../collab-canvas/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../collab-canvas/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core-module/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../core-module/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../feature-module/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../feature-module/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gradle/gradle-daemon-jvm.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../gradle/gradle-daemon-jvm.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/../gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../list/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../list/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../module-a/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../module-a/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../module-c/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../module-c/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../module-d/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../module-d/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../module-e/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../module-e/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../module-f/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../module-f/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../oracle-drive-integration/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../oracle-drive-integration/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../romtools/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../romtools/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sandbox-ui/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../sandbox-ui/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screenshot-tests/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../screenshot-tests/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scripts/apply-yukihook-conventions.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../scripts/apply-yukihook-conventions.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../settings.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../utilities/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../utilities/build.gradle.kts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6
+}]]></component>
+  <component name="ProjectId" id="32FskN4WLGwbMmmRRUk1QNLMOKo" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "android.gradle.sync.needed": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "Merging main"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b4ab612a-e72c-4ecc-b320-22bdb3914231" name="Changes" comment="" />
+      <created>1757027797377</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1757027797377</updated>
+    </task>
+    <servers />
+  </component>
+</project>

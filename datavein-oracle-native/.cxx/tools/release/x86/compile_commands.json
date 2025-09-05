@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/AOSP-ReGenesis/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86",
+  "command": "C:\\Users\\Wehtt\\AppData\\Local\\Android\\Sdk\\ndk\\28.2.13676358\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --sysroot=C:/Users/Wehtt/AppData/Local/Android/Sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Ddatavein_oracle_native_EXPORTS -IC:/AOSP-ReGenesis/datavein-oracle-native/src/main/cpp -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O2 -g -DNDEBUG -std=gnu++23 -fPIC -o CMakeFiles\\datavein_oracle_native.dir\\oracle_drive_jni.cpp.o -c C:\\AOSP-ReGenesis\\datavein-oracle-native\\src\\main\\cpp\\oracle_drive_jni.cpp",
+  "file": "C:\\AOSP-ReGenesis\\datavein-oracle-native\\src\\main\\cpp\\oracle_drive_jni.cpp",
+  "output": "CMakeFiles\\datavein_oracle_native.dir\\oracle_drive_jni.cpp.o"
+}
+]

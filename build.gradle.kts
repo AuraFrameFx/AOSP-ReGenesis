@@ -3,7 +3,16 @@
 // Plugins are managed through:
 // 1. settings.gradle.kts (pluginManagement)
 // 2. buildSrc (for convention plugins)
-// 3. Individual module build.gradle.kts files
+plugins {
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.openapi.generator)
+}
+
 
 // Project information
 extra["projectName"] = "MemoriaOS"
@@ -12,34 +21,26 @@ extra["projectVersion"] = "1.0.0"
 
 // Custom tasks for project management
 tasks.register("projectInfo") {
-    group = "help"
-    description = "Display project information"
+group = "help"
+description = "Display project information"
 
-    doLast {
-        val projectName: String by project.extra
-        val projectVersion: String by project.extra
+doLast {
+val projectName: String by project.extra
+val projectVersion: String by project.extra
 
-        println("\n🛠️  $projectName v$projectVersion")
-        println("==================================================")
-        println("🏗️  Build System: Gradle ${gradle.gradleVersion}")
-        println("🔧 Kotlin: ${libs.versions.kotlin.get()}")
-        println("🤖 AGP: ${libs.versions.agp.get()}")
-        println("\n📦 Modules (${subprojects.size}):")
-        subprojects.forEach { println("  • ${it.name}") }
-        println("\n🚀 Available Tasks: gradle tasks --group=build")
-        println("==================================================")
-    }
+println("\n🛠️  $projectName v$projectVersion")
+println("==================================================")
+println("🏗️  Build System: Gradle ${gradle.gradleVersion}")
+println("🔧 Kotlin: ${libs.versions.kotlin.get()}")
+println("🤖 AGP: ${libs.versions.agp.get()}")
+println("\n📦 Modules (${subprojects.size}):")
+subprojects.forEach { println("  • ${it.name}") }
+println("\n🚀 Available Tasks: gradle tasks --group=build")
+println("==================================================")
 }
-
-tasks.register<Delete>("clean") {
-    group = "build"
-    description = "Delete root build directory"
-    delete(rootProject.layout.buildDirectory)
-
-    doLast {
-        println("🧹 Cleaned root build directory")
-    }
 }
 
 // Apply dependency resolution fix
 apply(from = "dependency-fix.gradle.kts")
+
+

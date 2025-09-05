@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SCOPE_TYPE" value="8" />
+    <option name="CUSTOM_SCOPE_NAME" value="All Places" />
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d221b707-190c-44e0-ab34-6ba5bf7098d9" name="Changes" comment="Update build.gradle.kts for benchmark support and plugin management">
+      <change beforePath="$PROJECT_DIR$/.github/Agent" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/dependabot.ym.backup" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/dependabot.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/TEST2.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/ci-build.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/consciousness-monitoring.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/genesis-ci.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/main.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/performance-monitoring.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/API.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DEVELOPMENT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/JAVA_VERSION_POLICY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/API.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Architecture.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/CHANGELOG.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/DEVELOPMENT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/JAVA_VERSION_POLICY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/compose_compiler_config.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gradle.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/nuclear-clean.gradle.kts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/settings.gradle.kts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clear-cache.gradle.kts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compose_compiler_config.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nuclear-clean.gradle.kts" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;AuraFrameFxDev&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/AuraFrameFx/AOSP-ReGenesis.git&quot;,
+    &quot;accountId&quot;: &quot;27338b37-a111-4457-a936-a57dfecc9a16&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="32GhlVebnx7Op46h2zytIV0274t" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Batch.nuclear-clean-fix-all.executor": "Run",
+    "Gradle.AOSP-ReGenesis [:build-logic:tasks].executor": "Run",
+    "Gradle.AOSP-ReGenesis [:build-logic:updateDaemonJvm].executor": "Run",
+    "Gradle.C:/AOSP-ReGenesis-main [build].executor": "Run",
+    "Gradle.C:/New folder (2) [build].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "android.gradle.sync.needed": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "BETA",
+    "last_opened_file_path": "C:/New folder (2)",
+    "project.structure.last.edited": "Suggestions",
+    "project.structure.proportion": "0.17",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "aDefault"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\New folder (2)" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\AOSP-ReGenesis" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="gradle build" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Gradle.C:/New folder (2) [build]">
+    <configuration name="nuclear-clean-fix-all" type="BatchConfigurationType" factoryName="Batch" temporary="true">
+      <module name="MemoriaOs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SCRIPT_NAME" value="nuclear-clean-fix-all.bat" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AOSP-ReGenesis [:build-logic:updateDaemonJvm]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":build-logic:updateDaemonJvm" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <EXTENSION ID="com.android.tools.idea.testartifacts.testsuite.GradleRunConfigurationExtension">
+        <com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>false</com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>
+        <android.execution.deploysToLocalDevice>false</android.execution.deploysToLocalDevice>
+      </EXTENSION>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="C:/AOSP-ReGenesis-main [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <EXTENSION ID="com.android.tools.idea.testartifacts.testsuite.GradleRunConfigurationExtension">
+        <com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>false</com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>
+        <android.execution.deploysToLocalDevice>false</android.execution.deploysToLocalDevice>
+      </EXTENSION>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="C:/New folder (2) [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <EXTENSION ID="com.android.tools.idea.testartifacts.testsuite.GradleRunConfigurationExtension">
+        <com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>false</com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>
+        <android.execution.deploysToLocalDevice>false</android.execution.deploysToLocalDevice>
+      </EXTENSION>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.C:/New folder (2) [build]" />
+        <item itemvalue="Batch.nuclear-clean-fix-all" />
+        <item itemvalue="Gradle.AOSP-ReGenesis [:build-logic:updateDaemonJvm]" />
+        <item itemvalue="Gradle.C:/AOSP-ReGenesis-main [build]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d221b707-190c-44e0-ab34-6ba5bf7098d9" name="Changes" comment="" />
+      <created>1757052967587</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1757052967587</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Update build.gradle.kts for benchmark support and plugin management">
+      <option name="closed" value="true" />
+      <created>1757096116177</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1757096116177</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Update build.gradle.kts for benchmark support and plugin management">
+      <option name="closed" value="true" />
+      <created>1757096213825</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1757096213825</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Update build.gradle.kts for benchmark support and plugin management" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update build.gradle.kts for benchmark support and plugin management" />
+  </component>
+</project>

@@ -192,8 +192,12 @@ class MarkdownFileValidationAdvancedTest {
 
         @Test
         fun `has Overview and Getting Started sections`() {
-            val hasOverview = lines.any { it.trim().matches(Regex("^##\\s*Overview\\s*$", RegexOption.IGNORE_CASE)) }
-            val hasGettingStarted = lines.any { it.trim().matches(Regex("^##\\s*(Getting\\s+Started|Quickstart)\\s*$", RegexOption.IGNORE_CASE)) }
+            val hasOverview = lines.any {
+                it.trim().matches(Regex("^##\\s*(?:[\\p{So}\\p{Sk}]\\s*)?Overview\\s*$", RegexOption.IGNORE_CASE))
+            }
+            val hasGettingStarted = lines.any {
+                it.trim().matches(Regex("^##\\s*(?:[\\p{So}\\p{Sk}]\\s*)?(Getting\\s+Started|Quickstart)\\s*$", RegexOption.IGNORE_CASE))
+            }
             assertAll(
                 { assertTrue(hasOverview, "Expected an '## Overview' section") },
                 { assertTrue(hasGettingStarted, "Expected a '## Getting Started' or '## Quickstart' section") }

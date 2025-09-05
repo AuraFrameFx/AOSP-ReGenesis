@@ -1,14 +1,14 @@
 // ===== GENESIS PROTOCOL - ROOT BUILD =====
 // Multi-module project root - using build-logic for convention plugins
 plugins {
-    // Base plugins (applied to all projects)
-    alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.jetbrains.kotlin.android) apply false
-    alias(libs.plugins.kotlin.compose) apply false
-    alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.hilt) apply false
-    alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.openapi.generator) apply false
+    // Base plugins (applied to all projects) - versions managed in settings.gradle.kts
+    id("com.android.application") apply false
+    id("com.android.library") apply false
+    id("org.jetbrains.kotlin.android") apply false
+    id("org.jetbrains.kotlin.plugin.compose") apply false
+    id("org.jetbrains.kotlin.plugin.serialization") apply false
+    id("com.google.dagger.hilt.android") apply false
+    id("com.google.devtools.ksp") apply false
     
     // Apply memoria conventions to all subprojects
     id("memoria.conventions") apply false

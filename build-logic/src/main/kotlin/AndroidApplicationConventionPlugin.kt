@@ -87,13 +87,13 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<JavaPluginExtension>("java") {
-                sourceCompatibility = JavaVersion.VERSION_24
-                targetCompatibility = JavaVersion.VERSION_24
+                sourceCompatibility = JavaVersion.VERSION_21
+                targetCompatibility = JavaVersion.VERSION_21
             }
 
             // Kotlin JVM toolchain
             extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension> {
-                jvmToolchain(24)
+                jvmToolchain(21)
             }
 
             // Clean tasks for app module

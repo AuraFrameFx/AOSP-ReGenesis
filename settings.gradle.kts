@@ -53,8 +53,18 @@ pluginManagement {
     }
 
     plugins {
-        // Only keep plugins that need to be in pluginManagement
-        // Remove android and kotlin plugins that cause conflicts with version catalog
+        // Android plugins
+        id("com.android.application") version "8.2.2"
+        id("com.android.library") version "8.2.2"
+        
+        // Kotlin plugins
+        id("org.jetbrains.kotlin.android") version "2.2.20-RC2"
+        id("org.jetbrains.kotlin.plugin.compose") version "2.2.20-RC2"
+        id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20-RC2"
+        
+        // Other plugins
+        id("com.google.dagger.hilt.android") version "2.57.1"
+        id("com.google.devtools.ksp") version "2.2.20-RC2-2.0.2"
         id("com.highcapable.yukihook") version "1.3.9"
         id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
     }

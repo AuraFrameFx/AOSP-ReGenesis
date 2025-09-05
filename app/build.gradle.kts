@@ -1,6 +1,3 @@
-// ==== GENESIS PROTOCOL - MAIN APPLICATION ====
-// This build script uses the modern plugins DSL and relies on the version catalog.
-
 plugins {
     // Use the standard Android application plugin
     id("com.android.application")

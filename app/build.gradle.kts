@@ -198,8 +198,14 @@ dependencies {
     testImplementation(libs.bundles.testing)
     testImplementation(libs.hilt.android.testing)
 
+    // AndroidX Test - JUnit4 support
     androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    
+    // Compose testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
+
+    // Hilt testing
     androidTestImplementation(libs.hilt.android.testing)
 
     // --- DEBUGGING ---

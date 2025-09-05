@@ -32,7 +32,16 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Table of Contents – edge cases")
     inner class TableOfContentsEdgeCases {
 
-        // Local copy to keep tests pure and avoid changing production code
+        /**
+         * Convert arbitrary header text into a GitHub-style kebab-case anchor slug.
+         *
+         * Produces a lowercase, dash-separated slug suitable for matching Markdown header anchors.
+         * Steps applied: strip leading Markdown header markers (`#`), remove emoji and symbol characters,
+         * lowercase, remove all characters except ASCII letters, digits, spaces and dashes, collapse
+         * consecutive whitespace into single dashes, collapse multiple dashes, and trim leading/trailing dashes.
+         *
+         * The result may be an empty string if no ASCII alphanumeric characters remain.
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -67,6 +76,16 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Internal anchors validity")
     inner class InternalAnchors {
 
+        /**
+         * Convert arbitrary header text into a GitHub-style kebab-case anchor slug.
+         *
+         * Produces a lowercase, dash-separated slug suitable for matching Markdown header anchors.
+         * Steps applied: strip leading Markdown header markers (`#`), remove emoji and symbol characters,
+         * lowercase, remove all characters except ASCII letters, digits, spaces and dashes, collapse
+         * consecutive whitespace into single dashes, collapse multiple dashes, and trim leading/trailing dashes.
+         *
+         * The result may be an empty string if no ASCII alphanumeric characters remain.
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -81,6 +100,14 @@ class MarkdownFileValidationAdvancedTest {
             return cleaned
         }
 
+        /**
+         * Extracts unique normalized slugs for all Markdown headers in `lines`.
+         *
+         * Scans `lines` for Markdown header lines (1–6 leading `#` followed by at least one space),
+         * normalizes each header text with `normalizeToSlug`, and returns the resulting set of unique slugs.
+         *
+         * @return a set of normalized header slugs present in `lines`.
+         */
         private fun headerSlugs(): Set<String> {
             return lines
                 .filter { it.trim().matches(Regex("^#{1,6}\\s+.*$")) }
@@ -103,6 +130,12 @@ class MarkdownFileValidationAdvancedTest {
     @Nested
     @DisplayName("Code fences integrity")
     inner class FenceIntegrity {
+        /**
+         * Verifies all Markdown code fences in the README are balanced.
+         *
+         * Counts lines that start with "```" (after trimming) and asserts the total is even,
+         * indicating every opening fence has a matching closing fence.
+         */
         @Test
         fun `all code fences are properly closed`() {
             val fenceCount = lines.count { it.trim().startsWith("```") }
@@ -129,6 +162,13 @@ class MarkdownFileValidationAdvancedTest {
             assertTrue(offenders.isEmpty(), "Trailing whitespace at lines: $offenders")
         }
 
+        /**
+         * Ensures external links in the README use HTTPS when possible.
+         *
+         * Removes fenced code blocks, then scans inline links for `http://` URLs and fails the test
+         * if any such URL is found that is not on the allowlist of local/dev/example prefixes
+         * (e.g. localhost, 127.0.0.1, example.com).
+         */
         @Test
         fun `prefer HTTPS for external links`() {
             val withoutFences = readme.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")
@@ -162,6 +202,14 @@ class MarkdownFileValidationAdvancedTest {
     private lateinit var readme: String
     private lateinit var lines: List<String>
 
+    /**
+     * Locates and loads the project's README into test fixtures before all tests run.
+     *
+     * Searches a fixed list of candidate paths (README.md, Readme.md, readme.md, docs/README.md),
+     * selects the first existing file, reads its UTF-8 content into `readme`, splits it into
+     * `lines`, and sets `readmePath`. Fails early with an error if no README is found and asserts
+     * the README content is not blank.
+     */
     @BeforeAll
     fun loadReadme() {
         val candidates = listOf(
@@ -181,6 +229,16 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Table of Contents – advanced checks")
     inner class TableOfContentsAdvanced {
 
+        /**
+         * Convert arbitrary header text into a GitHub-style kebab-case anchor slug.
+         *
+         * Produces a lowercase, dash-separated slug suitable for matching Markdown header anchors.
+         * Steps applied: strip leading Markdown header markers (`#`), remove emoji and symbol characters,
+         * lowercase, remove all characters except ASCII letters, digits, spaces and dashes, collapse
+         * consecutive whitespace into single dashes, collapse multiple dashes, and trim leading/trailing dashes.
+         *
+         * The result may be an empty string if no ASCII alphanumeric characters remain.
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -195,6 +253,14 @@ class MarkdownFileValidationAdvancedTest {
             return cleaned
         }
 
+        /**
+         * Extracts anchor IDs from the "## 📋 Table of Contents" section of the README.
+         *
+         * Finds the ToC header line "## 📋 Table of Contents", reads subsequent non-blank lines until the first blank line,
+         * and returns the anchor IDs referenced by Markdown list links of the form `- [Text](#anchor)`.
+         *
+         * @return A list of anchor identifiers (the part after `#`) in the order they appear in the ToC. Empty strings and malformed entries are omitted.
+         */
         private fun extractTocAnchors(): List<String> {
             val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
             assertTrue(tocStart >= 0, "Table of Contents section not found")
@@ -323,6 +389,13 @@ class MarkdownFileValidationAdvancedTest {
             }
         }
 
+        /**
+         * Verifies the README contains top-level "Overview" and "Getting Started" (or "Quickstart") sections.
+         *
+         * Checks for H2 headings (`##`) that match "Overview" and either "Getting Started" or "Quickstart",
+         * matching case-insensitively and allowing an optional leading symbol/emoji before the title.
+         * Fails the test if either section is missing.
+         */
         @Test
         fun `has Overview and Getting Started sections`() {
             val hasOverview = lines.any {
@@ -346,7 +419,16 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Slug normalization – additional cases")
     inner class SlugNormalizationAdditionalCases {
 
-        // Local copy to keep tests pure and avoid changing production code
+        /**
+         * Convert arbitrary header text into a GitHub-style kebab-case anchor slug.
+         *
+         * Produces a lowercase, dash-separated slug suitable for matching Markdown header anchors.
+         * Steps applied: strip leading Markdown header markers (`#`), remove emoji and symbol characters,
+         * lowercase, remove all characters except ASCII letters, digits, spaces and dashes, collapse
+         * consecutive whitespace into single dashes, collapse multiple dashes, and trim leading/trailing dashes.
+         *
+         * The result may be an empty string if no ASCII alphanumeric characters remain.
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -450,6 +532,13 @@ class MarkdownFileValidationAdvancedTest {
             }
         }
 
+        /**
+         * Verifies that if the README displays an Apache 2.0 license badge, the repository's LICENSE file exists
+         * and references Apache 2.0.
+         *
+         * Runs only when the README contains the Apache-2.0 shields.io badge. Asserts that a LICENSE file is present
+         * and that its contents mention Apache License / Apache 2 (case-insensitive) to match the badge.
+         */
         @Test
         fun `apache 2 license badge matches LICENSE content`() {
             if (readme.contains("img.shields.io/badge/License-Apache-2.0")) {

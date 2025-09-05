@@ -475,4 +475,169 @@ class MarkdownFileValidationAdvancedTest {
             }
         }
     }
+    // -------------------------------------------------------------------------
+    // Additional unit tests appended by PR helper
+    // Testing library/framework: Kotlin + JUnit 5 (Jupiter)
+    // -------------------------------------------------------------------------
+
+    @Nested
+    @DisplayName("Headers and anchors – extended")
+    inner class HeadersAndAnchorsExtended {
+
+        // Local copy to keep tests pure and avoid changing production code
+        private fun normalizeToSlug(text: String): String {
+            val header = text
+                .replace(Regex("^\\s*#+\\s*"), "")
+                .trim()
+            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            val cleaned = noEmoji
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9\\s-]"), "")
+                .replace(Regex("\\s+"), "-")
+                .replace(Regex("-+"), "-")
+                .trim('-')
+            return cleaned
+        }
+
+        @Test
+        fun `h2 section slugs are unique`() {
+            val h2 = lines.filter { it.trim().matches(Regex("^##\\s+.*$")) }
+            if (h2.isEmpty()) return
+            val slugs = h2.map { normalizeToSlug(it) }
+            val dupes = slugs.groupingBy { it }.eachCount().filter { it.value > 1 }
+            assertTrue(dupes.isEmpty(), "Duplicate '##' section slugs detected: ${dupes.keys}")
+        }
+
+        @Test
+        fun `reference-style link definitions have unique keys`() {
+            val defRegex = Regex("^\\s*\\[([^\\]]+)\\]:\\s+\\S+", RegexOption.MULTILINE)
+            val keys = defRegex.findAll(readme).map { it.groupValues[1].lowercase(Locale.ROOT) }.toList()
+            if (keys.isEmpty()) return
+            val dupes = keys.groupingBy { it }.eachCount().filter { it.value > 1 }
+            assertTrue(dupes.isEmpty(), "Duplicate reference-style link definitions: ${dupes.keys}")
+        }
+    }
+
+    @Nested
+    @DisplayName("Readme hygiene – merge conflicts and EOF")
+    inner class ReadmeHygiene {
+
+        @Test
+        fun `no unresolved merge conflict markers outside code fences`() {
+            val withoutFences = readme.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")
+            val tokens = listOf("<<<<<<<", ">>>>>>>", "=======")
+            val offenders = tokens.filter { withoutFences.contains(it) }
+            assertTrue(offenders.isEmpty(), "Found unresolved merge conflict markers: $offenders")
+        }
+
+        @Test
+        fun `readme ends with a newline`() {
+            val bytes = Files.readAllBytes(readmePath)
+            if (bytes.isEmpty()) return
+            assertEquals('\n'.code.toByte(), bytes.last(), "README should end with a newline (POSIX).")
+        }
+    }
+
+    @Nested
+    @DisplayName("Cross-file consistency – docs present when referenced")
+    inner class CrossFileConsistency {
+
+        @Test
+        fun `changelog file exists when README has changelog section`() {
+            val hasSection = lines.any {
+                it.trim().matches(
+                    Regex("^##\\s*(?:[\\p{So}\\p{Sk}]\\s*)?(Changelog|Change\\s*Log|Release\\s*Notes)\\s*$",
+                          RegexOption.IGNORE_CASE)
+                )
+            }
+            if (hasSection) {
+                val candidates = listOf(
+                    "CHANGELOG.md",
+                    "Changelog.md",
+                    "docs/CHANGELOG.md",
+                    "HISTORY.md",
+                    "RELEASE_NOTES.md",
+                    "docs/RELEASE_NOTES.md"
+                )
+                val exists = candidates.any { Files.exists(Path.of(it)) }
+                assertTrue(exists, "Changelog/Release Notes section present but no changelog file found in $candidates")
+            }
+        }
+
+        @Test
+        fun `security section present when SECURITY policy file exists`() {
+            val candidates = listOf("SECURITY.md", "Security.md", "docs/SECURITY.md")
+            val path = candidates.map { Path.of(it) }.firstOrNull { Files.exists(it) }
+            if (path != null) {
+                val hasSection = lines.any {
+                    it.trim().matches(
+                        Regex("^##\\s*(?:[\\p{So}\\p{Sk}]\\s*)?Security(\\s*Policy)?\\s*$", RegexOption.IGNORE_CASE)
+                    )
+                }
+                assertTrue(hasSection, "Expected a '## Security' or '## Security Policy' section in README when ${path.fileName} exists")
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("Licensing badges – extended")
+    inner class LicensingBadgesExtended {
+
+        private fun licenseText(): String? {
+            val licensePath = Path.of("LICENSE")
+            return if (Files.exists(licensePath)) Files.readString(licensePath, StandardCharsets.UTF_8) else null
+        }
+
+        @Test
+        fun `mpl-2 badge matches LICENSE content`() {
+            if (readme.contains("img.shields.io/badge/License-MPL_2.0") ||
+                readme.contains("img.shields.io/badge/License-MPL-2.0")) {
+                val text = licenseText()
+                assertTrue(text != null, "LICENSE file missing despite MPL 2.0 badge")
+                assertTrue(
+                    text!!.contains("Mozilla Public License", ignoreCase = true) ||
+                    text.contains("MPL 2.0", ignoreCase = true),
+                    "LICENSE should mention MPL 2.0 to align with badge"
+                )
+            }
+        }
+
+        @Test
+        fun `bsd-3-clause badge matches LICENSE content`() {
+            if (readme.contains("img.shields.io/badge/License-BSD_3--Clause") ||
+                readme.contains("img.shields.io/badge/License-BSD-3--Clause")) {
+                val text = licenseText()
+                assertTrue(text != null, "LICENSE file missing despite BSD 3-Clause badge")
+                val ok = text!!.contains("BSD 3", ignoreCase = true) ||
+                         text.contains("BSD-3", ignoreCase = true) ||
+                         text.contains("Redistribution", ignoreCase = true)
+                assertTrue(ok, "LICENSE should mention BSD 3-Clause to align with badge")
+            }
+        }
+
+        @Test
+        fun `gplv3 badge matches LICENSE content`() {
+            if (readme.contains("img.shields.io/badge/License-GPLv3")) {
+                val text = licenseText()
+                assertTrue(text != null, "LICENSE file missing despite GPLv3 badge")
+                val ok = text!!.contains("GNU GENERAL PUBLIC LICENSE", ignoreCase = true) &&
+                         text.contains("Version 3", ignoreCase = true)
+                assertTrue(ok, "LICENSE should mention GNU GPLv3 to align with badge")
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("Links safety – path traversal")
+    inner class LinksSafety {
+        @Test
+        fun `no parent directory traversals in local links for root README`() {
+            val atRoot = (readmePath.parent == null) || readmePath.parent.toString().isEmpty()
+            if (!atRoot) return
+            val linkRegex = Regex("\\[[^\\]]+\\]\\((?!https?://|#)([^)]+)\\)")
+            val targets = linkRegex.findAll(readme).map { it.groupValues[1] }.toList()
+            val offenders = targets.filter { it.contains("..") }
+            assertTrue(offenders.isEmpty(), "Avoid '..' parent directory traversals in local links: $offenders")
+        }
+    }
 }

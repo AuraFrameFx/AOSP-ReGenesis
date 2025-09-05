@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
     alias(libs.plugins.ksp)
+    // Apply the OpenAPI Generator plugin
+    id("org.openapi.generator") version "7.15.0" // Use the latest version
 }
 
 android {
@@ -14,31 +16,27 @@ android {
 
     defaultConfig {
         minSdk = 34
-
-        // Enable multidex for core library desugaring
         multiDexEnabled = true
-
-        // Required for YukiHook
         ndk {
             abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a"))
         }
     }
 
     buildFeatures {
-        // Required for YukiHook
         aidl = true
         renderScript = true
-        // Disable shaders unless specifically needed and properly configured
         shaders = false
     }
+
+    // Add generated sources to the build configuration
+    sourceSets["main"].java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
 }
 
-
 // OpenAPI Generator configuration
-tasks.generateOpenApi("openApiGenerate", org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class) {
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerate") {
     generatorName.set("kotlin")
     inputSpec.set("$projectDir/api-spec/aura-framefx-api.yaml")
-    outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.absolutePath)
+    outputDir.set(layout.buildDirectory.dir("generated/openapi").asFile.absolutePath)
     apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
     modelPackage.set("dev.aurakai.auraframefx.api.client.models")
     invokerPackage.set("dev.aurakai.auraframefx.api.client.infrastructure")
@@ -48,12 +46,7 @@ tasks.generateOpenApi("openApiGenerate", org.openapitools.generator.gradle.plugi
             "serializationLibrary" to "kotlinx_serialization"
         )
     )
-    // Add the generated source directory to the build
-    // The sourceSet configuration must be inside the `android` block, but you can
-    // call this task in the dependencies of other tasks.
-    android.sourceSets["main"].java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
 }
-
 
 // Dependencies block
 dependencies {
@@ -76,7 +69,7 @@ dependencies {
     // Xposed API (compile only, provided by the framework at runtime)
     compileOnly(libs.xposed.api)
 
-    // Firebase
+    // Firebase (Dependencies are here, the plugin goes in the application module)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
 
@@ -104,20 +97,19 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 }
 
-// Status task (This should be at the top-level of the script, not nested)
+// Status task
 tasks.register("coreModuleStatus") {
     group = "aegenesis"
     description = "Show core module status"
     doLast {
         println("🏗️  CORE MODULE STATUS")
         println("=".repeat(40))
-        println("🔧 Namespace: ${project.findProperty("android.namespace") ?: "Not found"}")
-        println("📱 SDK: ${project.findProperty("android.compileSdk") ?: "Not found"}")
+        println("🔧 Namespace: ${project.namespace}") // Use project.namespace for modern Gradle
+        println("📱 SDK: ${project.android.compileSdk}") // Use project.android.compileSdk
         println("🎨 Compose: ❌ Removed")
         println(
             "🔗 API Generation: ${
-                if (rootProject.file("app/api/unified-aegenesis-api.yml")
-                        .exists()
+                if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()
                 ) "✅ Enabled" else "❌ No spec"
             }"
         )

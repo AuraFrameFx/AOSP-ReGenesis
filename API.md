@@ -530,7 +530,11 @@ class NetworkManager @Inject constructor(
         } catch (e: IOException) {
             NetworkResult.NetworkError
         } catch (e: Exception) {
-            errorHandler.handleError(e)
+            when (val mapped = errorHandler.handleError(e)) {
+                is AuraError.NetworkError      -> NetworkResult.NetworkError
+                is AuraError.ValidationError   -> NetworkResult.Error(400, mapped.message)
+                else                            -> NetworkResult.Error(-1, mapped.message ?: "Unknown error")
+            }
         }
     }
 }

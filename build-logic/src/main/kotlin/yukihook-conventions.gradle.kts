@@ -33,7 +33,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "24"
+        jvmTarget = "21"
         freeCompilerArgs = freeCompilerArgs + listOf(
             "-Xjvm-default=all",
             "-opt-in=kotlin.RequiresOptIn"

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertFalse
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
@@ -335,6 +336,194 @@ class MarkdownFileValidationAdvancedTest {
                 { assertTrue(hasOverview, "Expected an '## Overview' section") },
                 { assertTrue(hasGettingStarted, "Expected a '## Getting Started' or '## Quickstart' section") }
             )
+        }
+    }
+
+    // ------------------------------------------------------------
+    // Additional unit tests appended by PR helper
+    // Testing stack: Kotlin + JUnit 5 (Jupiter)
+    // ------------------------------------------------------------
+
+    @Nested
+    @DisplayName("Slug normalization – additional cases")
+    inner class SlugNormalizationUnit {
+
+        // Local copy to test normalization logic in isolation
+        private fun normalizeToSlug(text: String): String {
+            val header = text
+                .replace(Regex("^\\s*#+\\s*"), "")
+                .trim()
+            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            val cleaned = noEmoji
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9\\s-]"), "")
+                .replace(Regex("\\s+"), "-")
+                .replace(Regex("-+"), "-")
+                .trim('-')
+            return cleaned
+        }
+
+        @Test
+        fun `drops underscores and trailing punctuation`() {
+            assertEquals("api-reference-guide-20", normalizeToSlug("## API_reference Guide 2.0!!!"))
+        }
+
+        @Test
+        fun `removes leading and trailing dashes`() {
+            assertEquals("hello-world", normalizeToSlug("## -- Hello World --"))
+        }
+
+        @Test
+        fun `returns empty for non latin or emoji only`() {
+            assertEquals("", normalizeToSlug("## 你好，世界 🌏"))
+            assertEquals("", normalizeToSlug("## 🧪"))
+        }
+
+        @Test
+        fun `handles parentheses and versions`() {
+            assertEquals("section-beta-v21", normalizeToSlug("## Section (beta) v2.1"))
+        }
+
+        @Test
+        fun `removes quotes and slashes, collapses hyphens`() {
+            assertEquals("paths-ids-test", normalizeToSlug("## Paths / IDs 'Test'"))
+        }
+    }
+
+    @Nested
+    @DisplayName("Code fence parser – unit tests")
+    inner class CodeFenceParserUnit {
+
+        private fun countTypedUntyped(content: String): Pair<Int, Int> {
+            var inFence = false
+            var typed = 0
+            var untyped = 0
+            content.lines().forEach { l ->
+                val t = l.trim()
+                if (t.startsWith("```")) {
+                    if (!inFence) {
+                        val after = t.removePrefix("```").trim()
+                        if (after.isBlank()) untyped++ else typed++
+                        inFence = true
+                    } else {
+                        inFence = false
+                    }
+                }
+            }
+            return typed to untyped
+        }
+
+        private fun isFenceCountEven(content: String): Boolean {
+            val count = content.lines().count { it.trim().startsWith("```") }
+            return count % 2 == 0
+        }
+
+        @Test
+        fun `typed fences are counted correctly`() {
+            val md = """
+                ```kotlin
+                println("hi")
+                ```
+                text
+                ```bash
+                echo hi
+                ```
+            """.trimIndent()
+            val (typed, untyped) = countTypedUntyped(md)
+            assertEquals(2, typed)
+            assertEquals(0, untyped)
+            assertTrue(isFenceCountEven(md))
+        }
+
+        @Test
+        fun `mix of typed and untyped fences`() {
+            val md = """
+                ```
+                no language
+                ```
+                ```json
+                { "a": 1 }
+                ```
+            """.trimIndent()
+            val (typed, untyped) = countTypedUntyped(md)
+            assertEquals(1, typed)
+            assertEquals(1, untyped)
+            assertTrue(isFenceCountEven(md))
+        }
+
+        @Test
+        fun `detects uneven fence markers`() {
+            val md = """
+                ```
+                open only
+                ```
+                ```
+            """.trimIndent()
+            assertFalse(isFenceCountEven(md))
+        }
+    }
+
+    @Nested
+    @DisplayName("TODO token filtering – unit tests")
+    inner class TodoTokenFilterUnit {
+
+        private fun stripCodeFences(text: String): String =
+            text.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")
+
+        @Test
+        fun `ignores TODO-like tokens inside code fences but flags outside`() {
+            val md = """
+                Here is some text. TODO: outside
+                ```bash
+                # TODO: inside should be ignored
+                echo test
+                ```
+                More text. fixme: outside again
+            """.trimIndent()
+            val without = stripCodeFences(md)
+            val tokens = Regex("\\b(TODO|TBD|FIXME|HACK)\\b", RegexOption.IGNORE_CASE)
+                .findAll(without).map { it.value.uppercase(Locale.ROOT) }.toList()
+            assertEquals(listOf("TODO", "FIXME"), tokens)
+        }
+    }
+
+    @Nested
+    @DisplayName("HTTPS preference – unit tests")
+    inner class HttpsPreferenceUnit {
+
+        private val allowedPrefixes = listOf(
+            "http://localhost",
+            "http://127.0.0.1",
+            "http://0.0.0.0",
+            "http://[::1]",
+            "http://example.com",
+            "http://www.example.com"
+        )
+
+        private fun insecureHttpLinks(text: String): List<String> {
+            val withoutFences = text.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")
+            val httpRegex = Regex("\\((http://[^)]+)\\)")
+            val all = httpRegex.findAll(withoutFences).map { it.groupValues[1] }.toList()
+            return all.filter { url -> allowedPrefixes.none { url.startsWith(it) } }
+        }
+
+        @Test
+        fun `filters out allowed http hosts`() {
+            val md = """
+                See (http://localhost:8080/health) and (http://example.com/demo).
+                Also check (http://www.example.com/ok).
+            """.trimIndent()
+            assertTrue(insecureHttpLinks(md).isEmpty())
+        }
+
+        @Test
+        fun `flags non-allowed http links as insecure`() {
+            val md = """
+                External link (http://insecure.example.org/page).
+                Secure link (https://secure.example.org/page) should be ignored.
+            """.trimIndent()
+            val bad = insecureHttpLinks(md)
+            assertEquals(listOf("http://insecure.example.org/page"), bad)
         }
     }
 }

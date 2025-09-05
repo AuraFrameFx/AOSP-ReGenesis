@@ -542,4 +542,120 @@ class MarkdownFileValidationTest {
 
     // End of appended tests (JUnit 5 + Kotlin).
 
+
+    // ---- Appended tests by CodeRabbit Inc. (JUnit 5 - Jupiter) ----
+    // These tests expand coverage for README.md changes in the PR diff,
+    // focusing on ToC ordering, heading levels, markdown hygiene, media, and CI snippets.
+
+    @Nested
+    @DisplayName("Table of Contents ordering")
+    inner class TableOfContentsOrdering {
+
+        private fun normalizeToSlug(text: String): String {
+            val header = text
+                .replace(Regex("^\\s*#+\\s*"), "")
+                .trim()
+            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            return noEmoji
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9\\s-]"), "")
+                .replace(Regex("\\s+"), "-")
+                .replace(Regex("-+"), "-")
+                .trim('-')
+        }
+
+        @Test
+        fun `toc anchors follow header order`() {
+            val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
+            assertTrue(tocStart >= 0, "Table of Contents section not found")
+
+            val tocAnchors = lines.drop(tocStart + 1)
+                .takeWhile { it.isNotBlank() }
+                .mapNotNull { Regex("- \\[(.+?)\\]\\(#(.*?)\\)").find(it.trim())?.groupValues?.get(2) }
+                .map { it.trim('-') }
+                .toList()
+
+            val headersWithIndex = lines.withIndex()
+                .filter { it.value.trim().matches(Regex("^#{2,6}\\s+.*$")) }
+                .map { it.index to normalizeToSlug(it.value) }
+                .toList()
+
+            val slugToFirstIndex = headersWithIndex
+                .groupBy({ it.second }, { it.first })
+                .mapValues { (_, v) -> v.minOrNull()!! }
+
+            val order = tocAnchors.mapNotNull { slugToFirstIndex[it] }
+            assertEquals(
+                tocAnchors.size, order.size,
+                "Some ToC anchors not found among headers: ${tocAnchors.filterNot { it in slugToFirstIndex.keys }}"
+            )
+
+            val outOfOrder = order.zipWithNext().withIndex().filter { it.value.first > it.value.second }
+            assertTrue(outOfOrder.isEmpty(), "ToC anchors are out of order relative to headers: $order")
+        }
+    }
+
+    @Nested
+    @DisplayName("Heading level progression")
+    inner class HeadingLevelProgression {
+        @Test
+        fun `no heading level jumps greater than one`() {
+            val levels = lines
+                .mapNotNull { Regex("^(#{1,6})\\s+").find(it)?.groupValues?.get(1)?.length }
+            val violations = levels.zipWithNext().withIndex().filter { (_, pair) -> pair.second > pair.first + 1 }
+            assertTrue(violations.isEmpty(), "Heading level jumps > 1 detected: $levels")
+        }
+    }
+
+    @Nested
+    @DisplayName("Markdown hygiene - extras")
+    inner class MarkdownHygieneExtras {
+        @Test
+        fun `no empty link labels`() {
+            val emptyLabels = Regex("""(?<!!)\[\s*]\([^)]+\)""").findAll(readme).map { it.value }.toList()
+            assertTrue(emptyLabels.isEmpty(), "Empty markdown link labels found: $emptyLabels")
+        }
+
+        @Test
+        fun `no trailing whitespace on non-empty lines`() {
+            val trailing = lines.withIndex()
+                .filter { it.value.isNotBlank() && Regex("[ \\t]+$").containsMatchIn(it.value) }
+                .map { it.index + 1 }
+            assertTrue(trailing.isEmpty(), "Trailing whitespace detected at lines: $trailing")
+        }
+
+        @Test
+        fun `no raw html img tags`() {
+            val rawImg = Regex("""<img\s[^>]*src=["'][^"']+["'][^>]*>""", RegexOption.IGNORE_CASE).findAll(readme).toList()
+            assertTrue(rawImg.isEmpty(), "Raw HTML <img> tags found; prefer Markdown syntax (count=${rawImg.size})")
+        }
+    }
+
+    @Nested
+    @DisplayName("Images and media - extra")
+    inner class ImagesAndMediaExtra {
+        @Test
+        fun `all images use https scheme`() {
+            val imgs = Regex("""!\[[^\]]*]\(([^)]+)\)""").findAll(readme).map { it.groupValues[1] }.toList()
+            val insecure = imgs.filter { it.startsWith("http://", ignoreCase = true) }
+            assertTrue(insecure.isEmpty(), "Image links should use https: $insecure")
+        }
+    }
+
+    @Nested
+    @DisplayName("CI snippets")
+    inner class CISnippetFormat {
+        @Test
+        fun `yaml code fences present when workflows referenced`() {
+            val mentionsWorkflows = readme.contains("GitHub Actions", ignoreCase = true) ||
+                    readme.contains("workflows/", ignoreCase = true) ||
+                    readme.contains(".github/workflows", ignoreCase = true)
+            if (!mentionsWorkflows) return
+
+            val hasYamlFence = Regex("```(ya?ml)\\b", RegexOption.IGNORE_CASE).containsMatchIn(readme)
+            assertTrue(hasYamlFence, "Expected YAML fenced code blocks when referencing GitHub Actions/workflows")
+        }
+    }
+    // ---- End appended tests (JUnit 5 - Jupiter) ----
+
 }

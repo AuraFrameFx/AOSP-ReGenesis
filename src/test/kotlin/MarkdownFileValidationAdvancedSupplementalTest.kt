@@ -339,3 +339,145 @@ class MarkdownFileValidationAdvancedSupplementalTest {
         }
     }
 }
+/**
+ * Additional edge-case validation for README hygiene.
+ *
+ * Testing stack: Kotlin + JUnit 5 (Jupiter).
+ * These tests intentionally mirror the structure and tone of existing tests,
+ * focusing on link/image integrity and heading hygiene using the same README sources.
+ */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class MarkdownFileValidationEdgeCasesTest {
+
+    private lateinit var readmePath: Path
+    private lateinit var readme: String
+    private lateinit var lines: List<String>
+
+    @BeforeAll
+    fun loadReadme() {
+        val candidates = listOf(
+            Path.of("README.md"),
+            Path.of("Readme.md"),
+            Path.of("readme.md"),
+            Path.of("docs/README.md")
+        )
+        readmePath = candidates.firstOrNull { Files.exists(it) }
+            ?: error("README not found. Checked: ${candidates.joinToString()}")
+        readme = Files.readString(readmePath, StandardCharsets.UTF_8)
+        lines = readme.lines()
+        assertTrue(readme.isNotBlank(), "README should not be empty")
+    }
+
+    @Nested
+    @DisplayName("Link hygiene – edge cases")
+    inner class LinkHygieneEdgeCases {
+
+        @Test
+        fun `markdown links have non-empty URLs and no whitespace`() {
+            val links = Regex("\\[([^\\]]+)\\]\\(([^)]+)\\)").findAll(readme).toList()
+            if (links.isEmpty()) return
+
+            val empties = links.withIndex()
+                .filter { it.value.groupValues[2].trim().isEmpty() }
+                .map { it.index }
+
+            val withSpaces = links.withIndex()
+                .filter {
+                    val url = it.value.groupValues[2]
+                    !url.startsWith("#") && url.contains(Regex("\\s"))
+                }
+                .map { it.index }
+
+            assertAll(
+                { assertTrue(empties.isEmpty(), "Links with empty URLs at indices: $empties") },
+                { assertTrue(withSpaces.isEmpty(), "Links with unencoded whitespace in URL at indices: $withSpaces") }
+            )
+        }
+
+        @Test
+        fun `relative links point to existing files`() {
+            val links = Regex("\\[([^\\]]+)\\]\\(([^)]+)\\)").findAll(readme).toList()
+            if (links.isEmpty()) return
+
+            val localBroken = mutableListOf<String>()
+            for (m in links) {
+                val rawUrl = m.groupValues[2].trim()
+                if (rawUrl.startsWith("#") ||
+                    rawUrl.startsWith("http://", true) ||
+                    rawUrl.startsWith("https://", true) ||
+                    rawUrl.startsWith("mailto:", true) ||
+                    rawUrl.startsWith("tel:", true) ||
+                    rawUrl.startsWith("data:", true)
+                ) continue
+
+                val pathOnly = rawUrl.substringBefore('#').substringBefore('?').replace("%20", " ")
+                if (pathOnly.isBlank()) continue
+                if (!Files.exists(Path.of(pathOnly))) {
+                    localBroken.add(pathOnly)
+                }
+            }
+            assertTrue(localBroken.isEmpty(), "Broken relative link targets: $localBroken")
+        }
+
+        @Test
+        fun `internal anchor ids are lowercase-hyphenated`() {
+            val anchors = Regex("\\[[^\\]]+\\]\\(#([^)]+)\\)")
+                .findAll(readme)
+                .map { it.groupValues[1] }
+                .toList()
+
+            if (anchors.isEmpty()) return
+            val bad = anchors.filterNot { it.matches(Regex("^[a-z0-9]+[a-z0-9-]*[a-z0-9]+$")) }
+            assertTrue(bad.isEmpty(), "Anchor IDs not lowercase-hyphenated or with edge hyphens: $bad")
+        }
+    }
+
+    @Nested
+    @DisplayName("Image hygiene – edge cases")
+    inner class ImageHygieneEdgeCases {
+
+        @Test
+        fun `local images resolve on disk`() {
+            val images = Regex("!\\[(.*?)\\]\\(([^)]+)\\)").findAll(readme).toList()
+            if (images.isEmpty()) return
+
+            val missing = images.mapNotNull { m ->
+                val url = m.groupValues[2].trim()
+                if (url.startsWith("http://", true) || url.startsWith("https://", true)) return@mapNotNull null
+                val pathOnly = url.substringBefore('#').substringBefore('?').replace("%20", " ")
+                if (pathOnly.isBlank()) null
+                else if (!Files.exists(Path.of(pathOnly))) pathOnly else null
+            }.distinct()
+
+            assertTrue(missing.isEmpty(), "Local image(s) missing: $missing")
+        }
+
+        @Test
+        fun `image alt text is descriptive (not placeholder)`() {
+            val images = Regex("!\\[(.*?)\\]\\(([^)]+)\\)").findAll(readme).toList()
+            if (images.isEmpty()) return
+
+            val placeholders = setOf("image", "screenshot", "diagram", "picture", "img")
+            val weak = images.withIndex().filter {
+                val alt = it.value.groupValues[1].trim().lowercase(Locale.ROOT)
+                alt.isEmpty() || alt in placeholders
+            }.map { it.index }
+
+            assertTrue(weak.isEmpty(), "Images with placeholder/empty alt text at indices: $weak")
+        }
+    }
+
+    @Nested
+    @DisplayName("Headings – edge cases")
+    inner class HeadingsEdgeCases {
+
+        @Test
+        fun `no empty h2 or h3 headings`() {
+            val empties = lines.withIndex().filter {
+                val t = it.value.trim()
+                t.matches(Regex("^#{2,3}\\s*$"))
+            }.map { it.index + 1 }
+            assertTrue(empties.isEmpty(), "Empty headings at line(s): $empties")
+        }
+    }
+}

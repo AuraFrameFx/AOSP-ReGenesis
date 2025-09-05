@@ -5,7 +5,7 @@ plugins {
     id("com.android.library") version "9.0.0-alpha02"
     id("org.jetbrains.kotlin.android") version "2.2.10"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.2.10"
-    id("com.google.dagger.hilt.android") version "2.57.1"
+    id("com.google.dagger.hilt.android") version "2.51.1"
     id("com.google.devtools.ksp") version "2.2.10-2.2.10"
     kotlin("kapt") version "2.2.10"
 }

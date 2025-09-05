@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.android") version "2.2.10"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.2.10"
     id("com.google.devtools.ksp") version "2.2.10-2.2.10"
-    id("com.google.dagger.hilt.android") version "2.57.1"
+    id("com.google.dagger.hilt.android") version "2.51.1"
     alias(libs.plugins.dokka)
 }
 android {

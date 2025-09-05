@@ -39,7 +39,7 @@ The `secure-comm` module provides enterprise-grade cryptographic capabilities fo
 
 ```
 secure-comm/
-├── src/main/kotlin/com/aura/memoria/secure/
+├── src/main/kotlin/dev/aurakai/auraframefx/secure/
 │   ├── communication/          # Communication protocols
 │   │   ├── SecureCommunication.kt
 │   │   ├── SecureChannel.kt
@@ -59,7 +59,6 @@ secure-comm/
 │   └── di/                     # Dependency injection
 │       └── SecureCommModule.kt
 └── src/test/                   # Tests
-```
 
 ### Core Components
 

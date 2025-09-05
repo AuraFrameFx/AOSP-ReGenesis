@@ -131,6 +131,8 @@ class MarkdownFileValidationAdvancedTest {
             val targets = linkRegex.findAll(readme).map { it.groupValues[1] }.toList()
             targets.forEach { target ->
                 val clean = target.substringBefore('#').substringBefore('?')
+                // Skip ephemeral build outputs
+                if (clean.startsWith("build/") || clean.startsWith("out/")) return@forEach
                 val resolved = readmePath.parent.resolve(clean).normalize()
                 assertTrue(Files.exists(resolved), "Local link target not found: $target (resolved: $resolved)")
             }

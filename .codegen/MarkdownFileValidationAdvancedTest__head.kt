@@ -32,7 +32,17 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Table of Contents – edge cases")
     inner class TableOfContentsEdgeCases {
 
-        // Local copy to keep tests pure and avoid changing production code
+        /**
+         * Convert a Markdown header line into a URL-style slug.
+         *
+         * Strips any leading Markdown header markers (e.g. "# "), removes emoji and symbol characters,
+         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
+         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * leading/trailing hyphens.
+         *
+         * @param text The header text (typically a Markdown heading line) to normalize.
+         * @return A slug suitable for use as an anchor (e.g. "getting-started").
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -67,6 +77,17 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Internal anchors validity")
     inner class InternalAnchors {
 
+        /**
+         * Convert a Markdown header line into a URL-style slug.
+         *
+         * Strips any leading Markdown header markers (e.g. "# "), removes emoji and symbol characters,
+         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
+         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * leading/trailing hyphens.
+         *
+         * @param text The header text (typically a Markdown heading line) to normalize.
+         * @return A slug suitable for use as an anchor (e.g. "getting-started").
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -81,6 +102,14 @@ class MarkdownFileValidationAdvancedTest {
             return cleaned
         }
 
+        /**
+         * Collects all Markdown header slugs found in the current README lines.
+         *
+         * Scans `lines` for Markdown headings (levels 1–6), converts each heading to a normalized slug
+         * via `normalizeToSlug`, and returns the unique set of slugs.
+         *
+         * @return a set of unique header slugs present in `lines`.
+         */
         private fun headerSlugs(): Set<String> {
             return lines
                 .filter { it.trim().matches(Regex("^#{1,6}\\s+.*$")) }
@@ -88,6 +117,13 @@ class MarkdownFileValidationAdvancedTest {
                 .toSet()
         }
 
+        /**
+         * Verifies that every internal markdown anchor (links of the form `[text](#slug)`) points to an existing header.
+         *
+         * Removes fenced code blocks before scanning, extracts anchor targets, ignores blank targets, and asserts there are
+         * no anchors that don't correspond to a header slug derived from the README content. If no internal anchors are present
+         * the test is skipped (returns early).
+         */
         @Test
         fun `internal markdown anchors reference existing headers`() {
             val withoutFences = readme.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")
@@ -162,6 +198,14 @@ class MarkdownFileValidationAdvancedTest {
     private lateinit var readme: String
     private lateinit var lines: List<String>
 
+    /**
+     * Locates and loads the project's README into test state before all tests run.
+     *
+     * Searches a set of candidate paths ("README.md", "Readme.md", "readme.md", "docs/README.md") and sets the class properties
+     * `readmePath`, `readme`, and `lines` with the found file's path, UTF-8 content, and content split into lines.
+     *
+     * Fails the test run if no README is found (throws an error) or if the README is blank (assertion).
+     */
     @BeforeAll
     fun loadReadme() {
         val candidates = listOf(
@@ -181,6 +225,17 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Table of Contents – advanced checks")
     inner class TableOfContentsAdvanced {
 
+        /**
+         * Convert a Markdown header line into a URL-style slug.
+         *
+         * Strips any leading Markdown header markers (e.g. "# "), removes emoji and symbol characters,
+         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
+         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * leading/trailing hyphens.
+         *
+         * @param text The header text (typically a Markdown heading line) to normalize.
+         * @return A slug suitable for use as an anchor (e.g. "getting-started").
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -195,6 +250,18 @@ class MarkdownFileValidationAdvancedTest {
             return cleaned
         }
 
+        /**
+         * Extracts anchor targets (slug strings) from the README's "## 📋 Table of Contents" section.
+         *
+         * Scans for a header line that exactly matches "## 📋 Table of Contents", then reads subsequent
+         * non-blank lines from that section and extracts the target portion of markdown links of the
+         * form `- [text](#slug)`. Only non-blank extracted slugs are returned.
+         *
+         * This function asserts the presence of the Table of Contents header and will fail the test if it
+         * is not found. Extracted slugs are returned verbatim (no additional normalization is performed).
+         *
+         * @return A list of anchor slugs (the part after `#`) found in the Table of Contents, in document order.
+         */
         private fun extractTocAnchors(): List<String> {
             val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
             assertTrue(tocStart >= 0, "Table of Contents section not found")
@@ -233,6 +300,12 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Images and links hygiene")
     inner class ImagesAndLinks {
 
+        /**
+         * Verifies that every markdown image in the README has non-empty alt text and that local image files exist.
+         *
+         * Scans the README for image markdown (`![alt](url)`), asserts the alt text is not empty, and for non-remote URLs
+         * resolves the path relative to the README location (stripping any fragment `#...` or query `?...`) and asserts the file exists.
+         */
         @Test
         fun `images have alt text and local images exist`() {
             val imageRegex = Regex("!\\[(.*?)\\]\\(([^)]+)\\)")

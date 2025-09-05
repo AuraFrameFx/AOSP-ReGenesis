@@ -230,20 +230,17 @@ class EncryptionConfig {
 ### Key Generation Parameters
 
 ```kotlin
-private fun createKeyGenParameterSpec(alias: String): KeyGenParameterSpec {
-    return KeyGenParameterSpec.Builder(
+private fun createKeyGenParameterSpec(alias: String): KeyGenParameterSpec =
+    KeyGenParameterSpec.Builder(
         alias,
         KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
     )
-    .setAlgorithmParameterSpec(GCMParameterSpec(128, ByteArray(12)))
-    .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-    .setKeySize(256)
-    .setUserAuthenticationRequired(false)  // Adjust based on requirements
-    .setRandomizedEncryptionRequired(true)
-    .build()
-}
-```
+        .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+        .setKeySize(256)
+        .setUserAuthenticationRequired(false) // Adjust as needed
+        .setRandomizedEncryptionRequired(true)
+        .build()
 
 ### Message Format
 

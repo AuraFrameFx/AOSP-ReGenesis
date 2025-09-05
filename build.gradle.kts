@@ -1,16 +1,17 @@
 // ===== GENESIS PROTOCOL - ROOT BUILD =====
-// Multi-module project root - no plugins needed here
-// Plugins are managed through:
-// 1. settings.gradle.kts (pluginManagement)
-// 2. buildSrc (for convention plugins)
+// Multi-module project root - using build-logic for convention plugins
 plugins {
+    // Base plugins (applied to all projects)
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.openapi.generator)
+    alias(libs.plugins.openapi.generator) apply false
+    
+    // Apply memoria conventions to all subprojects
+    id("memoria.conventions") apply false
 }
 
 

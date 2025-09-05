@@ -1,9 +1,9 @@
-("TYPESAFE_PROJECT_ACCESSORS")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 pluginManagement {
-    // Temporarily disable build-logic to resolve plugin conflicts
-    // includeBuild("build-logic")
+    // Include build-logic for convention plugins
+    includeBuild("build-logic")
 
     repositories {
         // Primary repositories - Google Maven must be first for Hilt

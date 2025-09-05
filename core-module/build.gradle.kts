@@ -29,7 +29,7 @@ android {
     }
 
     // Add generated sources to the build configuration
-    sourceSets["main"].java.srcDir("$buildDir/generated/openapi/src/main/kotlin")
+    sourceSets["main"].java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
 }
 
 // OpenAPI Generator configuration
@@ -37,7 +37,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     generatorName.set("kotlin")
     inputSpec.set("$projectDir/api-spec/aura-framefx-api.yaml")
     outputDir.set("$buildDir/generated/openapi")
-    apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
+    outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.absolutePath)
     modelPackage.set("dev.aurakai.auraframefx.api.client.models")
     invokerPackage.set("dev.aurakai.auraframefx.api.client.infrastructure")
     configOptions.set(

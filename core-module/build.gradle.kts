@@ -33,11 +33,12 @@ android {
 }
 
 // OpenAPI Generator configuration
-tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerate") {
+// Configure the existing task instead of registering a new one
+tasks.named<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerate") {
     generatorName.set("kotlin")
     inputSpec.set("$projectDir/api-spec/aura-framefx-api.yaml")
-    outputDir.set("$buildDir/generated/openapi")
     outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.absolutePath)
+    apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
     modelPackage.set("dev.aurakai.auraframefx.api.client.models")
     invokerPackage.set("dev.aurakai.auraframefx.api.client.infrastructure")
     configOptions.set(

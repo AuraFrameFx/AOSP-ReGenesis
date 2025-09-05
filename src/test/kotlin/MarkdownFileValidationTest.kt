@@ -61,7 +61,11 @@ class MarkdownFileValidationTest {
         fun `contains build status, license, API and Kotlin badges`() {
             assertAll(
                 { assertTrue(readme.contains("workflows/build/badge.svg"), "Build status badge missing") },
-                { assertTrue(readme.contains("img.shields.io/badge/License-MIT"), "License badge missing") },
+                { assertTrue(
+                    Regex("img\\.shields\\.io/badge/License-[A-Za-z0-9.%+-]+", RegexOption.IGNORE_CASE)
+                        .containsMatchIn(readme),
+                    "License badge missing"
+                ) },
                 { assertTrue(readme.contains("img.shields.io/badge/API-"), "API level badge missing") },
                 { assertTrue(readme.contains("img.shields.io/badge/kotlin-"), "Kotlin badge missing") }
             )

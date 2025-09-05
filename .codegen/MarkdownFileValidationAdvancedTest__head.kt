@@ -32,7 +32,17 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Table of Contents – edge cases")
     inner class TableOfContentsEdgeCases {
 
-        // Local copy to keep tests pure and avoid changing production code
+        /**
+         * Convert a Markdown header line into a normalized slug suitable for internal anchors.
+         *
+         * Strips leading Markdown header markers (e.g., `#`), removes emoji and symbol characters,
+         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
+         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * leading/trailing hyphens.
+         *
+         * @param text The raw header line or title to normalize (may include leading `#` markers).
+         * @return A slug string safe for use as a Markdown anchor (e.g., "Getting Started" -> "getting-started").
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -67,6 +77,17 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Internal anchors validity")
     inner class InternalAnchors {
 
+        /**
+         * Convert a Markdown header line into a normalized slug suitable for internal anchors.
+         *
+         * Strips leading Markdown header markers (e.g., `#`), removes emoji and symbol characters,
+         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
+         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * leading/trailing hyphens.
+         *
+         * @param text The raw header line or title to normalize (may include leading `#` markers).
+         * @return A slug string safe for use as a Markdown anchor (e.g., "Getting Started" -> "getting-started").
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -81,6 +102,14 @@ class MarkdownFileValidationAdvancedTest {
             return cleaned
         }
 
+        /**
+         * Extracts the set of normalized anchor slugs for all Markdown headers in the loaded README.
+         *
+         * Filters lines that are Markdown headers (1–6 leading `#` followed by space), converts each
+         * header line to a slug via `normalizeToSlug`, and returns the unique slugs.
+         *
+         * @return a set of normalized header slugs present in the README.
+         */
         private fun headerSlugs(): Set<String> {
             return lines
                 .filter { it.trim().matches(Regex("^#{1,6}\\s+.*$")) }
@@ -103,6 +132,11 @@ class MarkdownFileValidationAdvancedTest {
     @Nested
     @DisplayName("Code fences integrity")
     inner class FenceIntegrity {
+        /**
+         * Verifies that all fenced code blocks in the README are properly closed.
+         *
+         * Counts lines beginning with a triple-backtick fence (```); the total must be even so every opening fence has a matching closing fence.
+         */
         @Test
         fun `all code fences are properly closed`() {
             val fenceCount = lines.count { it.trim().startsWith("```") }
@@ -129,6 +163,13 @@ class MarkdownFileValidationAdvancedTest {
             assertTrue(offenders.isEmpty(), "Trailing whitespace at lines: $offenders")
         }
 
+        /**
+         * Verifies that external links in the README use HTTPS where possible.
+         *
+         * Removes fenced code blocks, extracts URLs that begin with `http://`, and fails the test
+         * if any such URL is found that does not start with an allowed local/example prefix
+         * (e.g., localhost, 127.0.0.1, example.com). The failure message lists the insecure URLs.
+         */
         @Test
         fun `prefer HTTPS for external links`() {
             val withoutFences = readme.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")
@@ -162,6 +203,15 @@ class MarkdownFileValidationAdvancedTest {
     private lateinit var readme: String
     private lateinit var lines: List<String>
 
+    /**
+     * Loads the repository README before any tests run.
+     *
+     * Searches common README locations (README.md, Readme.md, readme.md, docs/README.md),
+     * sets the test-class properties `readmePath`, `readme`, and `lines`, and asserts the
+     * README is not blank.
+     *
+     * @throws IllegalStateException if no README is found at the searched paths.
+     */
     @BeforeAll
     fun loadReadme() {
         val candidates = listOf(
@@ -181,6 +231,17 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Table of Contents – advanced checks")
     inner class TableOfContentsAdvanced {
 
+        /**
+         * Convert a Markdown header line into a normalized slug suitable for internal anchors.
+         *
+         * Strips leading Markdown header markers (e.g., `#`), removes emoji and symbol characters,
+         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
+         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * leading/trailing hyphens.
+         *
+         * @param text The raw header line or title to normalize (may include leading `#` markers).
+         * @return A slug string safe for use as a Markdown anchor (e.g., "Getting Started" -> "getting-started").
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -195,6 +256,15 @@ class MarkdownFileValidationAdvancedTest {
             return cleaned
         }
 
+        /**
+         * Extracts anchor IDs from the README's "📋 Table of Contents" section.
+         *
+         * Locates the ToC header line matching "## 📋 Table of Contents", asserts it exists,
+         * then collects anchor IDs from list items in the following non-blank lines that match
+         * the pattern `- [text](#anchor)`. Returns the anchors in document order, excluding blank matches.
+         *
+         * @return A list of anchor IDs (strings) referenced by the Table of Contents.
+         */
         private fun extractTocAnchors(): List<String> {
             val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
             assertTrue(tocStart >= 0, "Table of Contents section not found")

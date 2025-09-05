@@ -166,17 +166,30 @@ class MarkdownFileValidationTest {
 
         @Test
         fun `linked local documentation files exist`() {
-            val localPaths = listOf(
+            // Required documentation files that must always be present
+            val requiredPaths = listOf(
                 "LICENSE",
                 "Architecture.md",
                 "docs/YUKIHOOK_SETUP_GUIDE.md",
                 "romtools/README.md",
-                "core-module/Module.md",
-                "build/docs/html"
+                "core-module/Module.md"
             )
-            val missing = localPaths.filterNot { Files.exists(Path.of(it)) }
-            assertTrue(missing.isEmpty(), "Missing local documentation targets referenced in README: $missing")
-        }
+            val missing = requiredPaths.filterNot { Files.exists(Path.of(it)) }
+            assertTrue(
+                missing.isEmpty(),
+                "Missing required local documentation targets referenced in README: $missing"
+            )
+
+            // Optional generated output; only enforce if actually referenced in README
+            val optionalPaths = listOf("build/docs/html")
+            optionalPaths.forEach { path ->
+                if (readme.contains(path)) {
+                    assertTrue(
+                        Files.exists(Path.of(path)),
+                        "Optional path referenced but missing: $path"
+                    )
+                }
+            }
 
         @Test
         fun `external links use https scheme`() {

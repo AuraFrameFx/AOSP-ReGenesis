@@ -39,7 +39,7 @@ android {
         compose = true
         aidl = true
         renderScript = true
-        shaders = true
+        shaders = false  // Disabled shaders to resolve build error
     }
 
     buildTypes {

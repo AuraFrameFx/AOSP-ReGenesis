@@ -1,3 +1,0 @@
-C:/New folder (2)/app/.cxx/RelWithDebInfo/4w5i4r1y/arm64-v8a/CMakeFiles/auraframefx.dir
-C:/New folder (2)/app/.cxx/RelWithDebInfo/4w5i4r1y/arm64-v8a/CMakeFiles/edit_cache.dir
-C:/New folder (2)/app/.cxx/RelWithDebInfo/4w5i4r1y/arm64-v8a/CMakeFiles/rebuild_cache.dir

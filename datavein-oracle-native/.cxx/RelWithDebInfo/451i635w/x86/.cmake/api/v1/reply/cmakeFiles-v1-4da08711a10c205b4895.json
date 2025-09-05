@@ -41,7 +41,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "C:/AOSP-ReGenesis/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86/CMakeFiles/3.31.6/CMakeSystem.cmake"
+			"path" : "C:/New folder (2)/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86/CMakeFiles/3.31.6/CMakeSystem.cmake"
 		},
 		{
 			"isExternal" : true,
@@ -327,7 +327,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "C:/AOSP-ReGenesis/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86/CMakeFiles/3.31.6/CMakeCXXCompiler.cmake"
+			"path" : "C:/New folder (2)/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86/CMakeFiles/3.31.6/CMakeCXXCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -493,7 +493,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "C:/AOSP-ReGenesis/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86/CMakeFiles/3.31.6/CMakeCXXCompiler.cmake"
+			"path" : "C:/New folder (2)/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86/CMakeFiles/3.31.6/CMakeCXXCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -549,8 +549,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "C:/AOSP-ReGenesis/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86",
-		"source" : "C:/AOSP-ReGenesis/datavein-oracle-native/src/main/cpp"
+		"build" : "C:/New folder (2)/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86",
+		"source" : "C:/New folder (2)/datavein-oracle-native/src/main/cpp"
 	},
 	"version" : 
 	{

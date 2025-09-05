@@ -6,7 +6,7 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"jsonFile" : "directory-.-RelWithDebInfo-d0094a50bb2071803777.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.10.0"
@@ -19,7 +19,7 @@
 					]
 				}
 			],
-			"name" : "Debug",
+			"name" : "RelWithDebInfo",
 			"projects" : 
 			[
 				{
@@ -27,7 +27,7 @@
 					[
 						0
 					],
-					"name" : "datavein_oracle_native",
+					"name" : "auraframefx",
 					"targetIndexes" : 
 					[
 						0
@@ -38,9 +38,9 @@
 			[
 				{
 					"directoryIndex" : 0,
-					"id" : "datavein_oracle_native::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-datavein_oracle_native-Debug-1f7e94e4afaa8123a2db.json",
-					"name" : "datavein_oracle_native",
+					"id" : "auraframefx::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-auraframefx-RelWithDebInfo-0fcb6c24e92e6b46f0fd.json",
+					"name" : "auraframefx",
 					"projectIndex" : 0
 				}
 			]
@@ -49,12 +49,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/AOSP-ReGenesis/datavein-oracle-native/.cxx/Debug/4h2x4445/x86",
-		"source" : "C:/AOSP-ReGenesis/datavein-oracle-native/src/main/cpp"
+		"build" : "C:/New folder (2)/app/.cxx/RelWithDebInfo/4w5i4r1y/arm64-v8a",
+		"source" : "C:/New folder (2)/app/src/main/cpp"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 7
+		"minor" : 3
 	}
 }

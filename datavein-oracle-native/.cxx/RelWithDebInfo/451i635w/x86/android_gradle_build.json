@@ -1,19 +1,19 @@
 {
   "buildFiles": [
-    "C:\\AOSP-ReGenesis\\datavein-oracle-native\\src\\main\\cpp\\CMakeLists.txt"
+    "C:\\New folder (2)\\datavein-oracle-native\\src\\main\\cpp\\CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
     [
       "C:\\Users\\Wehtt\\AppData\\Local\\Android\\Sdk\\cmake\\3.31.6\\bin\\ninja.exe",
       "-C",
-      "C:\\AOSP-ReGenesis\\datavein-oracle-native\\.cxx\\RelWithDebInfo\\451i635w\\x86",
+      "C:\\New folder (2)\\datavein-oracle-native\\.cxx\\RelWithDebInfo\\451i635w\\x86",
       "clean"
     ]
   ],
   "buildTargetsCommandComponents": [
     "C:\\Users\\Wehtt\\AppData\\Local\\Android\\Sdk\\cmake\\3.31.6\\bin\\ninja.exe",
     "-C",
-    "C:\\AOSP-ReGenesis\\datavein-oracle-native\\.cxx\\RelWithDebInfo\\451i635w\\x86",
+    "C:\\New folder (2)\\datavein-oracle-native\\.cxx\\RelWithDebInfo\\451i635w\\x86",
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
@@ -21,7 +21,7 @@
       "toolchain": "toolchain",
       "abi": "x86",
       "artifactName": "datavein_oracle_native",
-      "output": "C:\\AOSP-ReGenesis\\datavein-oracle-native\\build\\intermediates\\cxx\\RelWithDebInfo\\451i635w\\obj\\x86\\libdatavein_oracle_native.so",
+      "output": "C:\\New folder (2)\\datavein-oracle-native\\build\\intermediates\\cxx\\RelWithDebInfo\\451i635w\\obj\\x86\\libdatavein_oracle_native.so",
       "runtimeFiles": []
     }
   },

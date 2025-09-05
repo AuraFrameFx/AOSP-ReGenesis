@@ -151,7 +151,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/AOSP-ReGenesis/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86"
+			"value" : "c:/New folder (2)/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -563,7 +563,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/AOSP-ReGenesis/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86/CMakeFiles/pkgRedirects"
+			"value" : "C:/New folder (2)/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -623,7 +623,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/AOSP-ReGenesis/datavein-oracle-native/src/main/cpp"
+			"value" : "C:/New folder (2)/datavein-oracle-native/src/main/cpp"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -659,7 +659,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "C:\\AOSP-ReGenesis\\datavein-oracle-native\\build\\intermediates\\cxx\\RelWithDebInfo\\451i635w\\obj\\x86"
+			"value" : "C:\\New folder (2)\\datavein-oracle-native\\build\\intermediates\\cxx\\RelWithDebInfo\\451i635w\\obj\\x86"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -931,7 +931,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "C:\\AOSP-ReGenesis\\datavein-oracle-native\\build\\intermediates\\cxx\\RelWithDebInfo\\451i635w\\obj\\x86"
+			"value" : "C:\\New folder (2)\\datavein-oracle-native\\build\\intermediates\\cxx\\RelWithDebInfo\\451i635w\\obj\\x86"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1255,7 +1255,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/AOSP-ReGenesis/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86"
+			"value" : "C:/New folder (2)/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86"
 		},
 		{
 			"name" : "datavein_oracle_native_IS_TOP_LEVEL",
@@ -1279,7 +1279,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/AOSP-ReGenesis/datavein-oracle-native/src/main/cpp"
+			"value" : "C:/New folder (2)/datavein-oracle-native/src/main/cpp"
 		},
 		{
 			"name" : "log-lib",

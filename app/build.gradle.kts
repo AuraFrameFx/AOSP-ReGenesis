@@ -12,11 +12,11 @@ plugins {
     alias(libs.plugins.spotless)
 }
 android {
-    namespace = "com.aura.memoria"
+    namespace = "dev.aurakai.auraframefx.app"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.aura.memoria"
+        applicationId = "dev.aurakai.auraframefx.app"
         minSdk = 34
         versionCode = 1
         versionName = "1.0"

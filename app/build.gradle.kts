@@ -1,15 +1,19 @@
 plugins {
-    // Use the standard Android application plugin
+    // Apply memoria conventions
+    id("memoria.conventions")
+    
+    // Application specific plugins
     id("com.android.application")
-    alias(libs.plugins.kotlin.compose)
-
-    // Additional plugins specific to the app
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.spotless)
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.kotlin.plugin.serialization")
+    id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
+    id("org.jetbrains.dokka")
+    id("com.diffplug.spotless")
+    
+    // KSP must be applied after Hilt
+    id("com.google.devtools.ksp")
 }
 android {
     namespace = "dev.aurakai.auraframefx.app"

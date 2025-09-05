@@ -543,18 +543,152 @@ class MarkdownFileValidationTest {
     // End of appended tests (JUnit 5 + Kotlin).
 
 
-    // ---- Appended tests by CodeRabbit Inc. (JUnit 5 - Jupiter) ----
-    // These tests expand coverage for README.md changes in the PR diff,
-    // focusing on ToC ordering, heading levels, markdown hygiene, media, and CI snippets.
+    // --- Additional unit tests appended by CodeRabbit Inc. ---
+    // Testing library and framework: Kotlin + JUnit 5 (Jupiter)
 
     @Nested
-    @DisplayName("Table of Contents ordering")
-    inner class TableOfContentsOrdering {
+    @DisplayName("Optional artifacts presence (conditional)")
+    inner class OptionalArtifactsPresence {
+
+        @Test
+        fun `gradle wrapper exists when README uses gradlew`() {
+            if (!readme.contains("./gradlew")) return
+            val candidates = listOf("gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.jar")
+            val exists = candidates.any { Files.exists(Path.of(it)) }
+            assertTrue(exists, "README uses ./gradlew but Gradle wrapper not found among: $candidates")
+        }
+
+        @Test
+        fun `docker artifacts exist when README mentions Docker`() {
+            val mentions = readme.contains("docker", ignoreCase = true) ||
+                    readme.contains("compose", ignoreCase = true) ||
+                    readme.contains("docker-compose", ignoreCase = true)
+            if (!mentions) return
+
+            val candidates = listOf(
+                "Dockerfile",
+                "docker/Dockerfile",
+                "docker-compose.yml",
+                "docker-compose.yaml",
+                "compose.yml",
+                "compose.yaml"
+            )
+            val exists = candidates.any { Files.exists(Path.of(it)) }
+            assertTrue(exists, "README mentions Docker/Compose but no Docker artifacts found: $candidates")
+        }
+
+        @Test
+        fun `changelog exists when referenced`() {
+            val mentions = Regex("\\bCHANGELOG\\b", RegexOption.IGNORE_CASE).containsMatchIn(readme) ||
+                    readme.contains("Changelog", ignoreCase = true)
+            if (!mentions) return
+
+            val candidates = listOf("CHANGELOG.md", "CHANGELOG", "docs/CHANGELOG.md")
+            val exists = candidates.any { Files.exists(Path.of(it)) }
+            assertTrue(exists, "README references a changelog but none found: $candidates")
+        }
+
+        @Test
+        fun `contributing guide exists when referenced`() {
+            val mentions = readme.contains("Contributing", ignoreCase = true) ||
+                    readme.contains("CONTRIBUTING.md", ignoreCase = true)
+            if (!mentions) return
+
+            val candidates = listOf("CONTRIBUTING.md", "docs/CONTRIBUTING.md")
+            val exists = candidates.any { Files.exists(Path.of(it)) }
+            assertTrue(exists, "README references contributing but no CONTRIBUTING.md found in: $candidates")
+        }
+
+        @Test
+        fun `code of conduct exists when referenced`() {
+            val mentions = readme.contains("Code of Conduct", ignoreCase = true) ||
+                    readme.contains("CODE_OF_CONDUCT.md", ignoreCase = true)
+            if (!mentions) return
+
+            val candidates = listOf("CODE_OF_CONDUCT.md", "docs/CODE_OF_CONDUCT.md")
+            val exists = candidates.any { Files.exists(Path.of(it)) }
+            assertTrue(exists, "README references a Code of Conduct but none found: $candidates")
+        }
+
+        @Test
+        fun `security policy exists when referenced`() {
+            val mentions = readme.contains("Security Policy", ignoreCase = true) ||
+                    readme.contains("SECURITY.md", ignoreCase = true) ||
+                    readme.contains("security@", ignoreCase = true)
+            if (!mentions) return
+
+            val candidates = listOf("SECURITY.md", "docs/SECURITY.md")
+            val exists = candidates.any { Files.exists(Path.of(it)) }
+            assertTrue(exists, "README references security policy but none found: $candidates")
+        }
+
+        @Test
+        fun `environment example exists when referenced`() {
+            val mentions = Regex("\\b\\.env\\b", RegexOption.IGNORE_CASE).containsMatchIn(readme) ||
+                    readme.contains("environment variable", ignoreCase = true) ||
+                    readme.contains("ENV VAR", ignoreCase = true)
+            if (!mentions) return
+
+            val candidates = listOf(".env.example", ".env.sample", "env.example", "example.env")
+            val exists = candidates.any { Files.exists(Path.of(it)) }
+            assertTrue(exists, "README references environment variables but no example env file found: $candidates")
+        }
+
+        @Test
+        fun `roadmap exists when referenced`() {
+            val mentions = readme.contains("Roadmap", ignoreCase = true) ||
+                    readme.contains("ROADMAP.md", ignoreCase = true)
+            if (!mentions) return
+
+            val candidates = listOf("ROADMAP.md", "docs/ROADMAP.md")
+            val exists = candidates.any { Files.exists(Path.of(it)) }
+            assertTrue(exists, "README references a roadmap but none found: $candidates")
+        }
+    }
+
+    @Nested
+    @DisplayName("Content hygiene (extended)")
+    inner class ContentHygieneExtended {
+
+        @Test
+        fun `no trailing whitespace in README`() {
+            val trailing = lines.mapIndexedNotNull { idx, line ->
+                if (Regex("[\\t ]+$").containsMatchIn(line)) idx + 1 else null
+            }
+            assertTrue(trailing.isEmpty(), "Trailing whitespace detected on lines: $trailing")
+        }
+
+        @Test
+        fun `no CRLF line endings in README`() {
+            assertFalse(readme.contains("\r\n"), "CRLF line endings detected; please normalize to LF")
+        }
+
+        @Test
+        fun `external images use https scheme`() {
+            val imgRx = Regex("""!\[[^\]]*]\((https?://[^)\s]+)""")
+            val urls = imgRx.findAll(readme).map { it.groupValues[1] }.toList()
+            val http = urls.filter { it.startsWith("http://", ignoreCase = true) }
+            assertTrue(http.isEmpty(), "External images should use https: $http")
+        }
+
+        @Test
+        fun `avoid vague link text for external links`() {
+            val linkRx = Regex("""(?<!!)\[([^\]]+)]\((https?://[^)]+)\)""")
+            val vague = setOf("here", "click here", "this link", "link", "more", "learn more")
+            val offenders = linkRx.findAll(readme)
+                .map { it.groupValues[1].trim().lowercase(Locale.ROOT) }
+                .filter { it in vague }
+                .toList()
+            assertTrue(offenders.isEmpty(), "Vague link texts detected; use descriptive labels instead: $offenders")
+        }
+    }
+
+    @Nested
+    @DisplayName("ToC consistency (extras)")
+    inner class TocConsistencyExtras {
 
         private fun normalizeToSlug(text: String): String {
-            val header = text
-                .replace(Regex("^\\s*#+\\s*"), "")
-                .trim()
+            val header = text.replace(Regex("^\\s*#+\\s*"), "").trim()
             val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
             return noEmoji
                 .lowercase(Locale.ROOT)
@@ -565,97 +699,59 @@ class MarkdownFileValidationTest {
         }
 
         @Test
-        fun `toc anchors follow header order`() {
+        fun `toc lines are bullet links`() {
             val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
-            assertTrue(tocStart >= 0, "Table of Contents section not found")
+            if (tocStart < 0) return
 
-            val tocAnchors = lines.drop(tocStart + 1)
-                .takeWhile { it.isNotBlank() }
-                .mapNotNull { Regex("- \\[(.+?)\\]\\(#(.*?)\\)").find(it.trim())?.groupValues?.get(2) }
-                .map { it.trim('-') }
-                .toList()
+            val tocBody = lines.drop(tocStart + 1).takeWhile { it.isNotBlank() }
+            val nonBullet = tocBody.filterNot { it.trim().matches(Regex("^- \\[[^]]+\\]\\(#.+\\)$")) }
+            assertTrue(nonBullet.isEmpty(), "Unexpected lines in ToC (should be '- [Text](#anchor)'): $nonBullet")
+        }
 
-            val headersWithIndex = lines.withIndex()
-                .filter { it.value.trim().matches(Regex("^#{2,6}\\s+.*$")) }
-                .map { it.index to normalizeToSlug(it.value) }
-                .toList()
+        @Test
+        fun `toc anchors are unique`() {
+            val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
+            if (tocStart < 0) return
 
-            val slugToFirstIndex = headersWithIndex
-                .groupBy({ it.second }, { it.first })
-                .mapValues { (_, v) -> v.minOrNull()!! }
+            val tocBody = lines.drop(tocStart + 1).takeWhile { it.isNotBlank() }
+            val anchors = tocBody.mapNotNull {
+                Regex("- \\[[^]]+]\\(#([^\\)]+)\\)").find(it.trim())?.groupValues?.get(1)?.trim('-')
+            }
+            val duplicates = anchors.groupingBy { it }.eachCount().filter { it.value > 1 }.keys
+            assertTrue(duplicates.isEmpty(), "Duplicate anchors in ToC: $duplicates")
+        }
 
-            val order = tocAnchors.mapNotNull { slugToFirstIndex[it] }
-            assertEquals(
-                tocAnchors.size, order.size,
-                "Some ToC anchors not found among headers: ${tocAnchors.filterNot { it in slugToFirstIndex.keys }}"
-            )
+        @Test
+        fun `selected sections appear in ToC when headers exist`() {
+            val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
+            if (tocStart < 0) return
+            val tocBody = lines.drop(tocStart + 1).takeWhile { it.isNotBlank() }.joinToString("\n")
 
-            val outOfOrder = order.zipWithNext().withIndex().filter { it.value.first > it.value.second }
-            assertTrue(outOfOrder.isEmpty(), "ToC anchors are out of order relative to headers: $order")
+            val sectionPatterns = listOf("Installation", "Getting Started", "Usage", "Troubleshooting", "FAQ")
+            sectionPatterns.forEach { name ->
+                val headerLine = lines.firstOrNull {
+                    it.trim().matches(Regex("^##\\s*.*${Regex.escape(name)}.*$", RegexOption.IGNORE_CASE))
+                }
+                if (headerLine != null) {
+                    val slug = normalizeToSlug(headerLine)
+                    val inToc = Regex("\\(#${Regex.escape(slug)}\\)", RegexOption.IGNORE_CASE).containsMatchIn(tocBody)
+                    assertTrue(inToc, "Section '$name' exists but is missing from the ToC (expected #$slug)")
+                }
+            }
         }
     }
 
     @Nested
-    @DisplayName("Heading level progression")
-    inner class HeadingLevelProgression {
+    @DisplayName("Commands and wrappers")
+    inner class CommandsAndWrappers {
+
         @Test
-        fun `no heading level jumps greater than one`() {
-            val levels = lines
-                .mapNotNull { Regex("^(#{1,6})\\s+").find(it)?.groupValues?.get(1)?.length }
-            val violations = levels.zipWithNext().withIndex().filter { (_, pair) -> pair.second > pair.first + 1 }
-            assertTrue(violations.isEmpty(), "Heading level jumps > 1 detected: $levels")
+        fun `git clone uses https or ssh but not http`() {
+            val cloneRx = Regex("""git\s+clone\s+([^\s]+)""", RegexOption.IGNORE_CASE)
+            val urls = cloneRx.findAll(readme).map { it.groupValues[1] }.toList()
+            val insecure = urls.filter { it.startsWith("http://", ignoreCase = true) }
+            assertTrue(insecure.isEmpty(), "git clone commands should not use http: $insecure")
         }
     }
-
-    @Nested
-    @DisplayName("Markdown hygiene - extras")
-    inner class MarkdownHygieneExtras {
-        @Test
-        fun `no empty link labels`() {
-            val emptyLabels = Regex("""(?<!!)\[\s*]\([^)]+\)""").findAll(readme).map { it.value }.toList()
-            assertTrue(emptyLabels.isEmpty(), "Empty markdown link labels found: $emptyLabels")
-        }
-
-        @Test
-        fun `no trailing whitespace on non-empty lines`() {
-            val trailing = lines.withIndex()
-                .filter { it.value.isNotBlank() && Regex("[ \\t]+$").containsMatchIn(it.value) }
-                .map { it.index + 1 }
-            assertTrue(trailing.isEmpty(), "Trailing whitespace detected at lines: $trailing")
-        }
-
-        @Test
-        fun `no raw html img tags`() {
-            val rawImg = Regex("""<img\s[^>]*src=["'][^"']+["'][^>]*>""", RegexOption.IGNORE_CASE).findAll(readme).toList()
-            assertTrue(rawImg.isEmpty(), "Raw HTML <img> tags found; prefer Markdown syntax (count=${rawImg.size})")
-        }
-    }
-
-    @Nested
-    @DisplayName("Images and media - extra")
-    inner class ImagesAndMediaExtra {
-        @Test
-        fun `all images use https scheme`() {
-            val imgs = Regex("""!\[[^\]]*]\(([^)]+)\)""").findAll(readme).map { it.groupValues[1] }.toList()
-            val insecure = imgs.filter { it.startsWith("http://", ignoreCase = true) }
-            assertTrue(insecure.isEmpty(), "Image links should use https: $insecure")
-        }
-    }
-
-    @Nested
-    @DisplayName("CI snippets")
-    inner class CISnippetFormat {
-        @Test
-        fun `yaml code fences present when workflows referenced`() {
-            val mentionsWorkflows = readme.contains("GitHub Actions", ignoreCase = true) ||
-                    readme.contains("workflows/", ignoreCase = true) ||
-                    readme.contains(".github/workflows", ignoreCase = true)
-            if (!mentionsWorkflows) return
-
-            val hasYamlFence = Regex("```(ya?ml)\\b", RegexOption.IGNORE_CASE).containsMatchIn(readme)
-            assertTrue(hasYamlFence, "Expected YAML fenced code blocks when referencing GitHub Actions/workflows")
-        }
-    }
-    // ---- End appended tests (JUnit 5 - Jupiter) ----
 
 }

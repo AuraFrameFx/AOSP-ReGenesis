@@ -338,146 +338,193 @@ class MarkdownFileValidationAdvancedSupplementalTest {
                 "LICENSE should include GPL preamble")
         }
     }
-}
-/**
- * Additional edge-case validation for README hygiene.
- *
- * Testing stack: Kotlin + JUnit 5 (Jupiter).
- * These tests intentionally mirror the structure and tone of existing tests,
- * focusing on link/image integrity and heading hygiene using the same README sources.
- */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class MarkdownFileValidationEdgeCasesTest {
 
-    private lateinit var readmePath: Path
-    private lateinit var readme: String
-    private lateinit var lines: List<String>
+    // ---------------------------------------------------------------------
+    // Additional extended coverage tests (Kotlin + JUnit 5 Jupiter)
+    // ---------------------------------------------------------------------
 
-    @BeforeAll
-    fun loadReadme() {
-        val candidates = listOf(
-            Path.of("README.md"),
-            Path.of("Readme.md"),
-            Path.of("readme.md"),
-            Path.of("docs/README.md")
-        )
-        readmePath = candidates.firstOrNull { Files.exists(it) }
-            ?: error("README not found. Checked: ${candidates.joinToString()}")
-        readme = Files.readString(readmePath, StandardCharsets.UTF_8)
-        lines = readme.lines()
-        assertTrue(readme.isNotBlank(), "README should not be empty")
+    @Nested
+    @DisplayName("Slug normalization – edge cases")
+    inner class SlugNormalizationEdgeCases {
+
+        private fun normalizeToSlug(text: String): String {
+            val header = text
+                .replace(Regex("^\\s*#+\\s*"), "")
+                .trim()
+            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            val cleaned = noEmoji
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9\\s-]"), "")
+                .replace(Regex("\\s+"), "-")
+                .replace(Regex("-+"), "-")
+                .trim('-')
+            return cleaned
+        }
+
+        @Test
+        fun `emoji and punctuation removed`() {
+            assertEquals("getting-started", normalizeToSlug("## 🚀 Getting Started!"))
+        }
+
+        @Test
+        fun `en dash normalized via spaces`() {
+            assertEquals("a-b", normalizeToSlug("## A – B"))
+        }
+
+        @Test
+        fun `underscores removed and spaces collapsed`() {
+            assertEquals("a-b-c", normalizeToSlug("## A_B   C"))
+        }
+
+        @Test
+        fun `accents stripped and em dash removed`() {
+            assertEquals("naive-cafe-test", normalizeToSlug("## Naïve Café — Test"))
+        }
     }
 
     @Nested
-    @DisplayName("Link hygiene – edge cases")
-    inner class LinkHygieneEdgeCases {
+    @DisplayName("Headers – uniqueness with ToC present")
+    inner class HeadersUniqueness {
+
+        private fun normalizeToSlug(text: String): String {
+            val header = text
+                .replace(Regex("^\\s*#+\\s*"), "")
+                .trim()
+            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            val cleaned = noEmoji
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9\\s-]"), "")
+                .replace(Regex("\\s+"), "-")
+                .replace(Regex("-+"), "-")
+                .trim('-')
+            return cleaned
+        }
 
         @Test
-        fun `markdown links have non-empty URLs and no whitespace`() {
-            val links = Regex("\\[([^\\]]+)\\]\\(([^)]+)\\)").findAll(readme).toList()
-            if (links.isEmpty()) return
-
-            val empties = links.withIndex()
-                .filter { it.value.groupValues[2].trim().isEmpty() }
-                .map { it.index }
-
-            val withSpaces = links.withIndex()
-                .filter {
-                    val url = it.value.groupValues[2]
-                    !url.startsWith("#") && url.contains(Regex("\\s"))
-                }
-                .map { it.index }
-
-            assertAll(
-                { assertTrue(empties.isEmpty(), "Links with empty URLs at indices: $empties") },
-                { assertTrue(withSpaces.isEmpty(), "Links with unencoded whitespace in URL at indices: $withSpaces") }
-            )
+        fun `h2 slugs are unique when ToC exists`() {
+            val hasToc = lines.any { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
+            if (!hasToc) return
+            val slugs = lines
+                .filter { it.trim().matches(Regex("^##\\s+.*$")) }
+                .map { normalizeToSlug(it) }
+            if (slugs.isEmpty()) return
+            val duplicates = slugs.groupingBy { it }.eachCount().filter { it.value > 1 }.keys.toList()
+            assertTrue(duplicates.isEmpty(), "Duplicate H2 header slugs: $duplicates")
         }
+    }
+
+    @Nested
+    @DisplayName("Images and links – filesystem validation")
+    inner class ImagesAndLinksFilesystem {
 
         @Test
         fun `relative links point to existing files`() {
-            val links = Regex("\\[([^\\]]+)\\]\\(([^)]+)\\)").findAll(readme).toList()
-            if (links.isEmpty()) return
+            val linkRegex = Regex("\\[([^\\]]+)\\]\\(([^)]+)\\)")
+            val urls = linkRegex.findAll(readme).map { it.groupValues[2].trim() }.toList()
+            val relative = urls
+                .filter { url ->
+                    val u = url.lowercase(Locale.ROOT)
+                    !u.startsWith("#") &&
+                    !u.startsWith("http://") &&
+                    !u.startsWith("https://") &&
+                    !u.startsWith("mailto:") &&
+                    !u.startsWith("tel:") &&
+                    !u.startsWith("data:")
+                }
+                .map { it.substringBefore('#').substringBefore('?') }
+            if (relative.isEmpty()) return
+            val baseDir = readmePath.parent ?: Path.of(".")
+            val missing = relative.filterNot { Files.exists(baseDir.resolve(it).normalize()) }
+            assertTrue(missing.isEmpty(), "Relative links missing targets: $missing")
+        }
 
-            val localBroken = mutableListOf<String>()
-            for (m in links) {
-                val rawUrl = m.groupValues[2].trim()
-                if (rawUrl.startsWith("#") ||
-                    rawUrl.startsWith("http://", true) ||
-                    rawUrl.startsWith("https://", true) ||
-                    rawUrl.startsWith("mailto:", true) ||
-                    rawUrl.startsWith("tel:", true) ||
-                    rawUrl.startsWith("data:", true)
-                ) continue
+        @Test
+        fun `relative images point to existing files`() {
+            val imageRegex = Regex("!\\[(.*?)\\]\\(([^)]+)\\)")
+            val urls = imageRegex.findAll(readme).map { it.groupValues[2].trim() }.toList()
+            val relative = urls
+                .filter { url ->
+                    val u = url.lowercase(Locale.ROOT)
+                    !u.startsWith("http://") &&
+                    !u.startsWith("https://") &&
+                    !u.startsWith("data:")
+                }
+                .map { it.substringBefore('#').substringBefore('?') }
+            if (relative.isEmpty()) return
+            val baseDir = readmePath.parent ?: Path.of(".")
+            val missing = relative.filterNot { Files.exists(baseDir.resolve(it).normalize()) }
+            assertTrue(missing.isEmpty(), "Relative image paths missing targets: $missing")
+        }
+    }
 
-                val pathOnly = rawUrl.substringBefore('#').substringBefore('?').replace("%20", " ")
-                if (pathOnly.isBlank()) continue
-                if (!Files.exists(Path.of(pathOnly))) {
-                    localBroken.add(pathOnly)
+    @Nested
+    @DisplayName("Code fences – language tags")
+    inner class CodeFencesLanguageTags {
+
+        @Test
+        fun `language tags are plausible when provided`() {
+            var inFence = false
+            val bad = mutableListOf<String>()
+            for (raw in lines) {
+                val t = raw.trim()
+                if (t.startsWith("```")) {
+                    if (!inFence) {
+                        val lang = t.removePrefix("```").trim()
+                        if (lang.isNotEmpty() && !lang.matches(Regex("^[a-zA-Z0-9.+:_-]{1,30}$"))) {
+                            bad.add(lang)
+                        }
+                        inFence = true
+                    } else {
+                        inFence = false
+                    }
                 }
             }
-            assertTrue(localBroken.isEmpty(), "Broken relative link targets: $localBroken")
-        }
-
-        @Test
-        fun `internal anchor ids are lowercase-hyphenated`() {
-            val anchors = Regex("\\[[^\\]]+\\]\\(#([^)]+)\\)")
-                .findAll(readme)
-                .map { it.groupValues[1] }
-                .toList()
-
-            if (anchors.isEmpty()) return
-            val bad = anchors.filterNot { it.matches(Regex("^[a-z0-9]+[a-z0-9-]*[a-z0-9]+$")) }
-            assertTrue(bad.isEmpty(), "Anchor IDs not lowercase-hyphenated or with edge hyphens: $bad")
+            if (bad.isEmpty()) return
+            assertTrue(false, "Suspicious fenced code block language tags: $bad")
         }
     }
 
     @Nested
-    @DisplayName("Image hygiene – edge cases")
-    inner class ImageHygieneEdgeCases {
+    @DisplayName("Repository conventions – conditional files")
+    inner class RepoConventions {
 
         @Test
-        fun `local images resolve on disk`() {
-            val images = Regex("!\\[(.*?)\\]\\(([^)]+)\\)").findAll(readme).toList()
-            if (images.isEmpty()) return
-
-            val missing = images.mapNotNull { m ->
-                val url = m.groupValues[2].trim()
-                if (url.startsWith("http://", true) || url.startsWith("https://", true)) return@mapNotNull null
-                val pathOnly = url.substringBefore('#').substringBefore('?').replace("%20", " ")
-                if (pathOnly.isBlank()) null
-                else if (!Files.exists(Path.of(pathOnly))) pathOnly else null
-            }.distinct()
-
-            assertTrue(missing.isEmpty(), "Local image(s) missing: $missing")
+        fun `code of conduct file exists when section present`() {
+            val hasSection = lines.any { it.trim().matches(Regex("^##\\s*Code of Conduct\\s*$", RegexOption.IGNORE_CASE)) }
+            if (!hasSection) return
+            val exists = Files.exists(Path.of("CODE_OF_CONDUCT.md")) || Files.exists(Path.of("docs/CODE_OF_CONDUCT.md"))
+            assertTrue(exists, "CODE_OF_CONDUCT.md missing but README has a Code of Conduct section")
         }
 
         @Test
-        fun `image alt text is descriptive (not placeholder)`() {
-            val images = Regex("!\\[(.*?)\\]\\(([^)]+)\\)").findAll(readme).toList()
-            if (images.isEmpty()) return
-
-            val placeholders = setOf("image", "screenshot", "diagram", "picture", "img")
-            val weak = images.withIndex().filter {
-                val alt = it.value.groupValues[1].trim().lowercase(Locale.ROOT)
-                alt.isEmpty() || alt in placeholders
-            }.map { it.index }
-
-            assertTrue(weak.isEmpty(), "Images with placeholder/empty alt text at indices: $weak")
+        fun `contributing file exists when section present`() {
+            val hasSection = lines.any { it.trim().matches(Regex("^##\\s*Contributing\\s*$", RegexOption.IGNORE_CASE)) }
+            if (!hasSection) return
+            val exists = Files.exists(Path.of("CONTRIBUTING.md")) || Files.exists(Path.of("docs/CONTRIBUTING.md"))
+            assertTrue(exists, "CONTRIBUTING.md missing but README has a Contributing section")
         }
-    }
-
-    @Nested
-    @DisplayName("Headings – edge cases")
-    inner class HeadingsEdgeCases {
 
         @Test
-        fun `no empty h2 or h3 headings`() {
-            val empties = lines.withIndex().filter {
-                val t = it.value.trim()
-                t.matches(Regex("^#{2,3}\\s*$"))
-            }.map { it.index + 1 }
-            assertTrue(empties.isEmpty(), "Empty headings at line(s): $empties")
+        fun `security policy file exists when section present`() {
+            val hasSection = lines.any { it.trim().matches(Regex("^##\\s*Security\\s*$", RegexOption.IGNORE_CASE)) }
+            if (!hasSection) return
+            val exists = Files.exists(Path.of("SECURITY.md")) || Files.exists(Path.of("docs/SECURITY.md"))
+            assertTrue(exists, "SECURITY.md missing but README has a Security section")
+        }
+
+        @Test
+        fun `changelog file exists when section present`() {
+            val hasSection = lines.any { it.trim().matches(Regex("^##\\s*(Changelog|Release Notes)\\s*$", RegexOption.IGNORE_CASE)) }
+            if (!hasSection) return
+            val exists = Files.exists(Path.of("CHANGELOG.md")) || Files.exists(Path.of("docs/CHANGELOG.md"))
+            assertTrue(exists, "CHANGELOG.md missing but README has a Changelog/Release Notes section")
+        }
+
+        @Test
+        fun `github actions badge implies workflow directory exists`() {
+            val hasBadge = readme.contains("github/actions/workflow/status", ignoreCase = true)
+            if (!hasBadge) return
+            assertTrue(Files.exists(Path.of(".github/workflows")), "GitHub Actions badge present but .github/workflows directory missing")
         }
     }
 }

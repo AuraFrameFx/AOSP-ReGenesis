@@ -46,7 +46,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.bundles.network)
     implementation(libs.bcprov-jdk18on)
-    implementation(libs.androidx-security)
+    // REMOVED: implementation(libs.androidx-security) - causing TOML issues, temporary removal per troubleshoot request
     implementation(libs.timber)
     implementation(libs.gson)
     testImplementation(libs.junit)

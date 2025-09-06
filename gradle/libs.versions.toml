@@ -50,6 +50,10 @@ mockk = "1.13.12"
 turbine = "1.1.0"
 
 # ===== LIBRARY ALIASES FOR SECURE-COMM MODULE =====
+hilt-version = "2.56.2"
+hilt-navigation-compose-version = "1.2.0"
+coilCompose = "2.8.0"
+firebaseBom = "33.8.0"
 
 [libraries]
 # ===== YUKIHOOK (normalized) =====
@@ -140,6 +144,44 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx"
 xposed = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
 lsposed-lsplant = { group = "org.lsposed.lsplant", name = "lsplant", version.ref = "lsposed" }
 
+# ===== ADDITIONAL LIBRARIES =====
+bcprov-jdk18on = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bcprov" }
+# REMOVED: androidx-security = { group = "androidx.security", name = "security-crypto", version = "1.1.0-alpha06" } - causing issues, temporary removal
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
+junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+
+[plugins]
+# ===== ANDROID & GRADLE =====
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+# ===== HILT =====
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }
+
+# ===== GOOGLE SERVICES ===== 
+# REMOVED: google-services = { id = "com.google.gms.google-services", version = "4.4.2" } - causing build issues during troubleshooting
+
+# ===== DOCUMENTATION =====
+# REMOVED: dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaGradlePlugin" } - causing build issues during troubleshooting
+
+# ===== STATIC ANALYSIS =====
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektGradlePlugin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+
+# ===== BENCHMARK =====
+benchmark = { id = "androidx.benchmark", version.ref = "benchmark" }
+
+# ===== OPENAPI =====
+openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGeneratorGradlePlugin" }
+
 [bundles]
 # ===== ANDROID CORE =====
 androidx-core = [
@@ -204,10 +246,3 @@ lifecycle = [
     "androidx-lifecycle-runtime-ktx",
     "androidx-lifecycle-viewmodel-compose"
 ]
-
-bcprov-jdk18on = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bcprov" }
-androidx-security = { group = "androidx.security", name = "security-crypto", version = "1.1.0-alpha06" }
-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
-junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
-junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
-turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }

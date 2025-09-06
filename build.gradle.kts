@@ -1,4 +1,5 @@
-plugins { alias(libs.plugins.google.services) apply false; alias(libs.plugins.dokka) apply false }
+// Commented out plugins causing issues during troubleshooting
+// plugins { alias(libs.plugins.google.services) apply false; alias(libs.plugins.dokka) apply false }
 
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.Project
@@ -633,15 +634,16 @@ tasks.register("doctorStack") {
 // Apply auxiliary cleanup script
 apply(from = "nuclear-clean.gradle.kts")
 
-// Enforce google-services only on application / dynamic-feature modules
-subprojects {
-    pluginManager.withPlugin("com.google.gms.google-services") {
-        val isApp = pluginManager.hasPlugin("com.android.application") || pluginManager.hasPlugin("com.android.dynamic-feature")
-        if (!isApp) {
-            throw GradleException("google-services plugin misapplied in $path (must be only in application or dynamic-feature module)")
-        }
-    }
-}
+// Commented out during troubleshooting - google-services plugin not available
+// // Enforce google-services only on application / dynamic-feature modules
+// subprojects {
+//     pluginManager.withPlugin("com.google.gms.google-services") {
+//         val isApp = pluginManager.hasPlugin("com.android.application") || pluginManager.hasPlugin("com.android.dynamic-feature")
+//         if (!isApp) {
+//             throw GradleException("google-services plugin misapplied in $path (must be only in application or dynamic-feature module)")
+//         }
+//     }
+// }
 
 // Aggregate deep clean (includes nuclearClean if present)
 if (tasks.findByName("nuclearClean") != null) {
@@ -655,41 +657,43 @@ if (tasks.findByName("nuclearClean") != null) {
     }
 }
 
-// --- Documentation (Dokka) Aggregation ---
-subprojects {
-    // Apply Dokka to Kotlin Android/JVM modules for consistent API docs
-    plugins.withId("org.jetbrains.kotlin.android") { apply(plugin = "org.jetbrains.dokka") }
-    plugins.withId("org.jetbrains.kotlin.jvm") { apply(plugin = "org.jetbrains.dokka") }
-}
+// --- Documentation (Dokka) Aggregation --- 
+// Commented out during troubleshooting - dokka plugin not available
+// subprojects {
+//     // Apply Dokka to Kotlin Android/JVM modules for consistent API docs
+//     plugins.withId("org.jetbrains.kotlin.android") { apply(plugin = "org.jetbrains.dokka") }
+//     plugins.withId("org.jetbrains.kotlin.jvm") { apply(plugin = "org.jetbrains.dokka") }
+// }
 
-// Aggregate all dokkaHtml outputs into build/aggregated-dokka
-val apiDocs = tasks.register("apiDocs") {
-    group = "documentation"
-    description = "Generate aggregated Dokka HTML docs for all Kotlin modules"
-    // Collect dokkaHtml tasks if present
-    val dokkaTasks = subprojects.mapNotNull { sp -> sp.tasks.findByName("dokkaHtml") }
-    dependsOn(dokkaTasks)
-    doLast {
-        val targetDir = layout.buildDirectory.dir("aggregated-dokka").get().asFile
-        targetDir.deleteRecursively(); targetDir.mkdirs()
-        subprojects.forEach { sp ->
-            val outDir = File(layout.buildDirectory.dir("dokka/html").get().asFile, "dokka/html")
-            if (outDir.exists()) {
-                val dest = File(targetDir, sp.name)
-                outDir.copyRecursively(dest, overwrite = true)
-            }
-        }
-        println("Aggregated API docs -> ${targetDir}")
-        println("(Run: open ${targetDir}/index.html or browse module subfolders)")
-    }
-}
-
-// Zip aggregated docs for distribution
-tasks.register<Zip>("apiDocsZip") {
-    group = "documentation"
-    description = "Package aggregated API docs into a zip archive"
-    dependsOn(apiDocs)
-    archiveFileName.set("memoriaos-api-docs.zip")
-    destinationDirectory.set(layout.buildDirectory.dir("distributions"))
-    from(layout.buildDirectory.dir("aggregated-dokka"))
-}
+// Commented out during troubleshooting - dokka related tasks
+// // Aggregate all dokkaHtml outputs into build/aggregated-dokka
+// val apiDocs = tasks.register("apiDocs") {
+//     group = "documentation"
+//     description = "Generate aggregated Dokka HTML docs for all Kotlin modules"
+//     // Collect dokkaHtml tasks if present
+//     val dokkaTasks = subprojects.mapNotNull { sp -> sp.tasks.findByName("dokkaHtml") }
+//     dependsOn(dokkaTasks)
+//     doLast {
+//         val targetDir = layout.buildDirectory.dir("aggregated-dokka").get().asFile
+//         targetDir.deleteRecursively(); targetDir.mkdirs()
+//         subprojects.forEach { sp ->
+//             val outDir = File(layout.buildDirectory.dir("dokka/html").get().asFile, "dokka/html")
+//             if (outDir.exists()) {
+//                 val dest = File(targetDir, sp.name)
+//                 outDir.copyRecursively(dest, overwrite = true)
+//             }
+//         }
+//         println("Aggregated API docs -> ${targetDir}")
+//         println("(Run: open ${targetDir}/index.html or browse module subfolders)")
+//     }
+// }
+// 
+// // Zip aggregated docs for distribution
+// tasks.register<Zip>("apiDocsZip") {
+//     group = "documentation"
+//     description = "Package aggregated API docs into a zip archive"
+//     dependsOn(apiDocs)
+//     archiveFileName.set("memoriaos-api-docs.zip")
+//     destinationDirectory.set(layout.buildDirectory.dir("distributions"))
+//     from(layout.buildDirectory.dir("aggregated-dokka"))
+// }

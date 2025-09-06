@@ -520,25 +520,32 @@ interface ApiService {
 @Singleton
 class NetworkManager @Inject constructor(
     private val apiService: ApiService,
-    private val errorHandler: NetworkErrorHandler
+    private val errorHandler: ErrorHandler
 ) {
-    
+
     suspend fun <T> safeApiCall(
         apiCall: suspend () -> Response<T>
     ): NetworkResult<T> = withContext(Dispatchers.IO) {
         try {
             val response = apiCall()
             if (response.isSuccessful) {
-                NetworkResult.Success(response.body()!!)
+                val body = response.body()
+                if (body != null) NetworkResult.Success(body)
+                else NetworkResult.Error(response.code(), "Empty body")
             } else {
                 NetworkResult.Error(response.code(), response.message())
             }
         } catch (e: IOException) {
             NetworkResult.NetworkError
         } catch (e: Exception) {
-            errorHandler.handleError(e)
+            when (val mapped = errorHandler.handleError(e)) {
+                is AuraError.NetworkError     -> NetworkResult.NetworkError
+                is AuraError.ValidationError  -> NetworkResult.Error(400, mapped.message)
+                else                          -> NetworkResult.Error(500, mapped.message ?: "Unknown error")
+            }
         }
     }
+}
 }
 ```
 

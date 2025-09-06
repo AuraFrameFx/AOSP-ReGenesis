@@ -94,7 +94,7 @@ android {
         androidTestImplementation(libs.androidx.test.uiautomator)
         
         // Testing
-        testImplementation(libs.junit4)
+        testImplementation(libs.junit)
         testImplementation(libs.mockk)
         
         // Core library desugaring - using direct version since it's not in the version catalog

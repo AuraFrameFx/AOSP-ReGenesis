@@ -400,36 +400,46 @@ sealed class VerificationResult {
 }
 ```
 
-## 🧠 Core Module API
-
-### Repository Pattern
-
-```kotlin
-interface Repository<T, ID> {
-    suspend fun findById(id: ID): T?
-    suspend fun findAll(): List<T>
-    suspend fun save(entity: T): T
-    suspend fun delete(id: ID): Boolean
-    suspend fun exists(id: ID): Boolean
-}
-
 @Singleton
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val networkService: NetworkService
 ) : Repository<User, UserId> {
-    
+
     override suspend fun findById(id: UserId): User? {
-        return userDao.findById(id.value) ?: run {
-            val networkUser = networkService.getUser(id)
-            networkUser?.let { userDao.insert(it) }
-            networkUser
-        }
+        return userDao.findById(id.value)
+            ?.toDomain()
+            ?: run {
+                val networkUser = networkService.getUser(id)
+                networkUser?.let {
+                    userDao.insert(it.toEntity())
+                    it
+                }
+            }
     }
-    
+
     // ... other implementations
 }
-```
+
+// Extension mapping functions
+
+fun UserEntity.toDomain(): User {
+    // TODO: map UserEntity fields to the User domain model
+    return User(
+        id = UserId(this.id),
+        name = this.name,
+        // ...
+    )
+}
+
+fun User.toEntity(): UserEntity {
+    // TODO: map User domain model fields to UserEntity
+    return UserEntity(
+        id = this.id.value,
+        name = this.name,
+        // ...
+    )
+}
 
 ### State Management
 

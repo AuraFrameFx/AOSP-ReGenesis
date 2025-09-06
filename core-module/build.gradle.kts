@@ -69,7 +69,7 @@ dependencies {
     implementation(libs.retrofit.converter.kotlinx.serialization)
     implementation(libs.okhttp3.logging.interceptor)
     // Networking scalars converter via catalog alias (updated)
-    implementation(libs.retrofit.converter.scalars)
+    implementation(libs.retrofit)
 
     // Date/Time
     implementation(libs.kotlinx.datetime)

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SCOPE_TYPE" value="8" />
+    <option name="CUSTOM_SCOPE_NAME" value="All Places" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
@@ -38,7 +42,8 @@
     "last_opened_file_path": "C:/AOSP-Re.Genesis",
     "project.structure.last.edited": "Suggestions",
     "project.structure.proportion": "0.17",
-    "project.structure.side.proportion": "0.2"
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "aDefault"
   }
 }]]></component>
   <component name="TaskManager">

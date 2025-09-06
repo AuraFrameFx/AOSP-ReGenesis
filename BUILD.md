@@ -46,8 +46,8 @@ Core Principles:
 - KSP: 2.2.20-RC-2.0.2
 - Java Toolchain Target: JDK 24 (with provisional readiness for 25)
 - Compose BOM: 2025.06.01 (Material 3 alignment)
-- Hilt: 2.51.1
-- Hooking Layer: LSPosed + Xposed API 82 + YukiHookAPI 2.1.1
+- Hilt: 2.56.2
+- Hooking Layer: LSPosed + Xposed API 82 + YukiHookAPI 1.3.0
 
 Caution: Alpha / RC components may introduce regressions. Maintain fallback notes in docs before upgrading.
 
@@ -339,7 +339,7 @@ agp = "9.0.0-alpha02"
 kotlin = "2.2.20-RC"
 ksp = "2.2.20-RC-2.0.2"
 composeBom = "2025.06.01"
-hilt = "2.51.1"
+hilt = "2.56.2"
 # ... (remaining unchanged)
 
 [plugins]

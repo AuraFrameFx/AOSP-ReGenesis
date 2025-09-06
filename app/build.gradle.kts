@@ -1,31 +1,30 @@
+// ==== GENESIS PROTOCOL - MAIN APPLICATION ====
+// This build script uses the modern plugins DSL and relies on the version catalog.
+
 plugins {
-    // Apply memoria conventions
-    id("memoria.conventions")
-    
-    // Application specific plugins
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.dagger.hilt.android")
-    id("com.google.gms.google-services")
-    id("org.jetbrains.dokka")
-    id("com.diffplug.spotless")
-    
-    // KSP must be applied after Hilt
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.ksp)
 }
+
 android {
-    namespace = "dev.aurakai.auraframefx.app"
-    
-    // Application-specific overrides
+    namespace = "com.aura.memoria"
+    compileSdk = 36
+
     defaultConfig {
-        applicationId = "dev.aurakai.auraframefx.app"
+        applicationId = "com.aura.memoria"
+        minSdk = 34
         versionCode = 1
         versionName = "1.0"
-        multiDexEnabled = true
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        
+        multiDexEnabled = true
+
         // NDK configuration
         if (project.file("src/main/cpp/CMakeLists.txt").exists()) {
             ndk {
@@ -33,13 +32,13 @@ android {
             }
         }
     }
-    
+
     buildFeatures {
-        // Enable only what's not covered by the base conventions
+        buildConfig = true
         viewBinding = true
+        compose = true
         aidl = true
-        renderScript = true
-        shaders = false  // Disabled shaders to resolve build error
+        // Removed deprecated renderScript & unnecessary shaders
     }
 
     buildTypes {
@@ -58,28 +57,37 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
-        isCoreLibraryDesugaringEnabled = true
-    }
-
-    // Java toolchain configuration
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "META-INF/versions/**"
-            excludes += "META-INF/*.version"
-            excludes += "META-INF/*.kotlin_module"
-            excludes += "META-INF/licenses/**"
-            excludes += "**/attach_hotspot_windows.dll"
-            excludes += "META-INF/INDEX.LIST"
-            excludes += "META-INF/io.netty.versions.properties"
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(24))
         }
     }
 
+    kotlin {
+        jvmToolchain(24);
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+        }
+    }
 
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+    }
+
+    packaging {
+        resources {
+            excludes += setOf(
+                "/META-INF/{AL2.0,LGPL2.1}",
+                "META-INF/versions/**",
+                "META-INF/*.version",
+                "META-INF/*.kotlin_module",
+                "META-INF/licenses/**",
+                "**/attach_hotspot_windows.dll",
+                "META-INF/INDEX.LIST",
+                "META-INF/io.netty.versions.properties"
+            )
+        }
+    }
 
     ksp {
         // Enable incremental compilation for better build performance
@@ -96,11 +104,11 @@ android {
         arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
 
         // Room schema location using modern Gradle API
-        arg("room.schemaLocation",
+        arg(
+            "room.schemaLocation",
             layout.buildDirectory.dir("schemas").get().asFile.toString()
         )
     }
-
 
     testOptions {
         unitTests.all {
@@ -121,30 +129,24 @@ android {
 }
 
 dependencies {
-    // ===== CORE LIBRARY DESUGARING =====
+    // Desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
-    // ===== XPOSED & YUKIHOOK =====
-    // Xposed Framework API (compileOnly as it's provided by the Xposed framework at runtime)
+    // Xposed / YukiHook
     compileOnly(libs.xposed.api)
+    implementation(libs.yukihook.core); ksp(libs.yukihook.ksp); implementation(libs.yukihook.prefs)
 
-    implementation(libs.yukihook.api)
-    ksp(libs.yukihook.ksp)
-    implementation(libs.kavaref.core)
-    implementation(libs.kavaref.extension)
-    // ===== ANDROIDX & COMPOSE =====
+    // AndroidX & Compose
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(platform(libs.androidx.compose.bom))
 
-    // ===== DATABASE - ROOM =====
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
+    // Room
+    implementation(libs.room.runtime); implementation(libs.room.ktx); ksp(libs.room.compiler)
 
-    // ===== MODULE DEPENDENCIES =====
-    // The app depends on all feature and core modules
+    // Modules
     implementation(project(":core-module"))
     implementation(project(":feature-module"))
     implementation(project(":oracle-drive-integration"))
@@ -154,70 +156,42 @@ dependencies {
     implementation(project(":colorblendr"))
     implementation(project(":sandbox-ui"))
     implementation(project(":datavein-oracle-native"))
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.compose)
 
-    // Dependency Injection - Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-    kspTest(libs.hilt.compiler)
-    kspAndroidTest(libs.hilt.compiler)
+    // DI
+    implementation(libs.hilt.android); kspTest(libs.hilt.compiler); kspAndroidTest(libs.hilt.compiler)
+    androidTestImplementation(libs.hilt.android.testing); kspAndroidTest(libs.hilt.compiler)
 
-    // Hilt for instrumentation tests
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
-
-    // Kotlin Serialization
-    implementation(libs.kotlinx.serialization.json) {
-        version {
-            strictly(libs.versions.serialization.get())
-        }
-    }
+    // Serialization
+    implementation(libs.kotlinx.serialization.json)
 
     // Coroutines & Networking
-    implementation(libs.bundles.coroutines)
-    implementation(libs.bundles.network)
-
-    // Database - Room
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
+    implementation(libs.bundles.coroutines); implementation(libs.bundles.network)
 
     // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
+    implementation(platform(libs.firebase.bom)); implementation(libs.bundles.firebase)
 
     // Utilities
-    implementation(libs.timber)
-    implementation(libs.coil.compose)
+    implementation(libs.timber); implementation(libs.coil.compose)
 
-    // Xposed Framework (Local Jar)
+    // Local Xposed jars fallback (keep if needed)
     compileOnly(fileTree("Libs") { include("*.jar") })
 
-    // --- TESTING ---
-    testImplementation(libs.bundles.testing)
-    testImplementation(libs.hilt.android.testing)
-
-    // AndroidX Test - JUnit4 support
+    // Testing
+    testImplementation(libs.bundles.testing); testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-    
-    // Compose testing
+    androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
 
-    // Hilt testing
-    androidTestImplementation(libs.hilt.android.testing)
-
-    // --- DEBUGGING ---
+    // Debug
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui)
 }
 
-// Custom tasks for build integration and status reporting
 tasks.named("preBuild") {
-    if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) {
-        dependsOn(":openApiGenerate")
-    }
+    if (rootProject.file("app/api/unified-aegenesis-api.yml")
+            .exists()
+    ) dependsOn(":openApiGenerate")
 }
 
 tasks.register("appStatus") {
@@ -228,26 +202,14 @@ tasks.register("appStatus") {
         println("=".repeat(40))
         val androidExt =
             extensions.getByType(com.android.build.gradle.internal.dsl.BaseAppModuleExtension::class.java)
-        val defaultConfig = androidExt.defaultConfig
-
+        val cfg = androidExt.defaultConfig
         println("🔧 Namespace: ${androidExt.namespace}")
-        println("🎯 App ID: ${defaultConfig.applicationId}")
-        println("📱 Version: ${defaultConfig.versionName ?: "unspecified"} (${defaultConfig.versionCode ?: "unspecified"})")
-
-        val minSdk = defaultConfig.minSdk?.let { "$it" } ?: "not set"
-        val targetSdk = defaultConfig.targetSdk?.let { "$it" } ?: "not set"
-        println("📱 SDK: ${androidExt.compileSdk} (Min: $minSdk, Target: $targetSdk)")
-
-        println(
-            "🔧 Native Code: ${
-                if (project.file("src/main/cpp/CMakeLists.txt")
-                        .exists()
-                ) "✅ Enabled" else "❌ Disabled"
-            }"
-        )
+        println("🎯 App ID: ${cfg.applicationId}")
+        println("📱 Version: ${cfg.versionName ?: "unspecified"} (${cfg.versionCode ?: "unspecified"})")
+        println("📱 SDK: ${androidExt.compileSdk} (Min: ${cfg.minSdk ?: "?"}, Target: ${cfg.targetSdk ?: "?"})")
         println("🎨 Compose: ✅ Enabled")
-        println("🧠 Desugaring: ✅ App Module (with dependency)")
-        println("✨ Status: Genesis Protocol Application Ready!")
-
+        println("🧠 Desugaring: ✅ Enabled")
+        println("🧪 Tests: MockK + Hilt configured")
+        println("✨ Status: Genesis Protocol Application Ready (Java 24)")
     }
 }

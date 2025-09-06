@@ -1,60 +1,41 @@
+// GENESIS PROTOCOL - MODULE A
 plugins {
+    id("genesis.android.compose")
     alias(libs.plugins.ksp)
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.openapi.generator)
+    alias(libs.plugins.kotlin.android)
 }
-
 android {
     namespace = "dev.aurakai.auraframefx.module.a"
     compileSdk = 36
-    
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
-    }
-    
-    kotlin {
-        jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(24))
-        }
-        
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
-            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-        }
-    }
+    java { toolchain { languageVersion.set(JavaLanguageVersion.of(24)) } }
+    kotlin { jvmToolchain(24); compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24) } }
 }
-dependencies {dependencies {
-    // AndroidX
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.material)
-    // Networking
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.kotlinx.serialization)
-    // If you need converter-scalars, add to TOML or use classic notation
-    // implementation("com.squareup.retrofit2:converter-scalars:3.0.0")
-    // YukiHook
-    api(libs.yukihook.api)
-    ksp(libs.yukihook.ksp)
-    // Logging
-    api(libs.timber)
-    // Dagger Hilt
+
+dependencies {
+    api(project(":core-module"))
+    implementation(libs.bundles.androidx.core)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    androidTestImplementation(libs.hilt.android.testing)
-    // Testing
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.junit.jupiter.engine)
+    implementation(libs.bundles.coroutines)
+    implementation(libs.timber)
+    implementation(libs.coil.compose)
+    testImplementation(libs.bundles.testing)
     testImplementation(libs.mockk)
-    testImplementation(libs.turbine)
+    androidTestImplementation(libs.mockk.android)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
 }
-}
-tasks.register("moduleAStatus") {
-    group = "aegenesis"; doLast { println("📦 MODULE A - Ready!") }
-}
+
+tasks.register("moduleAStatus") { group = "aegenesis"; doLast { println("📦 MODULE A - Ready (Java 24)") } }

@@ -1,84 +1,18 @@
-plugins {
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.openapi.generator)
-}
-
+// GENESIS PROTOCOL - MODULE F
+plugins { id("genesis.android.compose"); alias(libs.plugins.kotlin.serialization); alias(libs.plugins.ksp); alias(libs.plugins.hilt); alias(libs.plugins.dokka); alias(libs.plugins.spotless); alias(libs.plugins.kotlin.android) }
 android {
     namespace = "dev.aurakai.auraframefx.module.f"
     compileSdk = 36
-
-    defaultConfig {
-        minSdk = 34
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
-    }
-
-    kotlin {
-        jvmToolchain(24)
-    }
+    java { toolchain { languageVersion.set(JavaLanguageVersion.of(24)) } }
+    kotlin { jvmToolchain(24); compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24) } }
 }
-
 dependencies {
-    // Core dependencies
-    api(project(":core-module"))
-    implementation(libs.bundles.androidx.core)
-
-    // Lifecycle
-    implementation(libs.bundles.lifecycle)
-
-    // Networking
-    implementation(libs.bundles.network)
-    implementation(libs.kotlinx.serialization.json)
-
-    // Coroutines
-    implementation(libs.bundles.coroutines)
-
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
-
-    // YukiHook API 1.3.0+ with KavaRef
-    api(libs.yukihook.api)
-    ksp(libs.yukihook.ksp)
-    implementation(libs.kavaref.core)
-    implementation(libs.kavaref.extension)
-
-    // Xposed API (compile only)
-    compileOnly(libs.xposed.api)
-
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    // DataStore
-    implementation(libs.datastore.preferences)
-
-    // Logging
-    api(libs.timber)
-
-    // Core library desugaring
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
-
-    // Testing
-    testImplementation(libs.bundles.testing)
-    testImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.compiler)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
+    api(project(":core-module")); implementation(libs.bundles.androidx.core); implementation(libs.androidx.lifecycle.runtime.ktx); implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(platform(libs.androidx.compose.bom)); implementation(libs.bundles.compose); implementation(libs.androidx.activity.compose); implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.android); ksp(libs.hilt.compiler); implementation(libs.bundles.coroutines); implementation(libs.bundles.network)
+    implementation(libs.room.runtime); implementation(libs.room.ktx); ksp(libs.room.compiler); implementation(platform(libs.firebase.bom)); implementation(libs.bundles.firebase)
+    implementation(libs.timber); implementation(libs.coil.compose); implementation(fileTree("../Libs") { include("*.jar") })
+    testImplementation(libs.bundles.testing); testImplementation(libs.mockk); androidTestImplementation(libs.mockk.android); testImplementation(libs.hilt.android.testing); kspTest(libs.hilt.compiler)
+    androidTestImplementation(libs.androidx.test.ext.junit); androidTestImplementation(libs.androidx.test.espresso.core); androidTestImplementation(platform(libs.androidx.compose.bom));androidTestImplementation(libs.hilt.android.testing); kspAndroidTest(libs.hilt.compiler)
 }
-
-tasks.register("moduleFStatus") {
-    group = "aegenesis"
-    description = "Show module F status"
-    doLast {
-        println("📦 MODULE F - Ready!")
-    }
-}
+tasks.register("moduleFStatus") { group = "aegenesis"; doLast { println("📦 MODULE F - Ready (Java 24)") } }

@@ -1,126 +1,137 @@
+// Apply plugins with explicit versions
 plugins {
+    // Replaced explicit versions with catalog aliases for consistency
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.spotless)
     alias(libs.plugins.ksp)
-    // Apply the OpenAPI Generator plugin
-    id("org.openapi.generator") version "7.15.0" // Use the latest version
+    alias(libs.plugins.openapi.generator)
 }
 
 android {
-    namespace = "dev.aurakai.auraframefx.core" // The correct namespace for this module
+    namespace = "dev.aurakai.auraframefx.core"
     compileSdk = 36
-
+    
     defaultConfig {
         minSdk = 34
-        multiDexEnabled = true
+        
+        // Required for YukiHook
         ndk {
             abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a"))
         }
     }
-
+    
     buildFeatures {
+        // Only enable what’s required; remove renderScript/shaders
         aidl = true
-        renderScript = true
-        shaders = false
+        buildConfig = true
     }
-
-    // Add generated sources to the build configuration
+    
+    // Add Java toolchain 24
+    java { toolchain { languageVersion.set(JavaLanguageVersion.of(24)) } }
+    kotlin {
+        jvmToolchain(24)
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+            freeCompilerArgs.addAll(
+                "-Xcontext-receivers"
+            )
+            progressiveMode.set(true)
+        }
+    }
+    
     sourceSets["main"].java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
 }
 
-// OpenAPI Generator configuration
-// Configure the existing task instead of registering a new one
-tasks.named<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerate") {
-    generatorName.set("kotlin")
-    inputSpec.set("$projectDir/api-spec/aura-framefx-api.yaml")
-    outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.absolutePath)
-    apiPackage.set("dev.aurakai.auraframefx.api.client.apis")
-    modelPackage.set("dev.aurakai.auraframefx.api.client.models")
-    invokerPackage.set("dev.aurakai.auraframefx.api.client.infrastructure")
-    configOptions.set(
-        mapOf(
-            "dateLibrary" to "kotlinx-datetime",
-            "serializationLibrary" to "kotlinx_serialization"
-        )
-    )
-    // Skip if no spec present to avoid failing configuration on clean repos
-    onlyIf { file("api-spec/aura-framefx-api.yaml").exists() }
+// OpenAPI generation task
+tasks.named("preBuild").configure {
+    dependsOn(tasks.named<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerate"))
 }
 
-// Ensure codegen runs before compilation when the spec exists
-tasks.matching { it.name == "preBuild" }.configureEach {
-    dependsOn("openApiGenerate")
-}
-
-// Dependencies block
 dependencies {
-    // AndroidX Core
+    // YukiHook API
+
+    
+    // AndroidX
     implementation(libs.bundles.androidx.core)
-
-    // Lifecycle
-    implementation(libs.bundles.lifecycle)
-
-    // Networking
-    implementation(libs.bundles.network)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    
+    // Kotlin
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.ktx.coroutines.core)
+    implementation(libs.ktx.coroutines.android)
+    
+    // Networking
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+    implementation(libs.okhttp3.logging.interceptor)
+    // Networking scalars converter via catalog alias
+    implementation(libs.converter.scalars)
 
-    // YukiHook API 1.3.0+ with KavaRef
-    api(libs.yukihook.api)
-    api(libs.kavaref.core)
-    api(libs.kavaref.extension)
-    ksp(libs.yukihook.ksp)
-
-    // Xposed API (compile only, provided by the framework at runtime)
+    // Date/Time
+    implementation(libs.kotlinx.datetime)
+    
+    // OAuth
+    implementation(libs.apache.oltu.oauth2.common)
+    implementation(libs.apache.oltu.oauth2.client)
+    
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    
+    // Xposed Framework
     compileOnly(libs.xposed.api)
 
-    // Firebase (Dependencies are here, the plugin goes in the application module)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
-
-    // Coroutines
-    implementation(libs.bundles.coroutines)
+    // YukiHook API
+    implementation(libs.yukihook.core)
+    ksp(libs.yukihook.ksp)
+    implementation(libs.yukihook.prefs)
 
     // Logging
     api(libs.timber)
-
-    // Dagger Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    // DataStore
-    implementation(libs.datastore.preferences)
-    implementation(libs.datastore.core)
-
-    // Core library desugaring
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
-
+    
     // Testing
-    testImplementation(libs.bundles.testing)
-    testImplementation(libs.hilt.android.testing)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.ktx.coroutines.test)
+    
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.mockk.android)
+    kspTest(libs.hilt.compiler)
+}
+
+// YukiHook configuration
+yukihook {
+    // Enable the API for the current build type
+    isEnable = true
+    
+    // Load the API in the application class
+    // Replace with your actual application class if different
+    // loadOnApp = true
+    
+    // Enable debug mode
+    isDebug = true
+    
+    // Configure the module name (optional)
+    // name = "CoreModule"
 }
 
 // Status task
 tasks.register("coreModuleStatus") {
     group = "aegenesis"
     description = "Show core module status"
+    
     doLast {
         println("🏗️  CORE MODULE STATUS")
         println("=".repeat(40))
-        // Use the Android extension accessor for safe access
         println("🔧 Namespace: ${android.namespace}")
         println("📱 SDK: ${android.compileSdk}")
         println("🎨 Compose: ❌ Removed")
-        println(
-            "🔗 API Generation: ${
-                if (file("api-spec/aura-framefx-api.yaml").exists()) "✅ Enabled" else "❌ No spec"
-            }"
-        )
+        println("🔗 API Generation: ${if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) "✅ Enabled" else "❌ No spec"}")
         println("✨ Status: Core Foundation Ready with Convention Plugins!")
     }
 }

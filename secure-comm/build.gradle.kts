@@ -2,35 +2,19 @@
 // Security module using convention plugins
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    id("genesis.android.library") // No Compose needed for security module
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.openapi.generator)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "dev.aurakai.auraframefx.securecomm"
-    compileSdk = 36
+    compileSdk = 36 // Required for AGP 9 and dependency resolution
 
-    defaultConfig {
-        minSdk = 34
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    kotlin {
-        jvmToolchain(24)
-    }
+    // Java 24 toolchain (unified across project)
+    java { toolchain { languageVersion.set(JavaLanguageVersion.of(24)) } }
 
     testOptions {
         unitTests.all {
@@ -43,69 +27,44 @@ android {
         }
         unitTests.isIncludeAndroidResources = true
     }
-}
 
-dependencies {
-    // Core dependencies
-    api(project(":core-module"))
-    implementation(libs.bundles.androidx.core)
+// KSP configuration for this module
+    ksp {
+        arg("kotlin.languageVersion", "2.2")
+        arg("kotlin.apiVersion", "2.2")
+        arg("kotlin.jvmTarget", "24")
+    }
 
-    // Lifecycle
-    implementation(libs.bundles.lifecycle)
+    dependencies {
+        api(project(":core-module"))
+        implementation(libs.androidx.core.ktx)
+        implementation(libs.androidx.appcompat)
+        implementation(libs.bundles.coroutines)
+        implementation(libs.kotlinx.serialization.json)
+        implementation(libs.hilt.android)
+        ksp(libs.hilt.compiler)
+        implementation(libs.bundles.network)
+        implementation(libs.bcprov.jdk18on)
+        implementation(libs.androidx.security)
+        implementation(libs.timber)
+        implementation(libs.gson)
+        testImplementation(libs.junit)
+        testImplementation(libs.junit.jupiter)
+        testImplementation(libs.junit.jupiter.api)
+        testRuntimeOnly(libs.junit.jupiter.engine)
+        testImplementation(libs.mockk)
+        testImplementation(libs.turbine)
+        testImplementation(libs.hilt.android.testing)
+        androidTestImplementation(libs.mockk.android)
+        kspTest(libs.hilt.compiler)
+        androidTestImplementation(libs.androidx.test.ext.junit)
+        androidTestImplementation(libs.androidx.test.espresso.core)
+        androidTestImplementation(libs.hilt.android.testing)
+        kspAndroidTest(libs.hilt.compiler)
+    }
 
-    // Compose
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.bundles.compose)
-    implementation(libs.androidx.compose.material.icons.extended)
-
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    // Coroutines
-    implementation(libs.bundles.coroutines)
-
-    // Networking for secure communication
-    implementation(libs.bundles.network)
-    implementation(libs.kotlinx.serialization.json)
-
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
-
-    // YukiHook API 1.3.0+ with KavaRef
-    implementation(libs.yukihook.api)
-    ksp(libs.yukihook.ksp)
-    implementation(libs.kavaref.core)
-    implementation(libs.kavaref.extension)
-
-    // Xposed API (compile only)
-    compileOnly(libs.xposed.api)
-
-    // DataStore for secure preferences
-    implementation(libs.datastore.preferences)
-    implementation(libs.datastore.core)
-
-    // UI
-    implementation(libs.timber)
-    implementation(libs.coil.compose)
-
-    // Core library desugaring
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
-
-    // Testing
-    testImplementation(libs.bundles.testing)
-    testImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.compiler)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-}
-
-tasks.register("securityStatus") {
-    group = "aegenesis"
-    doLast { println("🔒 SECURE COMMUNICATION - ${android.namespace} - Ready!") }
+    tasks.register("securityStatus") {
+        group = "aegenesis"
+        doLast { println("🔒 SECURE COMMUNICATION - ${android.namespace} - Ready!") }
+    }
 }

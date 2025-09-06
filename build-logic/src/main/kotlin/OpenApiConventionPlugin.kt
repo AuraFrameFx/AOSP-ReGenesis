@@ -1,5 +1,3 @@
-@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
-
 package com.aurakai.memoria.buildlogic
 
 import org.gradle.api.Plugin

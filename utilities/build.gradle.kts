@@ -10,16 +10,13 @@ group = "dev.aurakai.auraframefx.utilities"
 version = "1.0.0"
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-    }
-    sourceCompatibility = JavaVersion.VERSION_24
-    targetCompatibility = JavaVersion.VERSION_24
+    toolchain { languageVersion.set(JavaLanguageVersion.of(24)) }
 }
 
 kotlin {
+    jvmToolchain(24)
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_24)
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
         languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
         apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
     }
@@ -44,6 +41,7 @@ dependencies {
 
     // Testing
     testImplementation(libs.bundles.testing)
+    testImplementation(libs.mockk)
 }
 
 tasks.test {

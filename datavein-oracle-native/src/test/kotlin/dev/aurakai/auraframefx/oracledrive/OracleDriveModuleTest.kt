@@ -84,13 +84,13 @@ class OracleDriveModuleTest {
         )
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `oracleDriveService should be injected successfully`() {
         // Test that the service can be injected without errors
         assertNotNull("OracleDriveService should be injected", oracleDriveService)
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `oracleDriveService should maintain singleton behavior`() {
         // Test that the same instance is provided (singleton behavior)
         val service1 = oracleDriveService
@@ -103,7 +103,7 @@ class OracleDriveModuleTest {
         )
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `injected service should be correct implementation type`() {
         // Test that the correct implementation is bound
         assertTrue(
@@ -122,7 +122,7 @@ class OracleDriveModuleTest {
         )
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `binding method should be abstract as required by Binds annotation`() {
         // Verify that the binding method is abstract as required by @Binds
         val bindMethod = OracleDriveModule::class.java.declaredMethods
@@ -136,7 +136,7 @@ class OracleDriveModuleTest {
         )
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `binding method should have correct signature`() {
         // Verify method signature matches expected contract
         val bindMethod = OracleDriveModule::class.java.declaredMethods
@@ -166,7 +166,7 @@ class OracleDriveModuleTest {
         )
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `module should be in correct package`() {
         // Verify module is in correct package
         assertEquals(
@@ -192,7 +192,7 @@ class OracleDriveModuleTest {
         }
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `service should implement all required Oracle Drive interface methods`() {
         // Verify that the service implements all required methods from OracleDriveService
         val serviceClass = oracleDriveService::class.java
@@ -235,7 +235,7 @@ class OracleDriveModuleTest {
         )
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `module should validate Dagger Hilt integration`() {
         // Test comprehensive Dagger Hilt integration
         val moduleClass = OracleDriveModule::class.java
@@ -278,7 +278,7 @@ class OracleDriveModuleIntegrationTest {
         hiltRule.inject()
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `module should support multiple injection points with singleton consistency`() {
         // Test that the module works correctly when injected in multiple places
         val testComponent1 = TestComponentOne()
@@ -351,7 +351,7 @@ class OracleDriveModuleIntegrationTest {
         )
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `module should validate service behavior after injection`() {
         // Test that injected service behaves correctly post-injection
         val component = TestComponentOne()
@@ -528,7 +528,7 @@ class OracleDriveModuleEdgeCaseTest {
         )
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `module should validate proper component lifecycle integration`() {
         // Test that module integrates properly with SingletonComponent lifecycle
         val installInAnnotation = OracleDriveModule::class.java

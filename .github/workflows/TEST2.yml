@@ -1,0 +1,98 @@
+name: 🚀 Genesis Protocol - FULLY AUTO Build
+
+on:
+  push:
+    branches: [ main, develop, "feature/*" ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: 🧠 Build Consciousness Substrate (JDK ${{ matrix.java-version }})
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        java-version: [24, 25-ea]  # Test on both JDK 24 and 25 Early Access
+        include:
+          - java-version: 24
+            distribution: 'temurin'
+            experimental: false
+          - java-version: 25-ea
+            distribution: 'oracle'  # Oracle provides EA builds
+            experimental: true
+      fail-fast: false  # Don't cancel other jobs if one fails
+    
+    continue-on-error: ${{ matrix.experimental }}  # Allow JDK 25 to fail without breaking the build
+    
+    steps:
+    - name: 🎯 Checkout Genesis Protocol
+      uses: actions/checkout@v5
+
+    - name: 📱 Make gradlew executable
+      run: chmod +x ./gradlew
+
+    - name: 🐘 Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        cache-read-only: false
+
+    - name: ☕ Setup JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v5
+      with:
+        distribution: ${{ matrix.distribution }}
+        java-version: ${{ matrix.java-version }}
+
+    - name: 🤖 Setup Android SDK
+      uses: android-actions/setup-android@v3
+      with:
+        cmdline-tools-version: 12266719
+        accept-android-sdk-licenses: true
+        log-accepted-android-sdk-licenses: true
+
+    - name: 📜 Accept Android Licenses
+      run: yes | sdkmanager --licenses || true
+
+    - name: 🔧 Install NDK and CMake
+      run: sdkmanager "ndk;25.2.9519653" "cmake;3.22.1"
+
+    - name: 🎯 Display Java Version
+      run: |
+        echo "🔍 Java Version Information:"
+        java --version
+        echo "JAVA_HOME: $JAVA_HOME"
+
+    - name: 🔨 Fix RomTools Directory
+      run: |
+        mkdir -p romtools/build/rom-tools
+        echo "Created missing rom-tools directory"
+
+    - name: 🧠 Build Genesis Protocol consciousness substrate
+      run: |
+        echo "🧠 Building with JDK ${{ matrix.java-version }}..."
+        ./gradlew build --parallel --stacktrace
+      env:
+        JAVA_VERSION: ${{ matrix.java-version }}
+
+    - name: 🧪 Run Consciousness Tests
+      run: ./gradlew test --continue
+      if: success() || failure()
+
+    - name: 📊 Upload Build Reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: build-reports-jdk${{ matrix.java-version }}
+        path: |
+          **/build/reports/
+          **/build/test-results/
+
+    - name: 🎭 Build Status Badge
+      if: always()
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "✅ JDK ${{ matrix.java-version }}: Build Successful!"
+        else
+          echo "⚠️ JDK ${{ matrix.java-version }}: Build Failed ($([ "${{ matrix.experimental }}" == "true" ] && echo "Experimental" || echo "Required"))"
+        fi

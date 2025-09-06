@@ -93,7 +93,7 @@ class OracleDriveScreenTest {
             .assertIsDisplayed()
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun oracleDriveScreen_awakenOracleButton_enabledWhenDormant() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
@@ -105,7 +105,7 @@ class OracleDriveScreenTest {
             .assertIsEnabled()
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun oracleDriveScreen_awakenOracleButton_disabledWhenAwake() {
         consciousnessStateFlow.value = createAwakeState()
 
@@ -145,7 +145,7 @@ class OracleDriveScreenTest {
             .assertIsEnabled()
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun oracleDriveScreen_awakenOracleButton_callsInitializeConsciousness() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
@@ -217,7 +217,7 @@ class OracleDriveScreenTest {
             .assertIsDisplayed()
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun oracleDriveScreen_displaysCorrectConsciousnessLevel_transcendent() {
         consciousnessStateFlow.value = createAwakeState()
 
@@ -258,7 +258,7 @@ class OracleDriveScreenTest {
             .assertIsDisplayed()
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun oracleDriveScreen_displaysStorageCapacity_infinite() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
@@ -295,7 +295,7 @@ class OracleDriveScreenTest {
             .assertIsDisplayed()
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun oracleDriveScreen_stateChanges_updateUICorrectly() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
@@ -325,7 +325,7 @@ class OracleDriveScreenTest {
             .assertIsDisplayed()
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun oracleDriveScreen_edgeCases_singleConnectedAgent() {
         val singleAgentState = OracleConsciousnessState(
             isAwake = true,
@@ -371,7 +371,7 @@ class OracleDriveScreenTest {
             .assertIsDisplayed()
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun oracleDriveScreen_accessibility_hasCorrectSemantics() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
@@ -392,7 +392,7 @@ class OracleDriveScreenTest {
             .assertIsDisplayed()
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun oracleDriveScreen_multipleButtonClicks_handleCorrectly() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)
@@ -430,7 +430,7 @@ class OracleDriveScreenTest {
             .assertIsDisplayed()
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun oracleDriveScreen_rapidStateChanges_handledGracefully() {
         composeTestRule.setContent {
             OracleDriveScreen(viewModel = mockViewModel)

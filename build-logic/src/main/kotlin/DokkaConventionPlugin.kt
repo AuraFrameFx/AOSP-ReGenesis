@@ -1,5 +1,3 @@
-@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
-
 // ==== GENESIS PROTOCOL - DOKKA CONVENTION ====
 // Professional API documentation generation
 

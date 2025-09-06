@@ -1,91 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AnalysisUIOptions">
-    <option name="SCOPE_TYPE" value="8" />
-    <option name="CUSTOM_SCOPE_NAME" value="All Places" />
-  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d221b707-190c-44e0-ab34-6ba5bf7098d9" name="Changes" comment="Update build.gradle.kts for benchmark support and plugin management">
-      <change beforePath="$PROJECT_DIR$/.gradle/9.1.0-rc-1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.1.0-rc-1/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/9.1.0-rc-1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.1.0-rc-1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/9.1.0-rc-1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.1.0-rc-1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/build_model.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/configure_command.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/configure_stderr.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/configure_stdout.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/generate_cxx_metadata_305_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/generate_cxx_metadata_3113_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/generate_cxx_metadata_4100_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/generate_cxx_metadata_4926_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/generate_cxx_metadata_49_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/generate_cxx_metadata_5140_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/generate_cxx_metadata_5354_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/generate_cxx_metadata_5567_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/Debug/7n111c3r/logs/arm64-v8a/metadata_generation_record.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/RelWithDebInfo/4w5i4r1y/logs/arm64-v8a/build_model.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/RelWithDebInfo/4w5i4r1y/logs/arm64-v8a/configure_command.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/RelWithDebInfo/4w5i4r1y/logs/arm64-v8a/configure_stderr.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/RelWithDebInfo/4w5i4r1y/logs/arm64-v8a/configure_stdout.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/RelWithDebInfo/4w5i4r1y/logs/arm64-v8a/generate_cxx_metadata_305_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/RelWithDebInfo/4w5i4r1y/logs/arm64-v8a/generate_cxx_metadata_4100_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/cxx/RelWithDebInfo/4w5i4r1y/logs/arm64-v8a/metadata_generation_record.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/.gradle/9.1.0-rc-1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/buildSrc/.gradle/9.1.0-rc-1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/.gradle/9.1.0-rc-1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/buildSrc/.gradle/9.1.0-rc-1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/.gradle/9.1.0-rc-1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/buildSrc/.gradle/9.1.0-rc-1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/buildSrc/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/build/kotlin/compileKotlin/cacheable/last-build.bin" beforeDir="false" afterPath="$PROJECT_DIR$/buildSrc/build/kotlin/compileKotlin/cacheable/last-build.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/build/kotlin/compilePluginsBlocks/cacheable/last-build.bin" beforeDir="false" afterPath="$PROJECT_DIR$/buildSrc/build/kotlin/compilePluginsBlocks/cacheable/last-build.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/build/tmp/generatePrecompiledScriptPluginAccessors/accessors13487271568091572746/.gradle/9.1.0-rc-1/checksums/checksums.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/build/tmp/generatePrecompiledScriptPluginAccessors/accessors13487271568091572746/.gradle/9.1.0-rc-1/fileHashes/fileHashes.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/build/tmp/generatePrecompiledScriptPluginAccessors/accessors13487271568091572746/.gradle/9.1.0-rc-1/gc.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/build/tmp/generatePrecompiledScriptPluginAccessors/accessors13487271568091572746/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/build/tmp/generatePrecompiledScriptPluginAccessors/accessors13487271568091572746/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/build/tmp/generatePrecompiledScriptPluginAccessors/accessors13487271568091572746/.gradle/file-system.probe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/buildSrc/build/tmp/generatePrecompiledScriptPluginAccessors/accessors13487271568091572746/.gradle/vcs-1/gc.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/build_model.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/configure_command.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/configure_stderr.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/configure_stdout.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/generate_cxx_metadata_305_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/generate_cxx_metadata_3113_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/generate_cxx_metadata_4100_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/generate_cxx_metadata_4926_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/generate_cxx_metadata_49_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/generate_cxx_metadata_5140_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/generate_cxx_metadata_5354_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/generate_cxx_metadata_5567_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/arm64-v8a/metadata_generation_record.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/build_model.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/configure_command.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/configure_stderr.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/configure_stdout.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_1337_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_305_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_3419_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_4100_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_4149_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_4375_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_49_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_6900_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_710_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_7708_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_8160_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_9121_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/generate_cxx_metadata_923_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/Debug/4h2x4445/logs/x86/metadata_generation_record.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/RelWithDebInfo/451i635w/logs/x86/build_model.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/RelWithDebInfo/451i635w/logs/x86/configure_command.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/RelWithDebInfo/451i635w/logs/x86/configure_stderr.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/RelWithDebInfo/451i635w/logs/x86/configure_stdout.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/RelWithDebInfo/451i635w/logs/x86/generate_cxx_metadata_305_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/RelWithDebInfo/451i635w/logs/x86/generate_cxx_metadata_4100_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/RelWithDebInfo/451i635w/logs/x86/generate_cxx_metadata_923_timing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/datavein-oracle-native/build/intermediates/cxx/RelWithDebInfo/451i635w/logs/x86/metadata_generation_record.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-    </list>
+    <list default="true" id="98d23b7c-0aaa-4c2c-a1b5-31c5ba588e79" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -94,315 +13,39 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\Wehtt\.android\avd\Medium_Phone.avd)]" />
-  <component name="ExternalProjectsData">
-    <projectState path="$PROJECT_DIR$">
-      <ProjectState />
-    </projectState>
-  </component>
-  <component name="ExternalProjectsManager">
-    <system id="GRADLE">
-      <state>
-        <task path="$PROJECT_DIR$">
-          <activation />
-        </task>
-        <projects_view>
-          <tree_state>
-            <expand />
-            <select />
-          </tree_state>
-        </projects_view>
-      </state>
-    </system>
-  </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;AuraFrameFxDev&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/AuraFrameFx/AOSP-ReGenesis.git&quot;,
-    &quot;accountId&quot;: &quot;27338b37-a111-4457-a936-a57dfecc9a16&quot;
-  }
-}</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 7
-}</component>
-  <component name="ProjectId" id="32GhlVebnx7Op46h2zytIV0274t" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="32Ica5ucRqK7HHkU8Gl1O4GQZiM" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Batch.nuclear-clean-fix-all.executor": "Run",
-    "Gradle.AOSP-ReGenesis [:build-logic:tasks].executor": "Run",
-    "Gradle.AOSP-ReGenesis [:build-logic:updateDaemonJvm].executor": "Run",
-    "Gradle.C:/AOSP-ReGenesis-main [build].executor": "Run",
-    "Gradle.C:/New folder (2) [build].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "android.gradle.sync.needed": "true",
+    "bazel.project.detector.is.bazel.project": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "MASTERBETA",
-    "last_opened_file_path": "C:/New folder (2)",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.17",
-    "project.structure.side.proportion": "0.2",
-    "run.code.analysis.last.selected.profile": "aDefault"
+    "last_opened_file_path": "C:/AOSP-Re.Genesis"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\New folder (2)" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\AOSP-ReGenesis" />
-    </key>
-  </component>
-  <component name="RunAnythingCache">
-    <option name="myCommands">
-      <command value="gradle build" />
-    </option>
-  </component>
-  <component name="RunManager" selected="Android App.app">
-    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
-      <module name="MemoriaOs.app" />
-      <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
-      <option name="DEPLOY" value="true" />
-      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
-      <option name="DEPLOY_AS_INSTANT" value="false" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="PM_INSTALL_OPTIONS" value="" />
-      <option name="ALL_USERS" value="false" />
-      <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
-      <option name="ALLOW_ASSUME_VERIFIED" value="false" />
-      <option name="CLEAR_APP_STORAGE" value="false" />
-      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
-      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
-      <option name="MODE" value="default_activity" />
-      <option name="RESTORE_ENABLED" value="false" />
-      <option name="RESTORE_FILE" value="" />
-      <option name="RESTORE_FRESH_INSTALL_ONLY" value="false" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
-      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
-      <option name="DEBUGGER_TYPE" value="Auto" />
-      <Auto>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Auto>
-      <Hybrid>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Hybrid>
-      <Java>
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Java>
-      <Native>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Native>
-      <Profilers>
-        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Java/Kotlin Method Sample (legacy)" />
-        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
-        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
-      </Profilers>
-      <option name="DEEP_LINK" value="" />
-      <option name="ACTIVITY" value="" />
-      <option name="ACTIVITY_CLASS" value="" />
-      <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
-      <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="nuclear-clean-fix-all" type="BatchConfigurationType" factoryName="Batch" temporary="true">
-      <module name="MemoriaOs" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SCRIPT_NAME" value="nuclear-clean-fix-all.bat" />
-      <option name="PARAMETERS" value="" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="AOSP-ReGenesis [:build-logic:updateDaemonJvm]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":build-logic:updateDaemonJvm" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <EXTENSION ID="com.android.tools.idea.testartifacts.testsuite.GradleRunConfigurationExtension">
-        <com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>false</com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>
-        <android.execution.deploysToLocalDevice>false</android.execution.deploysToLocalDevice>
-      </EXTENSION>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="C:/AOSP-ReGenesis-main [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <EXTENSION ID="com.android.tools.idea.testartifacts.testsuite.GradleRunConfigurationExtension">
-        <com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>false</com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>
-        <android.execution.deploysToLocalDevice>false</android.execution.deploysToLocalDevice>
-      </EXTENSION>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="C:/New folder (2) [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <EXTENSION ID="com.android.tools.idea.testartifacts.testsuite.GradleRunConfigurationExtension">
-        <com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>false</com.android.tools.idea.testartifacts.testsuite.SHOW_TEST_RESULT_IN_ANDROID_TEST_SUITE_VIEW>
-        <android.execution.deploysToLocalDevice>false</android.execution.deploysToLocalDevice>
-      </EXTENSION>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Gradle.C:/New folder (2) [build]" />
-        <item itemvalue="Batch.nuclear-clean-fix-all" />
-        <item itemvalue="Gradle.AOSP-ReGenesis [:build-logic:updateDaemonJvm]" />
-        <item itemvalue="Gradle.C:/AOSP-ReGenesis-main [build]" />
-      </list>
-    </recent_temporary>
-  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d221b707-190c-44e0-ab34-6ba5bf7098d9" name="Changes" comment="" />
-      <created>1757052967587</created>
+      <changelist id="98d23b7c-0aaa-4c2c-a1b5-31c5ba588e79" name="Changes" comment="" />
+      <created>1757111587294</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1757052967587</updated>
+      <updated>1757111587294</updated>
     </task>
-    <task id="LOCAL-00001" summary="Update build.gradle.kts for benchmark support and plugin management">
-      <option name="closed" value="true" />
-      <created>1757096116177</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1757096116177</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Update build.gradle.kts for benchmark support and plugin management">
-      <option name="closed" value="true" />
-      <created>1757096213825</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1757096213825</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Update build.gradle.kts for benchmark support and plugin management">
-      <option name="closed" value="true" />
-      <created>1757103789646</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1757103789646</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Update build.gradle.kts for benchmark support and plugin management">
-      <option name="closed" value="true" />
-      <created>1757104999331</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1757104999331</updated>
-    </task>
-    <option name="localTasksCounter" value="5" />
     <servers />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Update build.gradle.kts for benchmark support and plugin management" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update build.gradle.kts for benchmark support and plugin management" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/settings.gradle.kts</url>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

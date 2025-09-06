@@ -1,5 +1,3 @@
-@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
-
 // ==== GENESIS PROTOCOL - ANDROID LIBRARY CONVENTION ====
 // Standard Android library configuration for all modules
 
@@ -78,13 +76,13 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<JavaPluginExtension>("java") {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
+                sourceCompatibility = JavaVersion.VERSION_24
+                targetCompatibility = JavaVersion.VERSION_24
             }
 
             // Kotlin JVM toolchain
             extensions.configure<KotlinProjectExtension> {
-                jvmToolchain(21)
+                jvmToolchain(24)
             }
 
             // Clean generated sources task

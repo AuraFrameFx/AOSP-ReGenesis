@@ -12,7 +12,7 @@ plugins {
 android {
     namespace = "com.aegenesis.${project.name.replace("-", "")}"
 
-    compileSdk = 35
+    compileSdk = 36 // Unified to 36
 
     defaultConfig {
         minSdk = 26
@@ -30,14 +30,17 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+    // Java toolchain replaces manual source/target compatibility
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(24))
+        }
     }
 
+    // Modern Kotlin compiler options
     kotlin {
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
             languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
             apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
             freeCompilerArgs.addAll(

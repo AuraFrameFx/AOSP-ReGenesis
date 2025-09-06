@@ -1,3 +1,0 @@
-C:/New folder (2)/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86/CMakeFiles/datavein_oracle_native.dir
-C:/New folder (2)/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86/CMakeFiles/edit_cache.dir
-C:/New folder (2)/datavein-oracle-native/.cxx/RelWithDebInfo/451i635w/x86/CMakeFiles/rebuild_cache.dir

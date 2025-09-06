@@ -1,5 +1,3 @@
-@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
-
 // ==== GENESIS PROTOCOL - ANDROID APPLICATION CONVENTION ====
 // Main application module configuration
 
@@ -87,13 +85,13 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<JavaPluginExtension>("java") {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
+                sourceCompatibility = JavaVersion.VERSION_24
+                targetCompatibility = JavaVersion.VERSION_24
             }
 
             // Kotlin JVM toolchain
             extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension> {
-                jvmToolchain(21)
+                jvmToolchain(24)
             }
 
             // Clean tasks for app module

@@ -67,13 +67,34 @@ secure-comm/
 Handles all cryptographic operations including encryption, decryption, and key derivation.
 
 ```kotlin
-interface CryptoManager {
+// Kotlin 2.2.20+ improved overload resolution allows sync + suspend variants
+fun encrypt(data: ByteArray, key: SecretKey): Pair<ByteArray, ByteArray>
+suspend fun encrypt(data: ByteArray, key: SecretKey): Pair<ByteArray, ByteArray>
+```
+
+Use synchronous when already on a background thread and payloads are small (<4KB). Use suspend variant elsewhere for dispatcher-friendly execution.
+
+```kotlin
+interface CryptoManagerLegacyLike {
     suspend fun encrypt(data: String, key: SecretKey): EncryptedData
     suspend fun decrypt(encryptedData: EncryptedData, key: SecretKey): String
     suspend fun generateKey(alias: String): SecretKey
     suspend fun deriveKey(password: CharArray, salt: ByteArray): SecretKey
 }
 ```
+
+### ✨ Kotlin 2.2.x Adoption Note (Security-Focused)
+The module adopts the Kotlin 2.2.20 (Beta2+/RC) overload resolution enhancement to expose both synchronous and suspend encryption APIs with identical signatures. This previously required name differentiation (`encryptAsync`, etc.). Now both coexist without ambiguity for improved ergonomics and performance tuning.
+
+Rationale:
+- Avoids unnecessary coroutine dispatch for trivial operations
+- Provides uniform call-site semantics
+- Preserves determinism between overloads (identical algorithm & output shape)
+
+Guidelines:
+1. Prefer `suspend encrypt` in higher-level service flows
+2. Use sync `encrypt` only in CPU-bound worker contexts
+3. Keep parameter lists identical; do not introduce side-effect divergence
 
 #### KeyManager
 Manages cryptographic keys using Android Keystore and secure key storage.

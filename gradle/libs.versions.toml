@@ -214,7 +214,7 @@ testing = [
     "junit-jupiter-api",
     "junit-jupiter-engine",
     "androidx-test-ext-junit",
-    "androidx-espresso-core",
+    "androidx-test-espresso-core",
     "mockk",
     "turbine"
 ]

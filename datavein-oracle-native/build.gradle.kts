@@ -1,9 +1,8 @@
 plugins {
-    id("genesis.android.library")
-    id("genesis.android.compose") // Assuming a convention plugin for Compose setup
-    id("genesis.android.hilt")    // Assuming a convention plugin for Hilt
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    // Assuming a convention plugin for Hilt
+    alias(libs.plugins.ksp)
 }
 
 android {

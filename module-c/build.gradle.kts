@@ -1,11 +1,16 @@
 // GENESIS PROTOCOL - MODULE C
-plugins { id("genesis.android.compose"); alias(libs.plugins.ksp); alias(libs.plugins.hilt); alias(libs.plugins.kotlin.android) }
-android {
-    namespace = "dev.aurakai.auraframefx.module.c"
-    compileSdk = 36
-    java { toolchain { languageVersion.set(JavaLanguageVersion.of(24)) } }
-    kotlin { jvmToolchain(24); compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24) } }
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
+    android {
+        namespace = "dev.aurakai.auraframefx.module.c"
+        compileSdk = 36
+        java { toolchain { languageVersion.set(JavaLanguageVersion.of(24)) } }
+        kotlin { jvmToolchain(24); compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24) } }
+    }
+
 dependencies {
     api(project(":core-module"))
     implementation(libs.bundles.androidx.core)

@@ -77,8 +77,8 @@ dependencies {
 
     // Firebase
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics.ktx)
-    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
     // UI / Utils
     implementation(libs.coil.compose)
@@ -98,11 +98,13 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.tooling.preview)
 
-    // YukiHook / Xposed
-    implementation(libs.yukihook.core)
-    ksp(libs.yukihook.ksp)
-    implementation(libs.yukihook.prefs)
-    compileOnly(libs.xposed.api)
+    // YukiHook / Xposed (offline local JAR pattern to match app module)
+    compileOnly(files("Libs/api-82.jar"))
+    implementation(files("Libs/yukihookapi-core.jar"))
+    ksp(files("Libs/yukihookapi-ksp.jar"))
+    implementation(files("Libs/yukihookapi-prefs.jar"))
+    // To revert to catalog-managed deps, replace above with:
+    // compileOnly(libs.xposed.api); implementation(libs.yukihook.core); implementation(libs.yukihook.prefs); ksp(libs.yukihook.ksp)
 }
 
 

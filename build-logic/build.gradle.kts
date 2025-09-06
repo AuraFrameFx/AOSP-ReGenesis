@@ -23,14 +23,14 @@ dependencies {
     implementation("com.android.tools.build:gradle:${libs.versions.agp.get()}")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
     implementation("com.google.dagger:hilt-android-gradle-plugin:${libs.versions.hilt.version.get()}")
-    
+
     // Other plugins
-    implementation(libs.dokka.gradle.plugin)
-    implementation(libs.spotless.plugin.gradle)
-    implementation(libs.detekt.gradle.plugin)
-    implementation(libs.org.jlleitschuh.gradle.ktlint.gradle.plugin)
-    implementation(libs.openapi.generator.gradle.plugin)
-    
+    implementation("org.jetbrains.dokka:dokka-gradle-plugin")
+    implementation("com.diffplug.spotless:spotless-plugin-gradle")
+    implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin")
+    implementation("org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin")
+    implementation("org.openapitools:openapi-generator-gradle-plugin")
+
     // Development dependencies
     implementation(gradleApi())
     implementation(localGroovy())

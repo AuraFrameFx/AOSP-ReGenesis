@@ -1,9 +1,8 @@
 // GENESIS PROTOCOL - MODULE A
 plugins {
-    id("genesis.android.compose")
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 android {
     namespace = "dev.aurakai.auraframefx.module.a"

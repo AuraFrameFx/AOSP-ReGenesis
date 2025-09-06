@@ -6,7 +6,8 @@ plugins {
     alias(libs.plugins.kotlin.android) // Added missing Kotlin Android plugin
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.google.services)
+    // TEMP: google-services plugin removed due to incompatibility with AGP 9.0.0-alpha02 (NoClassDefFoundError Variant)
+    // alias(libs.plugins.google.services)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
     alias(libs.plugins.ksp)
@@ -64,6 +65,13 @@ android {
             isMinifyEnabled = false
             buildConfigField("String", "ENVIRONMENT", "\"debug\"")
         }
+    }
+    // Add buildConfig toggle to indicate google services plugin status
+    applicationVariants.all {
+        val taskProvider = tasks.register("printGoogleServicesStatus") {
+            doLast { println("google-services plugin: SKIPPED (manual Firebase initialization required)") }
+        }
+
     }
 
     java {
@@ -134,9 +142,13 @@ dependencies {
     // Desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
-    // Xposed / YukiHook
-    compileOnly(libs.xposed.api)
-    implementation(libs.yukihook.core); ksp(libs.yukihook.ksp); implementation(libs.yukihook.prefs)
+    // Xposed / YukiHook (offline/local JAR mode)
+    compileOnly(files("Libs/api-82.jar"))
+    implementation(files("Libs/yukihookapi-core.jar"))
+    ksp(files("Libs/yukihookapi-ksp.jar"))
+    implementation(files("Libs/yukihookapi-prefs.jar"))
+    // (To switch back to catalog-managed deps, replace above with
+    //  compileOnly(libs.xposed.api) + implementation(libs.yukihook.core/prefs) + ksp(libs.yukihook.ksp))
 
     // AndroidX & Compose
     implementation(libs.androidx.core.ktx)
@@ -146,7 +158,9 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
 
     // Room
-    implementation(libs.room.runtime); implementation(libs.room.ktx); ksp(libs.room.compiler)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     // Modules
     implementation(project(":core-module"))
@@ -159,32 +173,32 @@ dependencies {
     implementation(project(":sandbox-ui"))
     implementation(project(":datavein-oracle-native"))
 
-    // DI
-    implementation(libs.hilt.android); kspTest(libs.hilt.compiler); kspAndroidTest(libs.hilt.compiler)
-    androidTestImplementation(libs.hilt.android.testing); kspAndroidTest(libs.hilt.compiler)
+    // DI (Hilt)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    testImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
+    kspAndroidTest(libs.hilt.compiler)
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)
 
-    // Coroutines & Networking
-    implementation(libs.bundles.coroutines); implementation(libs.bundles.network)
+    // Coroutines & Networking bundles
+    implementation(libs.bundles.coroutines)
+    implementation(libs.bundles.network)
 
     // Firebase
-    implementation(platform(libs.firebase.bom)); implementation(libs.bundles.firebase)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
 
     // Utilities
-    implementation(libs.timber); implementation(libs.coil.compose)
-
-    // Local Xposed API JAR (explicit) – keeps api-82 out of final APK
-    compileOnly(files("Libs/api-82.jar"))
-    // Optional OFFLINE fallback for YukiHookAPI if remote repos are unavailable:
-    // implementation(files("Libs/yukihookapi-core.jar"))
-    // ksp(files("Libs/yukihookapi-ksp.jar"))
-    // implementation(files("Libs/yukihookapi-prefs.jar"))
-    // (When repos recover, use catalog aliases: libs.yukihook.core / ksp / prefs)
+    implementation(libs.timber)
+    implementation(libs.coil.compose)
 
     // Testing
-    testImplementation(libs.bundles.testing); testImplementation(libs.mockk)
+    testImplementation(libs.bundles.testing)
+    testImplementation(libs.mockk)
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
@@ -220,3 +234,5 @@ tasks.register("appStatus") {
         println("✨ Status: Genesis Protocol Application Ready (Java 24)")
     }
 }
+
+// Firebase note: ensure FirebaseApp.initializeApp(context, options) is called if json parsing not auto-applied.

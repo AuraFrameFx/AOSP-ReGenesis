@@ -1,12 +1,18 @@
 // GENESIS PROTOCOL - MODULES A-F
 // Module E
-plugins { id("genesis.android.compose"); alias(libs.plugins.kotlin.serialization); alias(libs.plugins.ksp); alias(libs.plugins.hilt); alias(libs.plugins.dokka); alias(libs.plugins.spotless); alias(libs.plugins.kotlin.android) }
-android {
-    namespace = "dev.aurakai.auraframefx.module.e"
-    compileSdk = 36
-    java { toolchain { languageVersion.set(JavaLanguageVersion.of(24)) } }
-    kotlin { jvmToolchain(24); compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24) } }
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    // Assuming a convention plugin for Hilt
+    alias(libs.plugins.ksp)
 }
+    android {
+        namespace = "dev.aurakai.auraframefx.module.e"
+        compileSdk = 36
+        java { toolchain { languageVersion.set(JavaLanguageVersion.of(24)) } }
+        kotlin { jvmToolchain(24); compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24) } }
+    }
+
 dependencies {
     api(project(":core-module"))
     implementation(libs.bundles.androidx.core)

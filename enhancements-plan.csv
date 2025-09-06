@@ -1,0 +1,14 @@
+ID,Area,Title,Priority,Status,Owner,Notes,Prereq
+E001,Build Hygiene,Nuclear / Deep Clean Baseline,P0,Done,auto,Ensure caches purged before stabilization,None
+E002,Plugin Enforcement,Restrict google-services to :app,P0,Done,auto,Root enforcement throwing if misapplied,E001
+E003,Dependency Catalog,Normalize accessor naming,P1,Planned,,Align datastore/work aliases,E001
+E004,CI Quality Gate,Add OpenAPI enforcement to check,P1,Done,auto,Fail build <95% operationId coverage,None
+E005,Convention Plugins,Extract common android-lib config,P2,Planned,,Reduce duplication across modules,E003
+E006,Testing,Add minimal unit test smoke per module,P2,Planned,,Focus on DI + Room compile, E005
+E007,Performance,Enable configuration cache & measure,P2,Planned,,After plugin stabilization,E001
+E008,Compose,Selective compose buildFeatures cleanup,P3,Planned,,Disable where not needed,E005
+E009,Security,Secrets scanning pre-commit hook,P3,Planned,,Check for json key material,E001
+E010,Docs,Version drift automation in CI,P3,Done,auto,versionsConsistencyCheck task,None
+E011,Metrics,Add build scan toggle doc,P4,Planned,,Optional develocity integration,E007
+E012,Refactor,Move OpenAPI tasks to build-logic,P4,Planned,,Keep root build lighter,E004
+

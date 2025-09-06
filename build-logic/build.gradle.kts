@@ -22,7 +22,7 @@ dependencies {
     // Access to Android Gradle Plugin and Kotlin plugin APIs
     implementation("com.android.tools.build:gradle:${libs.versions.agp.get()}")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
-    implementation("com.google.dagger:hilt-android-gradle-plugin:${libs.versions.hilt.version.get()}")
+    implementation("com.google.dagger:hilt-android-gradle-plugin:${libs.versions.hilt.get()}")
     
     // Other plugins
     implementation(libs.dokka.gradle.plugin)

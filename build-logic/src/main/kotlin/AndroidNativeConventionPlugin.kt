@@ -1,5 +1,3 @@
-@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
-
 // ==== GENESIS PROTOCOL - ANDROID NATIVE CONVENTION ====
 // Native code configuration for modules with JNI/NDK
 

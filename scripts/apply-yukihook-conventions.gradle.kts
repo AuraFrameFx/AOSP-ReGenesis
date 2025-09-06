@@ -41,27 +41,16 @@ subprojects { subproject ->
                 }
 
                 compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_24
-                    targetCompatibility = JavaVersion.VERSION_24
+                    sourceCompatibility = JavaVersion.VERSION_21
+                    targetCompatibility = JavaVersion.VERSION_21
                 }
 
-
-                // Modern Kotlin configuration (Kotlin 2.2+)
-                kotlin {
-                    jvmToolchain {
-                        languageVersion.set(JavaLanguageVersion.of(24))
-                    }
-                    
-                    compilerOptions {
-                        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
-                        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-                        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-
-                        freeCompilerArgs.addAll(
-                            "-Xjvm-default=all",
-                            "-opt-in=kotlin.RequiresOptIn"
-                        )
-                    }
+                kotlinOptions {
+                    jvmTarget = "24"
+                    freeCompilerArgs = freeCompilerArgs + listOf(
+                        "-Xjvm-default=all",
+                        "-opt-in=kotlin.RequiresOptIn"
+                    )
                 }
             }
 

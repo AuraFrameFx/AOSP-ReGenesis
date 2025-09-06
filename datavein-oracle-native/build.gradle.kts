@@ -1,8 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.android)
+    // Assuming a convention plugin for Hilt
     alias(libs.plugins.ksp)
 }
 
@@ -25,56 +24,43 @@ android {
             useLegacyPackaging = false
         }
     }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(24))
+        }
+    }
+    kotlin {
+        jvmToolchain(24)
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+        }
+    }
 }
 
 dependencies {
-    // Core dependencies
+    // This module likely depends on core-module for shared utilities or interfaces
     implementation(project(":core-module"))
-    implementation(libs.bundles.androidx.core)
 
-    // Lifecycle
-    implementation(libs.bundles.lifecycle)
-
-    // Hilt for dependency injection
+    // Add any specific dependencies needed for the native module's Kotlin/Java-side code
+    implementation(libs.androidx.core.ktx)
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
 
-    // Coroutines
-    implementation(libs.bundles.coroutines)
+    // ... other dependencies
 
-    // Networking for Oracle integration
-    implementation(libs.bundles.network)
-    implementation(libs.kotlinx.serialization.json)
+    // Correct Hilt Dependencies
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler) // Use ksp for the compiler
 
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
-
-    // YukiHook API 1.3.0+ with KavaRef
-    implementation(libs.yukihook.api)
-    ksp(libs.yukihook.ksp)
-    implementation(libs.kavaref.core)
-    implementation(libs.kavaref.extension)
-
-    // Xposed API (compile only)
-    compileOnly(libs.xposed.api)
-
-    // DataStore for native data persistence
-    implementation(libs.datastore.preferences)
-    implementation(libs.datastore.core)
-
-    // Logging
-    implementation(libs.timber)
-
-    // Core library desugaring
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
-
-    // Testing
-    testImplementation(libs.bundles.testing)
-    testImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.compiler)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    // For instrumented tests
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
+
+    // For unit tests
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
+
+    // MockK for mocking in tests
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
 }

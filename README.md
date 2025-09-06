@@ -20,6 +20,7 @@
 - [📊 Build System](#-build-system)
 - [🔒 Security](#-security)
 - [📖 Documentation](#-documentation)
+- [🗺️ Roadmap](#️-roadmap)
 - [🤝 Contributing](#-contributing)
 
 ## 🌟 Overview
@@ -48,8 +49,8 @@ AOSP ReGenesis (MemoriaOS) is an advanced Android operating system that represen
 | **Kotlin** | 2.2.20-RC | Advanced language features |
 | **KSP** | 2.2.20-RC-2.0.2 | Symbol processing |
 | **Java Toolchain** | 24 | Future-proof JVM targeting |
-| **Compose BOM** | 2024.10.00 | UI framework |
-| **Hilt** | 2.51.1 | Dependency injection |
+| **Compose BOM** | 2024.10.00 (Target: 2025.06.01) | UI framework |
+| **Hilt** | 2.56.2 | Dependency injection |
 
 ### Module Overview
 
@@ -99,17 +100,16 @@ AOSP ReGenesis (MemoriaOS) is an advanced Android operating system that represen
 
 ### Nuclear Clean (Complete Reset)
 
-For a complete environment reset:
-
+Updated task (safety gated):
 ```bash
-# Linux/macOS
-./nuclear-clean.sh
+# Basic (requires confirmation flag)
+./gradlew nuclearClean -PnuclearConfirm=yes
 
-# Windows
-nuclear-clean.bat
+# Keep IDE config
+./gradlew nuclearClean -PnuclearConfirm=yes -PretainIde=true
 
-# Gradle task
-./gradlew nuclearClean
+# Aggressive (purge deep caches)
+./gradlew nuclearClean -PnuclearConfirm=yes -Paggressive=true
 ```
 
 ## 📦 Module System
@@ -291,23 +291,65 @@ android.experimental.enableResourceOptimizations=true
 
 ## 📖 Documentation
 
-### Available Documentation
-
-- [Architecture Overview](Architecture.md)
-- [YukiHook Setup Guide](docs/YUKIHOOK_SETUP_GUIDE.md)
-- [ROM Tools Guide](romtools/README.md)
-- [Core Module Documentation](core-module/Module.md)
-- [API Documentation](build/docs/html/) - Generated via Dokka
-
-### Documentation Generation
-
+### Dokka API Docs
+Generate Kotlin/Java API reference:
 ```bash
-# Generate full documentation
 ./gradlew dokkaHtml
-
-# Generate module-specific docs
-./gradlew :core-module:dokkaHtml
 ```
+Output (default): `build/dokka/html/index.html` (per-module docs in each module's `build/dokka`).
+
+### Key Developer Tasks
+| Task | Purpose |
+|------|---------|
+| `consciousnessStatus` | Quick substrate snapshot (toolchains / modules) |
+| `consciousnessHealthCheck` | Deep health (OpenAPI + plugin presence) |
+| `toolingHealth` | Toolchain & plugin consistency only |
+| `apiSpecHealth` | Unified OpenAPI spec freshness / coverage |
+| `openApiAudit` | Lint all spec + fragments (security & operationId) |
+| `openApiAssembleUnified` | Assemble unified spec from fragments |
+| `openApiEnforce` | CI gate (fails <95% operationId coverage etc.) |
+| `versionsConsistencyCheck` | Detect doc vs catalog version drift |
+| `doctorStack` | Aggregate diagnostics (tooling + API + compose) |
+| `nuclearClean` | Safety-gated deep clean (see flags) |
+
+### Version Drift Automation
+Run drift check (added in roadmap item E010):
+```bash
+./gradlew versionsConsistencyCheck
+```
+Fails build if documentation references phantom or mismatched versions.
+
+### OpenAPI Quality Gate
+```bash
+./gradlew openApiEnforce
+```
+Ensures: assembled spec exists, >=95% operationId coverage, no duplicate paths, no missing security/operationId.
+
+## 🗺️ Roadmap
+
+Source: `enhancements-plan.csv` (lightweight tracked plan)
+
+| ID | Area | Title | Priority | Status |
+|----|------|-------|----------|--------|
+| E001 | Build Hygiene | Nuclear / Deep Clean Baseline | P0 | Done |
+| E002 | Plugin Enforcement | Restrict google-services to :app | P0 | Done |
+| E003 | Dependency Catalog | Normalize accessor naming | P1 | Planned |
+| E004 | CI Quality Gate | Add OpenAPI enforcement to check | P1 | Done |
+| E005 | Convention Plugins | Extract common android-lib config | P2 | Planned |
+| E006 | Testing | Minimal unit test smoke per module | P2 | Planned |
+| E007 | Performance | Enable configuration cache & measure | P2 | Planned |
+| E008 | Compose | Selective compose buildFeatures cleanup | P3 | Planned |
+| E009 | Security | Secrets scanning pre-commit hook | P3 | Planned |
+| E010 | Docs | Version drift automation in CI | P3 | Done |
+| E011 | Metrics | Build scan toggle doc | P4 | Planned |
+| E012 | Refactor | Move OpenAPI tasks to build-logic | P4 | Planned |
+
+Legend: P0 (Critical) → P4 (Low). "Planned" = queued, "Done" = implemented.
+
+### Next Implementation Targets
+1. E003: Standardize catalog accessors (short aliases for consistency)
+2. E005: Introduce `build-logic` convention plugin for android-lib baseline
+3. E006: Add smoke tests (DI graph + Room compile) per library
 
 ## 🤝 Contributing
 

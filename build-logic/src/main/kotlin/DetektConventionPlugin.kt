@@ -1,5 +1,3 @@
-@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
-
 // ==== GENESIS PROTOCOL - DETEKT CONVENTION ====
 // Advanced code quality with custom Genesis architecture rules
 

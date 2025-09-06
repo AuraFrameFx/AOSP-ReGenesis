@@ -16,6 +16,8 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 /**
@@ -121,6 +123,19 @@ class CryptoManager @Inject constructor(
         val iv = cipher.iv
         val ciphertext = cipher.doFinal(data)
         return ciphertext to iv
+    }
+
+    /**
+     * Suspend variant of [encrypt] leveraging Kotlin 2.2.20 improved overload resolution
+     * that now allows sync + suspend overloads with identical parameter lists.
+     * Executes the encryption work on Dispatchers.Default to avoid blocking callers.
+     */
+    suspend fun encrypt(data: ByteArray, key: SecretKey): Pair<ByteArray, ByteArray> = withContext(Dispatchers.Default) {
+        val cipher = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, key)
+        val iv = cipher.iv
+        val ciphertext = cipher.doFinal(data)
+        ciphertext to iv
     }
 
     /**

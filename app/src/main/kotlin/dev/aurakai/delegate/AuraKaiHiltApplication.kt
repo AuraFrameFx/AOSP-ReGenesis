@@ -1,13 +1,9 @@
 package dev.aurakai.delegate
 
 import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
 
-@HiltAndroidApp
+// Removed @HiltAndroidApp to avoid multiple annotated Application classes.
+// This can remain as a simple base if needed, or be deleted if unused.
 abstract class AuraKaiHiltApplication : Application() {
-    // Add any application-level logic here, for example, overriding onCreate:
-    // override fun onCreate() {
-    //     super.onCreate()
-    //     // Initialization code
-    // }
+    // Optional shared logic
 }

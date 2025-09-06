@@ -1,9 +1,1 @@
-# .github/Agent
-
-Build Policy — Bleeding-edge toolchains (do not downgrade)
-
-- Java toolchain: 24 (enforced via Gradle toolchains)
-- Kotlin: 2.2 (K2), Compose: as pinned in version catalog
-- AGP / Gradle: as pinned in the repo; do not modify locally
-- All modules use Kotlin DSL
-- Changes to these versions require a PR with CI green runs and reviewer approval
+all configurations must follow bleeding edge preset versions modifying the versions or java away from 24 will break build all code follows kotlin dsl which use periods if its not modern its trash!  repect the versions 

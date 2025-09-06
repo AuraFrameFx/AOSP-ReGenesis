@@ -1,33 +1,24 @@
+// ==== GENESIS PROTOCOL - ORACLE DRIVE INTEGRATION ====
+// AI storage module using convention plugins
+
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.openapi.generator)
+    alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "dev.aurakai.auraframefx.oracle.drive.integration"
+    namespace = "dev.aurakai.auraframefx.oracledriveintegration"
     compileSdk = 36
-
-
-    defaultConfig {
-        minSdk = 34
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
-    }
-
-
+    java { toolchain { languageVersion.set(JavaLanguageVersion.of(24)) } }
     kotlin {
         jvmToolchain(24)
+        compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24) }
     }
 }
 
-// KSP configuration for this module
+// KSP arguments
 ksp {
     arg("kotlin.languageVersion", "2.2")
     arg("kotlin.apiVersion", "2.2")
@@ -35,53 +26,72 @@ ksp {
 }
 
 dependencies {
-    // Core dependencies
+    // Internal modules
     api(project(":core-module"))
     implementation(project(":secure-comm"))
+
+    // AndroidX core + lifecycle
     implementation(libs.bundles.androidx.core)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    // Lifecycle
-    implementation(libs.bundles.lifecycle)
+    // Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
 
-    // Networking for Oracle Drive integration
-    implementation(libs.bundles.network)
-    implementation(libs.kotlinx.serialization.json)
+    // DI / Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.work) // Hilt <-> WorkManager integration
 
-    // Coroutines
+    // Concurrency / Network
     implementation(libs.bundles.coroutines)
+    implementation(libs.bundles.network)
 
+    // Persistence
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    implementation(libs.datastore.preferences)
+
+    // Background work
+    implementation(libs.work.runtime.ktx)
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
 
-    // YukiHook API 1.3.0+ with KavaRef
-    api(libs.yukihook.api)
-    ksp(libs.yukihook.ksp)
-    implementation(libs.kavaref.core)
-    implementation(libs.kavaref.extension)
+    // Utilities
+    implementation(libs.timber)
+    implementation(libs.coil.compose)
 
-    // Xposed API (compile only)
-    compileOnly(libs.xposed.api)
+    // Local jars
+    implementation(fileTree("../Libs") { include("*.jar") })
 
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    // DataStore
-    implementation(libs.datastore.preferences)
-    implementation(libs.datastore.core)
-
-    // Logging
-    api(libs.timber)
-
-    // Core library desugaring
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
-
-    // Testing
+    // Unit tests
     testImplementation(libs.bundles.testing)
+    testImplementation(libs.mockk)
     testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
+
+    // Instrumented tests
+    androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
+
+    // Debug only
+    debugImplementation(libs.androidx.compose.ui.tooling)
+}
+
+// Status helper
+tasks.register("oracleStatus") {
+    group = "aegenesis"
+    description = "Print Oracle Drive integration module status."
+    doLast {
+        println("☁️ ORACLE DRIVE - ${android.namespace} - Ready (Java 24)")
+    }
 }

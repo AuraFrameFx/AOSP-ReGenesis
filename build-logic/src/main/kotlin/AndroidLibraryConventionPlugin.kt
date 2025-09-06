@@ -1,5 +1,3 @@
-@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
-
 // ==== GENESIS PROTOCOL - ANDROID LIBRARY CONVENTION ====
 // Standard Android library configuration for all modules
 

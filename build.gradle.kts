@@ -1,3 +1,10 @@
+// ===== GENESIS PROTOCOL - ROOT BUILD =====
+// Multi-module project root - no plugins needed here
+// Plugins are managed through:
+// 1. settings.gradle.kts (pluginManagement)
+// 2. buildSrc (for convention plugins)
+// 3. Individual module build.gradle.kts files
+
 // Project information
 extra["projectName"] = "MemoriaOS"
 extra["projectGroup"] = "dev.aurakai.memoria"
@@ -33,3 +40,6 @@ tasks.register<Delete>("clean") {
         println("🧹 Cleaned root build directory")
     }
 }
+
+// Apply dependency resolution fix
+apply(from = "dependency-fix.gradle.kts")

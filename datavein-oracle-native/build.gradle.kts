@@ -1,9 +1,9 @@
 plugins {
-    id("genesis.android.library")
-    id("genesis.android.compose") // Assuming a convention plugin for Compose setup
-    id("genesis.android.hilt")    // Assuming a convention plugin for Hilt
-    id("com.google.devtools.ksp")
-    alias(libs.plugins.kotlin.android) // Explicitly apply KSP here
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -28,24 +28,53 @@ android {
 }
 
 dependencies {
-    // This module likely depends on core-module for shared utilities or interfaces
+    // Core dependencies
     implementation(project(":core-module"))
+    implementation(libs.bundles.androidx.core)
 
-    // Add any specific dependencies needed for the native module's Kotlin/Java-side code
-    implementation(libs.androidx.core.ktx)
+    // Lifecycle
+    implementation(libs.bundles.lifecycle)
+
+    // Hilt for dependency injection
     implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
-    // ... other dependencies
+    // Coroutines
+    implementation(libs.bundles.coroutines)
 
-    // Correct Hilt Dependencies
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler) // Use ksp for the compiler
+    // Networking for Oracle integration
+    implementation(libs.bundles.network)
+    implementation(libs.kotlinx.serialization.json)
 
-    // For instrumented tests
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
 
-    // For unit tests
+    // YukiHook API 1.3.0+ with KavaRef
+    implementation(libs.yukihook.api)
+    ksp(libs.yukihook.ksp)
+    implementation(libs.kavaref.core)
+    implementation(libs.kavaref.extension)
+
+    // Xposed API (compile only)
+    compileOnly(libs.xposed.api)
+
+    // DataStore for native data persistence
+    implementation(libs.datastore.preferences)
+    implementation(libs.datastore.core)
+
+    // Logging
+    implementation(libs.timber)
+
+    // Core library desugaring
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // Testing
+    testImplementation(libs.bundles.testing)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
 }

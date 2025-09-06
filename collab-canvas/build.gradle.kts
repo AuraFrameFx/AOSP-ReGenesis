@@ -1,23 +1,33 @@
 // Apply plugins without version to avoid conflicts
 // Versions are managed in the root build.gradle.kts and version catalog
 plugins {
-    id("com.android.library")  // Apply without version
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
-    // YukiHook API KSP plugin
-    id("com.highcapable.yukihookapi") version "2.1.1"
 }
+
 android {
     namespace = "dev.aurakai.auraframefx.collabcanvas"
     compileSdk = 36
     
     defaultConfig {
         minSdk = 34
+
+        // Enable multidx for core library desugaring
+        multiDexEnabled = true
+    }
+    
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
+
+        // Enable core library desugaring
+        isCoreLibraryDesugaringEnabled = true
     }
     
     compileOptions {
@@ -48,100 +58,70 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.0"
     }
-        // Optionally, set composeOptions if not managed by version catalog
-        // composeOptions { kotlinCompilerExtensionVersion = "1.5.0" }
+}
+
+dependencies {
+    // Core dependencies
+    api(project(":core-module"))
+    implementation(libs.bundles.androidx.core)
+
+    // Lifecycle
+    implementation(libs.bundles.lifecycle)
+
+    // Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
+    implementation(libs.androidx.compose.material.icons.extended)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // Coroutines
+    implementation(libs.bundles.coroutines)
+
+    // Networking
+    implementation(libs.bundles.network)
+    implementation(libs.kotlinx.serialization.json)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
+
+    // YukiHook API 1.3.0+ with KavaRef
+    implementation(libs.yukihook.api)
+    ksp(libs.yukihook.ksp)
+    implementation(libs.kavaref.core)
+    implementation(libs.kavaref.extension)
+
+    // Xposed API (compile only)
+    compileOnly(libs.xposed.api)
+
+    // DataStore
+    implementation(libs.datastore.preferences)
+
+    // UI
+    implementation(libs.timber)
+    implementation(libs.coil.compose)
+
+    // Core library desugaring
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // Testing
+    testImplementation(libs.bundles.testing)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+}
+
+tasks.register("collabStatus") {
+    group = "aegenesis"
+    doLast {
+        println("🎨 COLLAB CANVAS - Ready!")
     }
-
-    dependencies {
-        // Core AndroidX
-        implementation(libs.androidx.core.ktx)
-        implementation(libs.androidx.lifecycle.runtime.ktx)
-        implementation(libs.androidx.lifecycle.viewmodel.ktx)
-        implementation(libs.androidx.lifecycle.viewmodel.compose)
-
-        // Compose
-        implementation(platform(libs.androidx.compose.bom))
-        implementation(libs.androidx.compose.ui)
-        implementation(libs.androidx.compose.ui.graphics)
-        implementation(libs.androidx.compose.ui.tooling.preview)
-        implementation(libs.androidx.compose.material3)
-        implementation(libs.androidx.compose.material.icons.extended)
-        implementation(libs.androidx.activity.compose)
-        implementation(libs.androidx.navigation.compose)
-
-        // Hilt
-        implementation(libs.hilt.android)
-        ksp(libs.hilt.compiler)
-
-        // Coroutines
-        implementation(libs.ktx.coroutines.core)
-        implementation(libs.ktx.coroutines.android)
-
-        // Network
-        implementation(libs.retrofit)
-        implementation(libs.retrofit.converter.kotlinx.serialization)
-        implementation(libs.okhttp3.logging.interceptor)
-
-        // Room
-        implementation(libs.room.runtime)
-        implementation(libs.room.ktx)
-        ksp(libs.room.compiler)
-
-        // Firebase
-        implementation(platform(libs.firebase.bom))
-        implementation(libs.firebase.analytics.ktx)
-        implementation(libs.firebase.crashlytics.ktx)
-
-        // UI
-        implementation(libs.coil.compose)
-        implementation(libs.timber)
-        implementation(fileTree("../Libs") { include("*.jar") })
-        implementation(libs.gson)
-
-        // Core library desugaring
-
-        // Testing
-        testImplementation(libs.junit)
-        testImplementation(libs.mockk)
-
-        // Android Testing
-        androidTestImplementation(libs.androidx.test.ext.junit)
-        androidTestImplementation(libs.androidx.test.espresso.core)
-        androidTestImplementation(platform(libs.androidx.compose.bom))
-        androidTestImplementation(libs.androidx.compose.ui)
-
-        // Debug
-        debugImplementation(libs.androidx.compose.ui.tooling)
-        debugImplementation(libs.androidx.compose.ui.tooling.preview)
-        
-        // YukiHook API
-        implementation(libs.yukihook.core)
-        ksp(libs.yukihook.ksp)
-        implementation(libs.yukihook.prefs)
-        
-        // Xposed API (compile only, provided by the framework at runtime)
-        compileOnly(libs.xposed.api)
-    }
-    
-    // Configure YukiHook API
-    yukihook {
-        // Enable debug mode in debug build
-        isDebug = true
-        
-        // Enable YukiHook logger
-        isEnableLog = true
-        
-        // Enable YukiHook API debug log
-        isEnableDebugLog = true
-        
-        // Enable YukiHook API debug log with tag
-        isEnableDebugLogWithTag = true
-    }
-    tasks.register("collabStatus") {
-        group = "aegenesis"
-        doLast {
-            println("🎨 COLLAB CANVAS - Ready!")
-        }
-    }
-
-
+}

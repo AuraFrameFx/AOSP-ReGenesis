@@ -39,7 +39,9 @@ The `secure-comm` module provides enterprise-grade cryptographic capabilities fo
 
 ```
 secure-comm/
-├── src/main/kotlin/dev/aurakai/auraframefx/secure/
+
+├── src/main/kotlin/com/aura/memoria/secure/
+
 │   ├── communication/          # Communication protocols
 │   │   ├── SecureCommunication.kt
 │   │   ├── SecureChannel.kt
@@ -59,6 +61,8 @@ secure-comm/
 │   └── di/                     # Dependency injection
 │       └── SecureCommModule.kt
 └── src/test/                   # Tests
+
+```
 
 ### Core Components
 
@@ -206,6 +210,7 @@ class DeviceKeyManager @Inject constructor(
 
 ### Encryption Specification
 
+```kotlin
 /**
  * Encryption Configuration:
  * - Algorithm: AES-256-GCM
@@ -224,30 +229,26 @@ class EncryptionConfig {
     }
 }
 
-// Example (snippet):
-// cipher.init(Cipher.ENCRYPT_MODE, key, GCMParameterSpec(TAG_SIZE * 8, iv))
-// cipher.updateAAD(buildString {
-//   append("v=").append(version)
-//   append("&mid=").append(messageId)
-//   append("&sid=").append(senderId)
-//   append("&rid=").append(recipientId)
-//   append("&ts=").append(timestamp)
-// }.toByteArray())
+```
 
 ### Key Generation Parameters
 
 ```kotlin
-private fun createKeyGenParameterSpec(alias: String): KeyGenParameterSpec =
-    KeyGenParameterSpec.Builder(
+
+private fun createKeyGenParameterSpec(alias: String): KeyGenParameterSpec {
+    return KeyGenParameterSpec.Builder(
         alias,
         KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
     )
-        .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-        .setKeySize(256)
-        .setUserAuthenticationRequired(false) // Adjust as needed
-        .setRandomizedEncryptionRequired(true)
-        .build()
+    .setAlgorithmParameterSpec(GCMParameterSpec(128, ByteArray(12)))
+    .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+    .setKeySize(256)
+    .setUserAuthenticationRequired(false)  // Adjust based on requirements
+    .setRandomizedEncryptionRequired(true)
+    .build()
+}
+```
 
 ### Message Format
 
@@ -359,14 +360,12 @@ class CryptoPerformanceMonitor @Inject constructor() {
         // Perform encryption
         val endTime = System.nanoTime()
         
-        val nanos = endTime - startTime
-        val seconds = nanos / 1_000_000_000.0
-        val mebibytes = dataSize / (1024.0 * 1024.0)
+
         return PerformanceReport(
             operation = "encryption",
             dataSize = dataSize,
-            durationNanos = nanos,
-            throughputMBps = mebibytes / seconds // MiB/s
+            durationNanos = endTime - startTime,
+            throughputMBps = (dataSize / ((endTime - startTime) / 1_000_000.0)) / 1024.0
         )
     }
 }
@@ -419,12 +418,15 @@ dependencies {
     
     // Dependency Injection
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+
+    kapt(libs.hilt.compiler)
     
     // Testing
     testImplementation(libs.bundles.testing)
     androidTestImplementation(libs.bundles.android.testing)
 }
+
+```
 
 ---
 

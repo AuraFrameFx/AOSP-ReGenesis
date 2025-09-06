@@ -33,15 +33,15 @@ class MarkdownFileValidationAdvancedTest {
     inner class TableOfContentsEdgeCases {
 
         /**
-         * Convert a Markdown header line into a URL-style slug.
+         * Normalize a Markdown heading into a URL-style anchor slug.
          *
-         * Strips any leading Markdown header markers (e.g. "# "), removes emoji and symbol characters,
-         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
-         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * Strips leading Markdown header markers (e.g. `#`), removes emoji and symbol characters,
+         * lowercases the text, removes any characters except ASCII letters, digits, spaces, and hyphens,
+         * collapses consecutive whitespace into single hyphens, collapses multiple hyphens, and trims
          * leading/trailing hyphens.
          *
-         * @param text The header text (typically a Markdown heading line) to normalize.
-         * @return A slug suitable for use as an anchor (e.g. "getting-started").
+         * @param text The heading line or header text to normalize.
+         * @return A slug suitable for use as an internal Markdown anchor (e.g. `getting-started`).
          */
         private fun normalizeToSlug(text: String): String {
             val header = text
@@ -78,15 +78,15 @@ class MarkdownFileValidationAdvancedTest {
     inner class InternalAnchors {
 
         /**
-         * Convert a Markdown header line into a URL-style slug.
+         * Normalize a Markdown heading into a URL-style anchor slug.
          *
-         * Strips any leading Markdown header markers (e.g. "# "), removes emoji and symbol characters,
-         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
-         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * Strips leading Markdown header markers (e.g. `#`), removes emoji and symbol characters,
+         * lowercases the text, removes any characters except ASCII letters, digits, spaces, and hyphens,
+         * collapses consecutive whitespace into single hyphens, collapses multiple hyphens, and trims
          * leading/trailing hyphens.
          *
-         * @param text The header text (typically a Markdown heading line) to normalize.
-         * @return A slug suitable for use as an anchor (e.g. "getting-started").
+         * @param text The heading line or header text to normalize.
+         * @return A slug suitable for use as an internal Markdown anchor (e.g. `getting-started`).
          */
         private fun normalizeToSlug(text: String): String {
             val header = text
@@ -139,6 +139,11 @@ class MarkdownFileValidationAdvancedTest {
     @Nested
     @DisplayName("Code fences integrity")
     inner class FenceIntegrity {
+        /**
+         * Verifies that every fenced code block in the README is closed.
+         *
+         * Counts Markdown code fence markers (``` ) and asserts the total is even, failing if there is an unmatched/open fence.
+         */
         @Test
         fun `all code fences are properly closed`() {
             val fenceCount = lines.count { it.trim().startsWith("```") }
@@ -156,6 +161,12 @@ class MarkdownFileValidationAdvancedTest {
             assertEquals(1, h1Count, "README should contain exactly one top-level '# ' title")
         }
 
+        /**
+         * Verifies the README contains no trailing whitespace on any line.
+         *
+         * Scans the loaded README lines and fails the test if any line ends with whitespace,
+         * reporting the offending line numbers.
+         */
         @Test
         fun `no trailing whitespace on any line`() {
             val offenders = lines.withIndex()
@@ -226,15 +237,15 @@ class MarkdownFileValidationAdvancedTest {
     inner class TableOfContentsAdvanced {
 
         /**
-         * Convert a Markdown header line into a URL-style slug.
+         * Normalize a Markdown heading into a URL-style anchor slug.
          *
-         * Strips any leading Markdown header markers (e.g. "# "), removes emoji and symbol characters,
-         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
-         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * Strips leading Markdown header markers (e.g. `#`), removes emoji and symbol characters,
+         * lowercases the text, removes any characters except ASCII letters, digits, spaces, and hyphens,
+         * collapses consecutive whitespace into single hyphens, collapses multiple hyphens, and trims
          * leading/trailing hyphens.
          *
-         * @param text The header text (typically a Markdown heading line) to normalize.
-         * @return A slug suitable for use as an anchor (e.g. "getting-started").
+         * @param text The heading line or header text to normalize.
+         * @return A slug suitable for use as an internal Markdown anchor (e.g. `getting-started`).
          */
         private fun normalizeToSlug(text: String): String {
             val header = text
@@ -301,10 +312,11 @@ class MarkdownFileValidationAdvancedTest {
     inner class ImagesAndLinks {
 
         /**
-         * Verifies that every markdown image in the README has non-empty alt text and that local image files exist.
+         * Ensure every Markdown image has non-empty alt text and that referenced local image files exist.
          *
-         * Scans the README for image markdown (`![alt](url)`), asserts the alt text is not empty, and for non-remote URLs
-         * resolves the path relative to the README location (stripping any fragment `#...` or query `?...`) and asserts the file exists.
+         * Scans the README for image syntax `![alt](url)`, asserts the alt text is not empty, and for non-remote URLs
+         * (those not starting with `http://` or `https://`) strips any fragment (`#...`) or query (`?...`), resolves the
+         * path relative to the README location, and asserts the referenced file exists.
          */
         @Test
         fun `images have alt text and local images exist`() {
@@ -323,6 +335,12 @@ class MarkdownFileValidationAdvancedTest {
             }
         }
 
+        /**
+         * Fails the test if any TODO-like tokens appear in the README outside fenced code blocks.
+         *
+         * This looks for the tokens `TODO`, `TBD`, `FIXME`, and `HACK` (case-insensitive) and ignores occurrences
+         * that are inside fenced code blocks (``` ... ```). The test asserts that no such tokens remain in prose.
+         */
         @Test
         fun `no TODO-like tokens outside code fences`() {
             val withoutFences = readme.replace(Regex("```[\\s\\S]*?```", RegexOption.MULTILINE), "")

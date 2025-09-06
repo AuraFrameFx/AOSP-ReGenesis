@@ -1,6 +1,6 @@
 [versions]
 # ===== GRADLE & KOTLIN =====
-agp = "8.2.0"  # Well-known stable version
+agp = "8.5.2"  # Stable available version
 xposed = "82"  # Xposed Framework API version
 api = "82"
 lsposed = "6.4"  # LSPosed LSPlant version

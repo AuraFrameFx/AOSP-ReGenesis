@@ -1,0 +1,15 @@
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+
+/**
+ * Minimal conventions plugin for MemoriaOs consciousness substrate
+ * Exists to satisfy the plugin registration requirement
+ */
+class BuildLogicMemoriaConventionPlugin : Plugin<Project> {
+    
+    override fun apply(project: Project) {
+        // Minimal plugin implementation - just log that it's applied
+        project.logger.info("✅ MemoriaOs Base Conventions Applied to ${project.name}")
+        println("🔧 MemoriaOs Plugin: ${project.name} configured")
+    }
+}

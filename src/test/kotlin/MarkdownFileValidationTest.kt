@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Assertions.assertAll
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
+import java.text.Normalizer
 import java.util.Locale
 import java.util.regex.Pattern
 

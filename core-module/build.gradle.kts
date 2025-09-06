@@ -68,8 +68,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.kotlinx.serialization)
     implementation(libs.okhttp3.logging.interceptor)
-    // Networking scalars converter via catalog alias
-    implementation(libs.converter.scalars)
+    // Networking scalars converter via catalog alias (updated)
+    implementation(libs.retrofit.converter.scalars)
 
     // Date/Time
     implementation(libs.kotlinx.datetime)
@@ -102,22 +102,6 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.mockk.android)
     kspTest(libs.hilt.compiler)
-}
-
-// YukiHook configuration
-yukihook {
-    // Enable the API for the current build type
-    isEnable = true
-    
-    // Load the API in the application class
-    // Replace with your actual application class if different
-    // loadOnApp = true
-    
-    // Enable debug mode
-    isDebug = true
-    
-    // Configure the module name (optional)
-    // name = "CoreModule"
 }
 
 // Status task

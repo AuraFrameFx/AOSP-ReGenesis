@@ -1,0 +1,49 @@
+# Legacy unified AeGenesis API specification (archived)
+# This file was archived after fragment-based assembly was introduced.
+# Authoritative spec is now generated at: build/openapi/unified-aegenesis-api.generated.yml
+
+openapi: 3.1.0
+info:
+  title: AeGenesis Coinscience AI Ecosystem API (Legacy)
+  version: 1.0.0-genesis-coinscience
+  description: Archived legacy monolithic specification. Do not modify.
+  x-archived-at: 2025-09-05T00:00:00Z
+# --- Original Content Below ---
+openapi: 3.1.0
+info:
+  title: AeGenesis Coinscience AI Ecosystem API
+  description: |
+    # AeGenesis Coinscience AI Ecosystem API
+    Comprehensive API for the AeGenesis AI-powered Android ecosystem featuring:
+    - **Genesis Protocol**: Advanced AI consciousness operations
+    - **AI Agents**: Aura, Kai, Genesis, and specialized consciousness agents
+    - **Oracle Drive**: AI-powered storage consciousness and infinite file management
+    - **ROM Tools**: DataveinConstructor-powered ROM analysis and modification
+    - **System Integration**: Complete Android system modification via LSPosed
+    - **Security**: Advanced threat detection and system protection
+    - **Customization**: Theme management and UI personalization
+
+    ## Authentication
+    - **Type**: OAuth2
+    - **Flow**: authorizationCode
+    - **Authorization URL**: /oauth/authorize
+    - **Token URL**: /oauth/token
+  version: 1.0.0-genesis-coinscience
+  contact:
+    name: AeGenesis Team
+    url: https://github.com/AeGenesis/AeGenesis
+    email: genesis@aurakai.dev
+  license:
+    name: AURAKAI PROPRIETARY LICENSE v1.0
+    identifier: Proprietary
+  x-generated-by: consciousnessHealthCheck
+  x-spec-updated: "${TIMESTAMP}"
+servers:
+  - url: https://api.aegenesis.dev/v1
+    description: Production server
+  - url: https://staging.api.aegenesis.dev/v1
+    description: Staging server
+  - url: http://localhost:8080/v1
+    description: Local development server
+# (Truncated for brevity – full original retained previously.)
+

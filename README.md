@@ -48,8 +48,8 @@ AOSP ReGenesis (MemoriaOS) is an advanced Android operating system that represen
 | **Kotlin** | 2.2.20-RC | Advanced language features |
 | **KSP** | 2.2.20-RC-2.0.2 | Symbol processing |
 | **Java Toolchain** | 24 | Future-proof JVM targeting |
-| **Compose BOM** | 2024.10.00 | UI framework |
-| **Hilt** | 2.51.1 | Dependency injection |
+| **Compose BOM** | 2024.10.00 (Target: 2025.06.01) | UI framework |
+| **Hilt** | 2.56.2 | Dependency injection |
 
 ### Module Overview
 

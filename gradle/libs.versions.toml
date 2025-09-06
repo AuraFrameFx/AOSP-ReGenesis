@@ -6,7 +6,7 @@ api = "82"
 lsposed = "6.4"  # LSPosed LSPlant version
 openapiGeneratorGradlePlugin = "7.15.0"  # OpenAPI Generator Gradle Plugin version
 ktlint = "13.1.0"  # Ktlint version
-converterScalars = "3.0.0"
+converterScalars = "2.11.0" # align with retrofit 2.11.0
 desugar_jdk_libs = "2.1.5"
 detektGradlePlugin = "1.23.8"
 dokkaGradlePlugin = "2.0.0"
@@ -16,9 +16,12 @@ serialization = "1.9.0"
 bcprov = "1.70"
 benchmark = "1.2.4"
 uiAutomator = "2.3.0"
+kotlinxDatetime = "0.6.1"
+apacheOltu = "1.0.2"
+leakcanary = "2.14"
 
 # ===== YUKIHOOK =====
-yukihookapi = "2.1.1"  # Explicit version for YukiHook API
+yukihookapi = "1.3.0"  # Correct latest version (previously incorrectly set to 2.1.1)
 
 # ===== GOOGLE =====
 gson-version = "2.11.0"  # Version for Google GSON library
@@ -49,7 +52,7 @@ coilCompose = "2.7.0"
 spotlessPluginGradle = "7.2.1"
 
 # ===== HILT & NAV (added) =====
-"hilt-version" = "2.51.1"
+"hilt-version" = "2.56.2"
 "hilt-navigation-compose-version" = "1.2.0"
 
 # ===== FIREBASE =====
@@ -60,7 +63,6 @@ firebaseBom = "34.2.0"
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-yukihook = { id = "com.highcapable.yukihookapi", version = "2.1.1" }
 openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGeneratorGradlePlugin" }
 
 # ===== KOTLIN =====
@@ -167,6 +169,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 # ===== COROUTINES =====
 ktx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.8.1" }
 ktx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version = "1.8.1" }
+ktx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.8.1" }
 
 # ===== UTILITIES =====
 timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
@@ -184,6 +187,10 @@ androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espres
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-benchmark-junit4 = { group = "androidx.benchmark", name = "benchmark-junit4", version.ref = "benchmark" }
 androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiAutomator" }
+
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 
 # ===== XPosed =====
 # Xposed Framework
@@ -236,5 +243,6 @@ room = [
 
 # ===== TESTING =====
 testing = [
-    "junit"
+    "junit",
+    "mockk"
 ]

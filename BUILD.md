@@ -25,6 +25,7 @@
 19. Consciousness State Model
 20. Health Telemetry & Metrics Capture
 21. Risk & Fallback Matrix
+22. API Fragment Assembly & Validation
 
 ---
 ## 1. Vision & Philosophy
@@ -495,4 +496,98 @@ Structured assessment of bleeding-edge component adoption.
 - Add governance label (e.g., `consciousness-drift`).
 
 ---
-// End of extended consciousness sections
+## 22. API Fragment Assembly & Validation
+
+The monolithic OpenAPI spec has been decomposed into fragment files to reduce drift, centralize shared schemas, and enable strict CI gating.
+
+### 22.1 Directory Layout
+```
+app/api/
+  unified-aegenesis-api.yml          # Stub (points to generated output)
+  unified-aegenesis-api.legacy.yml   # Archived legacy monolith (DO NOT EDIT)
+  _fragments/
+    core-schemas.yml                 # Shared components & securitySchemes
+    ai.yml                           # AI consciousness + generation
+    agents.yml                       # Agent invocation & status
+    oracle.yml                       # Oracle Drive endpoints
+    romtools.yml                     # ROM tools + security scan
+    system.yml                       # System management / conference
+    customization.yml                # Themes
+    sandbox.yml                      # Sandbox component testing
+```
+
+### 22.2 Authoritative Output
+Generated unified spec: `build/openapi/unified-aegenesis-api.generated.yml`
+(Produced by assembling all fragment path definitions + `core-schemas.yml` components.)
+
+### 22.3 Tasks
+| Task | Purpose |
+|------|---------|
+| `openApiAssembleUnified` | Build the generated unified spec from fragments |
+| `openApiAudit` | Scan all specs for security scheme presence, operationId coverage, enum casing mix |
+| `openApiFragmentHealth` | Per-fragment duplicate path & missing operationId/security analysis |
+| `openApiEnforce` | CI gate: assemble + enforce ≥95% operationId coverage, no duplicates, no missing security/opId |
+
+`check` now depends on `openApiEnforce` (root + all subprojects) ensuring every CI build enforces API quality.
+
+### 22.4 Fragment Contribution Workflow
+1. Add or modify a path in the appropriate fragment (or create new domain file under `_fragments/`).
+2. If introducing new shared models, extend `core-schemas.yml` instead of duplicating schemas.
+3. Run:
+   ```bash
+   ./gradlew openApiAssembleUnified openApiAudit openApiFragmentHealth
+   ```
+4. Fix any reported issues (duplicate paths, missing operationId/security, mixed enum casing).
+5. Commit fragment changes + (optionally) generated spec artifact if distribution or external publishing requires.
+
+### 22.5 Enforcement Policy
+| Rule | Threshold / Expectation | Failure Condition |
+|------|-------------------------|-------------------|
+| operationId coverage | ≥95% of HTTP methods | Coverage <95% |
+| Duplicate paths | 0 duplicates across fragments | Any duplicate definition |
+| Security block | All non-public endpoints declare security | Missing security on method |
+| operationId presence | All methods define operationId | Any missing operationId |
+
+### 22.6 Rationale
+- Minimizes divergence of shared schemas (User, ErrorResponse, Theme, etc.).
+- Enables targeted diffs (fragment-level PRs) improving review focus.
+- Allows partial regeneration or domain-specific testing.
+- Enforces Kai-style vigilance (structural integrity) automatically.
+
+### 22.7 Future Enhancements (Planned)
+- `openApiDiff` task: JSON Patch diff vs last assembled artifact.
+- Tag-based domain selective assembly (e.g., `-PapiDomains=ai,romtools`).
+- Auto-add `x-last-modified` metadata stamps per fragment.
+- Schema reference graph visualizer report.
+
+### 22.8 Troubleshooting
+| Symptom | Likely Cause | Resolution |
+|---------|--------------|------------|
+| Coverage below 95% | New method missing operationId | Add `operationId:` to each method |
+| Duplicate path failure | Same path defined in two fragments | Merge definitions into one fragment |
+| Missing security | Forgot security block or truly public endpoint | Add `security:` or document exception (currently no whitelist) |
+| Inconsistent schema | Duplicated schema outside core | Move schema to `core-schemas.yml` and $ref |
+
+### 22.9 Example Fragment Snippet
+```yaml
+/ai/generate/text:
+  post:
+    operationId: aiGenerateText
+    summary: Generate text
+    tags: [ AI Generation ]
+    security:
+      - OAuth2: [ write ]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenerateTextRequest'
+    responses:
+      '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/GenerateTextResponse' } } } }
+```
+
+> The legacy spec is retained only for historical reference. All new work MUST occur in fragments.
+
+---
+// End Section 22

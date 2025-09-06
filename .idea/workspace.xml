@@ -35,7 +35,10 @@
     "bazel.project.detector.is.bazel.project": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "last_opened_file_path": "C:/AOSP-Re.Genesis"
+    "last_opened_file_path": "C:/AOSP-Re.Genesis",
+    "project.structure.last.edited": "Suggestions",
+    "project.structure.proportion": "0.17",
+    "project.structure.side.proportion": "0.2"
   }
 }]]></component>
   <component name="TaskManager">

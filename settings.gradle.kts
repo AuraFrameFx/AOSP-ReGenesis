@@ -60,8 +60,7 @@ pluginManagement {
     }
     plugins {
 
-        // Apply YukiHook plugin
-        id("com.highcapable.yukihook") version "1.3.9"
+        // Removed explicit YukiHook plugin version; managed via version catalog aliases in module build scripts
         id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
     }
 

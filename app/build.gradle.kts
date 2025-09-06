@@ -3,12 +3,21 @@
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android) // Added missing Kotlin Android plugin
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.services)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
     alias(libs.plugins.ksp)
+}
+
+// Configure Kotlin toolchain & compiler options (moved out of android block)
+kotlin {
+    jvmToolchain(24)
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
+    }
 }
 
 android {
@@ -60,13 +69,6 @@ android {
     java {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(24))
-        }
-    }
-
-    kotlin {
-        jvmToolchain(24);
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
         }
     }
 
@@ -173,8 +175,13 @@ dependencies {
     // Utilities
     implementation(libs.timber); implementation(libs.coil.compose)
 
-    // Local Xposed jars fallback (keep if needed)
-    compileOnly(fileTree("Libs") { include("*.jar") })
+    // Local Xposed API JAR (explicit) – keeps api-82 out of final APK
+    compileOnly(files("Libs/api-82.jar"))
+    // Optional OFFLINE fallback for YukiHookAPI if remote repos are unavailable:
+    // implementation(files("Libs/yukihookapi-core.jar"))
+    // ksp(files("Libs/yukihookapi-ksp.jar"))
+    // implementation(files("Libs/yukihookapi-prefs.jar"))
+    // (When repos recover, use catalog aliases: libs.yukihook.core / ksp / prefs)
 
     // Testing
     testImplementation(libs.bundles.testing); testImplementation(libs.mockk)

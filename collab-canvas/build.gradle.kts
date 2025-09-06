@@ -1,6 +1,6 @@
 // Apply plugins (versions via version catalog)
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.spotless)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.yukihook) // replaces inline version
 }
 
 android {
@@ -106,13 +105,7 @@ dependencies {
     compileOnly(libs.xposed.api)
 }
 
-// YukiHook configuration
-yukihook {
-    isDebug = true
-    isEnableLog = true
-    isEnableDebugLog = true
-    isEnableDebugLogWithTag = true
-}
+
 
 tasks.register("collabStatus") {
     group = "aegenesis"

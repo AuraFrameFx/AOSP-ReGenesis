@@ -2,7 +2,7 @@
 // Primary feature module using convention plugins
 
 plugins {
-    id("com.android.library")  // Apply without version to avoid conflicts
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)

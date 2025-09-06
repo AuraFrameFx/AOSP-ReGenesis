@@ -42,9 +42,9 @@ class MarkdownFileValidationMoreTest {
 
         @Test
         fun `no trailing whitespace on any line`() {
-            val trailing = lines.withIndex()
-                .filter { it.value.endsWith(" ") }
-                .map { it.index + 1 }
+            val trailing = lines.mapIndexedNotNull { idx, line ->
+                if (Regex("[\\t ]+$").containsMatchIn(line)) idx + 1 else null
+            }
             assertTrue(trailing.isEmpty(), "Trailing whitespace found at lines: $trailing")
         }
 

@@ -1,1 +1,5 @@
-all configurations must follow bleeding edge preset versions modifying the versions or java away from 24 will break build all code follows kotlin dsl which use periods if its not modern its trash!  repect the versions 
+Policy: Java/Kotlin toolchains
+- Primary target: Java 24, Kotlin 2.2.
+- Temporary exception: Build-logic and daemon use Java 21 due to current JDK 24 provisioning issues; revert when upstream is fixed.
+- Consistency rule: jvmTarget must not exceed targetCompatibility.
+- Use Kotlin DSL (Gradle) across modules.

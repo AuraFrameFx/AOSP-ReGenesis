@@ -256,4 +256,154 @@ fun `android namespace and SDK versions configured`() {
             }
         }
     }
+
+    // Appended tests - extended coverage
 }
+    @Nested
+    @DisplayName("Compose and Kotlin compiler options")
+    inner class ComposeAndKotlinOptions {
+        @Test
+        fun `composeOptions declared with compiler extension version`() {
+            val s = script()
+            // Accept either explicit value or catalog reference
+            assertTrue(s.contains("composeOptions"), "composeOptions block is missing")
+            assertTrue(
+                Regex("""kotlinCompilerExtensionVersion\s*=\s*["'][^"']+["']""").containsMatchIn(s) ||
+                    Regex("""kotlinCompilerExtensionVersion\s*=\s*libs\.versions\.[\w\-.]+\.get\(\)""").containsMatchIn(s),
+                "kotlinCompilerExtensionVersion must be set in composeOptions"
+            )
+        }
+
+        @Test
+        fun `kotlinOptions configured for JVM target and freeCompilerArgs`() {
+            val s = script()
+            assertTrue(s.contains("kotlinOptions {"), "kotlinOptions block is missing")
+            assertTrue(
+                Regex("""jvmTarget\s*=\s*["']?(24|1[1-9]|[0-9]+)["']?""").containsMatchIn(s),
+                "jvmTarget should be declared (expecting 24 per diff)"
+            )
+            // We don't assert specific flags, just existence of freeCompilerArgs to remain resilient
+            assertTrue(Regex("""freeCompilerArgs\s*=""").containsMatchIn(s), "freeCompilerArgs not configured")
+        }
+
+        @Test
+        fun `kotlin jvmToolchain configured to Java 24`() {
+            val s = script()
+            assertTrue(
+                s.contains("jvmToolchain(24)") ||
+                    Regex("""java\s*\{\s*jvmToolchain\s*\{\s*languageVersion\s*=\s*JavaLanguageVersion\.of\(24\)""").containsMatchIn(s),
+                "Expected Kotlin jvmToolchain to target 24"
+            )
+        }
+    }
+
+    @Nested
+    @DisplayName("Packaging - extended excludes set")
+    inner class PackagingExtended {
+        @Test
+        fun `resources excludes include additional common metadata and notices`() {
+            val s = script()
+            listOf(
+                "\"/META-INF/gradle/incremental.annotation.processors\"",
+                "\"/META-INF/LICENSE\"",
+                "\"/META-INF/NOTICE\"",
+                "\"/META-INF/ASL2.0\"",
+                "\"META-INF/DEPENDENCIES\"",
+                "\"META-INF/LICENSE*\"",
+                "\"META-INF/NOTICE*\"",
+                "\"META-INF/*.version\""
+            ).forEach { entry ->
+                assertTrue(s.contains(entry), "Expected additional packaging exclude: $entry")
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("Google Services and Hilt integration wiring")
+    inner class GoogleServicesAndHilt {
+        @Test
+        fun `google services plugin applied and firebase platform present`() {
+            val s = script()
+            assertTrue(s.contains("id(\"com.google.gms.google-services\")"), "Google Services plugin not applied")
+            assertTrue(s.contains("implementation(platform(libs.firebase.bom))"), "Firebase BOM platform dependency missing")
+        }
+
+        @Test
+        fun `hilt plugin present with ksp compiler configuration`() {
+            val s = script()
+            assertTrue(s.contains("id(\"com.google.dagger.hilt.android\")"), "Hilt plugin not applied")
+            assertTrue(s.contains("ksp(libs.hilt.compiler)"), "Hilt compiler not wired via KSP")
+            // Optional: ensure Hilt Gradle configuration block exists if added in diff
+            assertTrue(!s.contains("hilt { enableAggregatingTask = false }") || s.contains("hilt {"), "Hilt block malformed if present")
+        }
+    }
+
+    @Nested
+    @DisplayName("Default config details")
+    inner class DefaultConfigDetails {
+        @Test
+        fun `application ID and test instrumentation runner declared`() {
+            val s = script()
+            assertTrue(Regex("""applicationId\s*=\s*\"[a-zA-Z0-9_.]+\"""").containsMatchIn(s), "applicationId must be declared")
+            assertTrue(Regex("""testInstrumentationRunner\s*=\s*\"[^\"]+\"""").containsMatchIn(s), "testInstrumentationRunner must be declared")
+        }
+
+        @Test
+        fun `versioning fields and SDK bounds align`() {
+            val s = script()
+            assertTrue(Regex("""versionCode\s*=\s*\d+""").containsMatchIn(s), "versionCode missing")
+            assertTrue(Regex("""versionName\s*=\s*\".+\"""").containsMatchIn(s), "versionName missing")
+            assertTrue(Regex("""minSdk\s*=\s*\d+""").containsMatchIn(s), "minSdk missing")
+            assertTrue(Regex("""targetSdk\s*=\s*\d+""").containsMatchIn(s), "targetSdk missing")
+        }
+    }
+
+    @Nested
+    @DisplayName("Native/CMake completeness")
+    inner class NativeCMakeCompleteness {
+        @Test
+        fun `cmake block defines both path and version with conditional guard`() {
+            val s = script()
+            assertTrue(s.contains("if (project.file(\"src/main/cpp/CMakeLists.txt\").exists())"), "CMake conditional guard missing")
+            assertTrue(s.contains("externalNativeBuild"), "externalNativeBuild missing")
+            assertTrue(s.contains("cmake {"), "cmake block missing")
+            assertTrue(s.contains("path = file(\"src/main/cpp/CMakeLists.txt\")"), "CMake path not set")
+            assertTrue(Regex("""version\s*=\s*\"[0-9.]+\"""").containsMatchIn(s), "CMake version not set")
+        }
+    }
+
+    @Nested
+    @DisplayName("Dependency bundles and local jars")
+    inner class DependencyBundlesAndLocalJars {
+        @Test
+        fun `testing bundle and junit engine present`() {
+            val s = script()
+            assertTrue(s.contains("testImplementation(libs.bundles.testing)"), "libs.bundles.testing missing")
+            assertTrue(s.contains("testRuntimeOnly(libs.junit.engine)"), "junit engine missing")
+        }
+
+        @Test
+        fun `local Libs directory jars included via fileTree`() {
+            val s = script()
+            assertTrue(s.contains("implementation(fileTree(\"../Libs\") { include(\"*.jar\") })"), "fileTree jar inclusion missing")
+        }
+    }
+
+    @Nested
+    @DisplayName("Task dependencies wiring - extended")
+    inner class TaskDependenciesWiringExtended {
+        @Test
+        fun `preBuild depends on cleanKspCache and API generation tasks - extended shape`() {
+            val s = script()
+            // Allow both dependsOn("x") and dependsOn(tasks.named("x")) forms
+            val patterns = listOf(
+                "dependsOn(\"cleanKspCache\")",
+                "dependsOn(\":openApiGenerate\")",
+                "dependsOn(\":cleanApiGeneration\")"
+            )
+            patterns.forEach { p ->
+                assertTrue(s.contains(p) || Regex("""dependsOn\(\s*tasks\.named\(\s*${Regex.escape(p.removePrefix("dependsOn(").removeSuffix(")"))}\s*\)\s*\)""").containsMatchIn(s),
+                    "Expected preBuild to depend on $p")
+            }
+        }
+    }

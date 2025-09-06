@@ -334,3 +334,198 @@ class GradleVersionCatalogTest {
         }
     }
 }
+    @Nested
+    @DisplayName("Additional catalog integrity and formatting checks (JUnit Jupiter)")
+    inner class AdditionalIntegrityChecks {
+        @Test
+        fun noTrailingWhitespaceAndEndsWithLF() {
+            for ((path, text) in catalogTextByPath) {
+                val lines = text.split("\n", -1) // keep trailing empty
+                for ((idx, ln) in lines.withIndex()) {
+                    assertFalse(Regex("\\s+$").containsMatchIn(ln), "Trailing whitespace at ${path}:${idx + 1}")
+                }
+                assertTrue(text.endsWith("\n") || text.isEmpty(), "File must end with a single LF newline: $path")
+            }
+        }
+
+        @Test
+        fun librariesAndPluginsHaveUniqueKeys() {
+            for ((path, text) in catalogTextByPath) {
+                fun collectKeys(section: String): List<String> {
+                    val out = mutableListOf<String>()
+                    var inSection = false
+                    val keyRegex = Regex("""^\s*([A-Za-z0-9._-]+)\s*=""")
+                    for (ln in text.lines()) {
+                        val t = ln.trim()
+                        if (t.startsWith("[") && t.endsWith("]")) {
+                            inSection = t == "[$section]" || t.startsWith("[$section.")
+                            continue
+                        }
+                        if (inSection) {
+                            val m = keyRegex.find(ln) ?: continue
+                            out += m.groupValues[1]
+                        }
+                    }
+                    return out
+                }
+                val libKeys = collectKeys("libraries")
+                val dupLibs = libKeys.groupingBy { it }.eachCount().filterValues { it > 1 }.keys
+                assertTrue(dupLibs.isEmpty(), "Duplicate keys in [libraries] for $path: $dupLibs")
+
+                val pluginKeys = collectKeys("plugins")
+                val dupPlugs = pluginKeys.groupingBy { it }.eachCount().filterValues { it > 1 }.keys
+                assertTrue(dupPlugs.isEmpty(), "Duplicate keys in [plugins] for $path: $dupPlugs")
+            }
+        }
+
+        @Test
+        fun libraryEntryUsesEitherModuleOrGroupNameButNotBoth() {
+            for ((path, text) in catalogTextByPath) {
+                var inLib = false
+                for (ln in text.lines()) {
+                    val t = ln.trim()
+                    if (t.startsWith("[") && t.endsWith("]")) {
+                        inLib = t == "[libraries]" || t.startsWith("[libraries.")
+                        continue
+                    }
+                    if (!inLib) continue
+                    // match table entries: alias = { ... }
+                    val entry = Regex("""^\s*([A-Za-z0-9._-]+)\s*=\s*\{([^}]*)}""").find(ln) ?: continue
+                    val body = entry.groupValues[2]
+                    val hasModule = Regex("""\bmodule\s*=""").containsMatchIn(body)
+                    val hasGroup = Regex("""\bgroup\s*=""").containsMatchIn(body)
+                    val hasName = Regex("""\bname\s*=""").containsMatchIn(body)
+                    if (hasModule) {
+                        assertTrue(!(hasGroup || hasName), "Entry must not mix module with group/name in $path: $ln")
+                        // module must look like group:artifact
+                        val mod = Regex("""\bmodule\s*=\s*["']([^"']+)["']""").find(body)?.groupValues?.getOrNull(1)
+                        if (mod != null) {
+                            assertTrue(mod.contains(":"), "module should be 'group:artifact' in $path: $ln")
+                            val parts = mod.split(":")
+                            assertTrue(parts.size == 2 && parts[0].isNotBlank() && parts[1].isNotBlank(), "Malformed module coordinate in $path: $ln")
+                        }
+                    } else if (hasGroup || hasName) {
+                        assertTrue(hasGroup && hasName, "If using group/name, both must be present in $path: $ln")
+                    } // else: could be a bundle or different entry; ignore
+                }
+            }
+        }
+
+        @Test
+        fun libraryEntriesDoNotSpecifyBothVersionAndVersionRef() {
+            val versionRegex = Regex("""\bversion\s*=\s*["'][^"']+["']""")
+            val versionRefRegex = Regex("""\bversion\.ref\s*=\s*["'][^"']+["']""")
+            for ((path, text) in catalogTextByPath) {
+                var inLib = false
+                for (ln in text.lines()) {
+                    val t = ln.trim()
+                    if (t.startsWith("[") && t.endsWith("]")) {
+                        inLib = t == "[libraries]" || t.startsWith("[libraries.")
+                        continue
+                    }
+                    if (!inLib) continue
+                    val entry = Regex("""^\s*([A-Za-z0-9._-]+)\s*=\s*\{([^}]*)}""").find(ln) ?: continue
+                    val body = entry.groupValues[2]
+                    val hasVer = versionRegex.containsMatchIn(body)
+                    val hasRef = versionRefRegex.containsMatchIn(body)
+                    assertFalse(hasVer && hasRef, "Entry must not have both version and version.ref in $path: $ln")
+                }
+            }
+        }
+
+        @Test
+        fun pluginEntriesHaveEitherVersionOrVersionRef() {
+            for ((path, text) in catalogTextByPath) {
+                var inPl = false
+                var foundAny = false
+                for (ln in text.lines()) {
+                    val t = ln.trim()
+                    if (t.startsWith("[") && t.endsWith("]")) {
+                        inPl = t == "[plugins]" || t.startsWith("[plugins.")
+                        continue
+                    }
+                    if (!inPl) continue
+                    val entry = Regex("""^\s*([A-Za-z0-9._-]+)\s*=\s*\{([^}]*)}""").find(ln) ?: continue
+                    foundAny = true
+                    val body = entry.groupValues[2]
+                    val hasId = Regex("""\bid\s*=""").containsMatchIn(body)
+                    val hasVer = Regex("""\bversion\s*=""").containsMatchIn(body)
+                    val hasRef = Regex("""\bversion\.ref\s*=""").containsMatchIn(body)
+                    assertTrue(hasId, "Plugin entry missing 'id' in $path: $ln")
+                    assertTrue(hasVer || hasRef, "Plugin entry must have version or version.ref in $path: $ln")
+                    assertFalse(hasVer && hasRef, "Plugin entry must not have both version and version.ref in $path: $ln")
+                }
+                // If there are plugin entries, enforce checks; if none, test vacuously passes.
+                if (!foundAny) {
+                    // no-op
+                }
+            }
+        }
+
+        @Test
+        fun bundlesReferToExistingLibrariesAndAreNotEmpty() {
+            for ((path, text) in catalogTextByPath) {
+                // Collect library aliases
+                val libAliases = run {
+                    val names = mutableSetOf<String>()
+                    var inLib = false
+                    val keyRegex = Regex("""^\s*([A-Za-z0-9._-]+)\s*=""")
+                    for (ln in text.lines()) {
+                        val t = ln.trim()
+                        if (t.startsWith("[") && t.endsWith("]")) {
+                            inLib = t == "[libraries]" || t.startsWith("[libraries.")
+                            continue
+                        }
+                        if (!inLib) continue
+                        keyRegex.find(ln)?.let { names += it.groupValues[1] }
+                    }
+                    names
+                }
+
+                // Inspect bundles
+                var inBundles = false
+                var sawBundle = false
+                for (ln in text.lines()) {
+                    val t = ln.trim()
+                    if (t.startsWith("[") && t.endsWith("]")) {
+                        inBundles = t == "[bundles]" || t.startsWith("[bundles.")
+                        continue
+                    }
+                    if (!inBundles) continue
+                    val m = Regex("""^\s*([A-Za-z0-9._-]+)\s*=\s*\[([^\]]*)]""").find(ln) ?: continue
+                    sawBundle = true
+                    val listBody = m.groupValues[2]
+                    // parse ["alias1", "alias2"]
+                    val aliases = Regex(""""([^"\\]]+)"""").findAll(listBody).map { it.groupValues[1] }.toList()
+                    assertTrue(aliases.isNotEmpty(), "Bundle must not be empty in $path: $ln")
+                    val missing = aliases.filterNot { it in libAliases }
+                    assertTrue(missing.isEmpty(), "Bundle references missing library aliases $missing in $path: $ln")
+                }
+                // If no bundles section, skip gracefully
+                if (!sawBundle) {
+                    // no-op
+                }
+            }
+        }
+
+        @Test
+        fun versionValuesDoNotContainSpacesAndReasonableLength() {
+            for ((path, text) in catalogTextByPath) {
+                // Reuse simplistic versions body extraction
+                val lines = text.lines()
+                var inVersions = false
+                for (ln in lines) {
+                    val t = ln.trim()
+                    if (t.startsWith("[") && t.endsWith("]")) {
+                        inVersions = t == "[versions]"
+                        continue
+                    }
+                    if (!inVersions) continue
+                    val m = Regex("""^\s*([A-Za-z0-9._-]+)\s*=\s*["']([^"']+)["']""").find(ln) ?: continue
+                    val value = m.groupValues[2]
+                    assertFalse(value.contains(" "), "Version values must not contain spaces in $path: $ln")
+                    assertTrue(value.length in 1..100, "Version value length suspicious in $path: $ln")
+                }
+            }
+        }
+    }

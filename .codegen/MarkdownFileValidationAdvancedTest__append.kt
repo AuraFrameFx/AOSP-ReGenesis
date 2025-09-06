@@ -19,6 +19,17 @@
          * @param text Markdown header or heading text to normalize.
          * @return A kebab-style slug containing only lowercase letters, digits, and hyphens.
          */
+        /**
+         * Convert a heading or arbitrary string into a URL-style slug.
+         *
+         * Performs these normalizations in order: strips leading Markdown header markers (e.g. `##`),
+         * removes emoji and symbol characters, lowercases using Locale.ROOT, removes any characters
+         * other than ASCII letters, digits, spaces and hyphens, collapses whitespace into single
+         * hyphens, collapses consecutive hyphens, and trims leading/trailing hyphens.
+         *
+         * @param text Input text (often a Markdown heading) to normalize.
+         * @return The resulting kebab-style slug (may be empty if input contains no valid characters).
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")

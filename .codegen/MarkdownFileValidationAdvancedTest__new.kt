@@ -33,19 +33,16 @@ class MarkdownFileValidationAdvancedTest {
     inner class TableOfContentsEdgeCases {
 
         /**
-         * Convert a Markdown header line or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
+         * Convert a Markdown header or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
          *
-         * The function:
-         * - Removes leading Markdown header markers (`#`) and surrounding whitespace.
-         * - Strips emoji and symbol characters.
-         * - Lowercases ASCII letters.
-         * - Removes characters except ASCII letters, digits, spaces, and hyphens.
-         * - Collapses whitespace to single hyphens, collapses multiple hyphens, and trims leading/trailing hyphens.
+         * Strips leading Markdown header markers (`#`), removes emoji/symbol characters, lowercases ASCII letters,
+         * removes any characters other than ASCII letters, digits, spaces, and hyphens, collapses whitespace and
+         * repeated hyphens into single hyphens, and trims leading/trailing hyphens.
          *
-         * Resulting slugs may be an empty string for input that contains no ASCII alphanumeric characters after normalization.
+         * The result may be an empty string if the input contains no ASCII alphanumeric characters after normalization.
          *
-         * @param text The input header or text to normalize (may include leading `#` markers).
-         * @return The normalized slug (kebab-case) for use as an anchor target.
+         * @param text Input header or text (may include leading `#` markers).
+         * @return Normalized kebab-case slug for use as an anchor target.
          */
         private fun normalizeToSlug(text: String): String {
             val header = text
@@ -82,19 +79,16 @@ class MarkdownFileValidationAdvancedTest {
     inner class InternalAnchors {
 
         /**
-         * Convert a Markdown header line or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
+         * Convert a Markdown header or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
          *
-         * The function:
-         * - Removes leading Markdown header markers (`#`) and surrounding whitespace.
-         * - Strips emoji and symbol characters.
-         * - Lowercases ASCII letters.
-         * - Removes characters except ASCII letters, digits, spaces, and hyphens.
-         * - Collapses whitespace to single hyphens, collapses multiple hyphens, and trims leading/trailing hyphens.
+         * Strips leading Markdown header markers (`#`), removes emoji/symbol characters, lowercases ASCII letters,
+         * removes any characters other than ASCII letters, digits, spaces, and hyphens, collapses whitespace and
+         * repeated hyphens into single hyphens, and trims leading/trailing hyphens.
          *
-         * Resulting slugs may be an empty string for input that contains no ASCII alphanumeric characters after normalization.
+         * The result may be an empty string if the input contains no ASCII alphanumeric characters after normalization.
          *
-         * @param text The input header or text to normalize (may include leading `#` markers).
-         * @return The normalized slug (kebab-case) for use as an anchor target.
+         * @param text Input header or text (may include leading `#` markers).
+         * @return Normalized kebab-case slug for use as an anchor target.
          */
         private fun normalizeToSlug(text: String): String {
             val header = text
@@ -174,10 +168,10 @@ class MarkdownFileValidationAdvancedTest {
         }
 
         /**
-         * Ensures the README contains no non-HTTPS external links (outside allowed local/example prefixes).
+         * Fails the test if the README contains external `http://` links that should use HTTPS.
          *
-         * Removes fenced code blocks, extracts URLs using the `http://` scheme, and fails the test if any found
-         * that do not start with an allowed prefix such as localhost or example.com.
+         * Scans the README (excluding fenced code blocks) for `http://` URLs used in link targets and asserts that
+         * any insecure links are limited to allowed local or example prefixes (localhost, loopback addresses, example.com).
          */
         @Test
         fun `prefer HTTPS for external links`() {
@@ -240,19 +234,16 @@ class MarkdownFileValidationAdvancedTest {
     inner class TableOfContentsAdvanced {
 
         /**
-         * Convert a Markdown header line or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
+         * Convert a Markdown header or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
          *
-         * The function:
-         * - Removes leading Markdown header markers (`#`) and surrounding whitespace.
-         * - Strips emoji and symbol characters.
-         * - Lowercases ASCII letters.
-         * - Removes characters except ASCII letters, digits, spaces, and hyphens.
-         * - Collapses whitespace to single hyphens, collapses multiple hyphens, and trims leading/trailing hyphens.
+         * Strips leading Markdown header markers (`#`), removes emoji/symbol characters, lowercases ASCII letters,
+         * removes any characters other than ASCII letters, digits, spaces, and hyphens, collapses whitespace and
+         * repeated hyphens into single hyphens, and trims leading/trailing hyphens.
          *
-         * Resulting slugs may be an empty string for input that contains no ASCII alphanumeric characters after normalization.
+         * The result may be an empty string if the input contains no ASCII alphanumeric characters after normalization.
          *
-         * @param text The input header or text to normalize (may include leading `#` markers).
-         * @return The normalized slug (kebab-case) for use as an anchor target.
+         * @param text Input header or text (may include leading `#` markers).
+         * @return Normalized kebab-case slug for use as an anchor target.
          */
         private fun normalizeToSlug(text: String): String {
             val header = text
@@ -269,14 +260,12 @@ class MarkdownFileValidationAdvancedTest {
         }
 
         /**
-         * Extracts anchor targets listed in the README's "## 📋 Table of Contents" section.
+         * Extracts anchor targets from the README's "## 📋 Table of Contents" section.
          *
-         * Searches for a heading that exactly matches `## 📋 Table of Contents` (spacing around emoji and text is permissive),
-         * asserts that the section exists, then collects consecutive non-blank lines after that heading until the first blank line.
-         * From those lines it extracts Markdown list entry anchors of the form `- [text](#anchor)` and returns the non-empty
-         * anchor strings (the part after `#`).
+         * Locates the ToC heading (matches `##` + emoji + "Table of Contents"), asserts it exists, then reads consecutive
+         * non-blank lines after that heading and extracts anchors from list entries of the form `- [text](#anchor)`.
          *
-         * Note: the function asserts the presence of the ToC heading and will fail the test if it's not found.
+         * @return A list of non-empty anchor names (the portion after `#`) in the ToC, in the order they appear.
          */
         private fun extractTocAnchors(): List<String> {
             val tocStart = lines.indexOfFirst { it.trim().matches(Regex("^##\\s*📋\\s*Table of Contents\\s*$")) }
@@ -403,6 +392,13 @@ class MarkdownFileValidationAdvancedTest {
             }
         }
 
+        /**
+         * Verifies that an MIT license badge in the README corresponds to an actual LICENSE file.
+         *
+         * If the README contains the "img.shields.io/badge/License-MIT" badge, this test asserts that a
+         * LICENSE file exists at the repository root and that its contents mention "MIT" (case-insensitive).
+         * If the badge is not present, the test is a no-op.
+         */
         @Test
         fun `license badge matches LICENSE content`() {
             if (readme.contains("img.shields.io/badge/License-MIT")) {
@@ -437,19 +433,16 @@ class MarkdownFileValidationAdvancedTest {
     inner class SlugNormalizationAdditionalCases {
 
         /**
-         * Convert a Markdown header line or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
+         * Convert a Markdown header or arbitrary text into a normalized kebab-case slug suitable for internal anchors.
          *
-         * The function:
-         * - Removes leading Markdown header markers (`#`) and surrounding whitespace.
-         * - Strips emoji and symbol characters.
-         * - Lowercases ASCII letters.
-         * - Removes characters except ASCII letters, digits, spaces, and hyphens.
-         * - Collapses whitespace to single hyphens, collapses multiple hyphens, and trims leading/trailing hyphens.
+         * Strips leading Markdown header markers (`#`), removes emoji/symbol characters, lowercases ASCII letters,
+         * removes any characters other than ASCII letters, digits, spaces, and hyphens, collapses whitespace and
+         * repeated hyphens into single hyphens, and trims leading/trailing hyphens.
          *
-         * Resulting slugs may be an empty string for input that contains no ASCII alphanumeric characters after normalization.
+         * The result may be an empty string if the input contains no ASCII alphanumeric characters after normalization.
          *
-         * @param text The input header or text to normalize (may include leading `#` markers).
-         * @return The normalized slug (kebab-case) for use as an anchor target.
+         * @param text Input header or text (may include leading `#` markers).
+         * @return Normalized kebab-case slug for use as an anchor target.
          */
         private fun normalizeToSlug(text: String): String {
             val header = text

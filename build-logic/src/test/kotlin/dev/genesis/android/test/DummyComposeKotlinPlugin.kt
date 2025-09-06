@@ -8,12 +8,10 @@ import org.gradle.api.Project
  */
 class DummyComposeKotlinPlugin : Plugin<Project> {
     /**
- * No-op apply implementation for the dummy Compose Kotlin plugin used in unit tests.
+ * Dummy no-op implementation of Plugin.apply used in tests as a stand-in for
+ * "org.jetbrains.kotlin.plugin.compose".
  *
- * Intentionally performs no actions when applied so tests can substitute the real
- * "org.jetbrains.kotlin.plugin.compose" plugin without changing the Project.
- *
- * @param target The Gradle Project to which the plugin is applied; ignored by this implementation.
+ * Applying this plugin has no effect on the Project (the target is intentionally ignored).
  */
 override fun apply(target: Project) { /* no-op */ }
 }

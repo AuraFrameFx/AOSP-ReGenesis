@@ -13,9 +13,9 @@ class FakeLibraryExtension : LibraryExtension {
         get() = features
 
     /**
-     * Applies the given [Action] to the internal [BuildFeatures] instance.
+     * Applies [action] to this fake extension's internal [BuildFeatures] instance.
      *
-     * @param action Action that will be executed with the fake extension's `buildFeatures` instance.
+     * @param action Action to execute with the internal [BuildFeatures].
      */
     override fun buildFeatures(action: Action<BuildFeatures>) {
         action.execute(features)

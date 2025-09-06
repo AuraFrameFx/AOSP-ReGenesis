@@ -33,15 +33,15 @@ class MarkdownFileValidationAdvancedTest {
     inner class TableOfContentsEdgeCases {
 
         /**
-         * Convert a Markdown header line into a normalized slug suitable for internal anchors.
+         * Normalize a Markdown header line into a slug suitable for internal anchors.
          *
-         * Strips leading Markdown header markers (e.g., `#`), removes emoji and symbol characters,
-         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
-         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * Removes leading Markdown header markers (e.g., `#`), strips emoji and symbol characters,
+         * lowercases the text, removes any character not in `a-z`, `0-9`, space, or hyphen,
+         * collapses runs of whitespace to single hyphens, collapses multiple hyphens, and trims
          * leading/trailing hyphens.
          *
          * @param text The raw header line or title to normalize (may include leading `#` markers).
-         * @return A slug string safe for use as a Markdown anchor (e.g., "Getting Started" -> "getting-started").
+         * @return A slug safe for use as a Markdown anchor (for example, `"Getting Started"` -> `"getting-started"`).
          */
         private fun normalizeToSlug(text: String): String {
             val header = text
@@ -78,15 +78,15 @@ class MarkdownFileValidationAdvancedTest {
     inner class InternalAnchors {
 
         /**
-         * Convert a Markdown header line into a normalized slug suitable for internal anchors.
+         * Normalize a Markdown header line into a slug suitable for internal anchors.
          *
-         * Strips leading Markdown header markers (e.g., `#`), removes emoji and symbol characters,
-         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
-         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * Removes leading Markdown header markers (e.g., `#`), strips emoji and symbol characters,
+         * lowercases the text, removes any character not in `a-z`, `0-9`, space, or hyphen,
+         * collapses runs of whitespace to single hyphens, collapses multiple hyphens, and trims
          * leading/trailing hyphens.
          *
          * @param text The raw header line or title to normalize (may include leading `#` markers).
-         * @return A slug string safe for use as a Markdown anchor (e.g., "Getting Started" -> "getting-started").
+         * @return A slug safe for use as a Markdown anchor (for example, `"Getting Started"` -> `"getting-started"`).
          */
         private fun normalizeToSlug(text: String): String {
             val header = text
@@ -133,9 +133,9 @@ class MarkdownFileValidationAdvancedTest {
     @DisplayName("Code fences integrity")
     inner class FenceIntegrity {
         /**
-         * Verifies that all fenced code blocks in the README are properly closed.
+         * Ensures every fenced code block in the README has a matching closing fence.
          *
-         * Counts lines beginning with a triple-backtick fence (```); the total must be even so every opening fence has a matching closing fence.
+         * Verifies this by counting lines that begin with a triple-backtick marker (```); the count must be even.
          */
         @Test
         fun `all code fences are properly closed`() {
@@ -164,11 +164,11 @@ class MarkdownFileValidationAdvancedTest {
         }
 
         /**
-         * Verifies that external links in the README use HTTPS where possible.
+         * Fails the test if the README contains non-local `http://` links instead of `https://`.
          *
-         * Removes fenced code blocks, extracts URLs that begin with `http://`, and fails the test
-         * if any such URL is found that does not start with an allowed local/example prefix
-         * (e.g., localhost, 127.0.0.1, example.com). The failure message lists the insecure URLs.
+         * Scans the README excluding fenced code blocks for URLs that begin with `http://` and reports
+         * any that are not on an allowed local or example prefix (localhost, 127.0.0.1, 0.0.0.0, [::1],
+         * example.com). Intended to enforce HTTPS for external links where feasible.
          */
         @Test
         fun `prefer HTTPS for external links`() {
@@ -204,11 +204,11 @@ class MarkdownFileValidationAdvancedTest {
     private lateinit var lines: List<String>
 
     /**
-     * Loads the repository README before any tests run.
+     * Loads the repository README into test-state before any tests run.
      *
      * Searches common README locations (README.md, Readme.md, readme.md, docs/README.md),
-     * sets the test-class properties `readmePath`, `readme`, and `lines`, and asserts the
-     * README is not blank.
+     * selects the first existing file, reads its UTF-8 contents into `readme`, splits those
+     * contents into `lines`, and stores the file path in `readmePath`. Asserts the README is not blank.
      *
      * @throws IllegalStateException if no README is found at the searched paths.
      */
@@ -232,15 +232,15 @@ class MarkdownFileValidationAdvancedTest {
     inner class TableOfContentsAdvanced {
 
         /**
-         * Convert a Markdown header line into a normalized slug suitable for internal anchors.
+         * Normalize a Markdown header line into a slug suitable for internal anchors.
          *
-         * Strips leading Markdown header markers (e.g., `#`), removes emoji and symbol characters,
-         * lowercases the text, removes characters other than ASCII letters, digits, spaces and hyphens,
-         * collapses runs of whitespace into single hyphens, collapses multiple hyphens, and trims
+         * Removes leading Markdown header markers (e.g., `#`), strips emoji and symbol characters,
+         * lowercases the text, removes any character not in `a-z`, `0-9`, space, or hyphen,
+         * collapses runs of whitespace to single hyphens, collapses multiple hyphens, and trims
          * leading/trailing hyphens.
          *
          * @param text The raw header line or title to normalize (may include leading `#` markers).
-         * @return A slug string safe for use as a Markdown anchor (e.g., "Getting Started" -> "getting-started").
+         * @return A slug safe for use as a Markdown anchor (for example, `"Getting Started"` -> `"getting-started"`).
          */
         private fun normalizeToSlug(text: String): String {
             val header = text

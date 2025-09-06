@@ -348,10 +348,10 @@ class MarkdownFileValidationAdvancedSupplementalTest {
     inner class SlugNormalizationEdgeCases {
 
         private fun normalizeToSlug(text: String): String {
-            val header = text
-                .replace(Regex("^\\s*#+\\s*"), "")
-                .trim()
-            val noEmoji = header.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+            val header = text.replace(Regex("^\\s*#+\\s*"), "").trim()
+            val decomposed = Normalizer.normalize(header, Normalizer.Form.NFD)
+            val noDiacritics = decomposed.replace(Regex("\\p{M}+"), "")
+            val noEmoji = noDiacritics.replace(Regex("[\\p{So}\\p{Sk}]"), "")
             val cleaned = noEmoji
                 .lowercase(Locale.ROOT)
                 .replace(Regex("[^a-z0-9\\s-]"), "")

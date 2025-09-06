@@ -99,10 +99,17 @@ class MarkdownFileValidationAdvancedSupplementalEdgeCasesTest {
 
         @Test
         fun `footnote references and definitions are consistent`() {
-            val refRegex = Regex("\\[\\^([^\\]]+)]")
+            val refRegex = Regex("\\[\\^([^\\]]+)](?!:)") // don't treat definitions as references
             val defRegex = Regex("^\\[\\^(.+?)]:\\s+.+$")
-            val refs = refRegex.findAll(readme).map { it.groupValues[1] }.toSet()
-            val defs = lines.map { it.trim() }.mapNotNull { defRegex.find(it)?.groupValues?.get(1) }.toSet()
+-            val refs = refRegex.findAll(readme).map { it.groupValues[1] }.toSet()
+            val defs = lines
+                .map { it.trim() }
+                .mapNotNull { defRegex.find(it)?.groupValues?.get(1) }
+                .toSet()
+            val refs = refRegex
+                .findAll(readme)
+                .map { it.groupValues[1] }
+                .toSet()
             if (refs.isEmpty() && defs.isEmpty()) return
             val missingDefs = refs - defs
             val unusedDefs = defs - refs
@@ -110,6 +117,7 @@ class MarkdownFileValidationAdvancedSupplementalEdgeCasesTest {
                 { assertTrue(missingDefs.isEmpty(), "Footnote references without definitions: $missingDefs") },
                 { assertTrue(unusedDefs.isEmpty(), "Footnote definitions without references: $unusedDefs") }
             )
+        }
         }
     }
 

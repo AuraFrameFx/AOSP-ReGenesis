@@ -19,6 +19,16 @@
          * @param text The input header or text to normalize into a slug.
          * @return The normalized kebab-case slug (may be empty).
          */
+        /**
+         * Convert a Markdown header or arbitrary text to a kebab-style slug.
+         *
+         * Removes leading Markdown header markers, strips emoji/symbol characters, lowercases ASCII letters,
+         * removes characters that are not ASCII alphanumerics, spaces, or hyphens, collapses whitespace to
+         * single hyphens, collapses repeated hyphens, and trims leading/trailing hyphens.
+         *
+         * @param text Input header or text to normalize.
+         * @return A kebab-case slug (may be empty if no ASCII alphanumerics remain).
+         */
         private fun normalizeToSlug(text: String): String {
             val header = text
                 .replace(Regex("^\\s*#+\\s*"), "")
@@ -128,6 +138,12 @@
             }
         }
 
+        /**
+         * Verifies that when the README includes the Apache 2.0 shields.io badge, the repository's LICENSE
+         * file exists and contains an indication of the Apache License 2.0.
+         *
+         * If the README does not contain the Apache-2.0 badge, the test performs no checks.
+         */
         @Test
         fun `apache 2 license badge matches LICENSE content`() {
             if (readme.contains("img.shields.io/badge/License-Apache-2.0")) {

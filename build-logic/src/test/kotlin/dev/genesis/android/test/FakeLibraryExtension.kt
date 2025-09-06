@@ -13,11 +13,12 @@ class FakeLibraryExtension : LibraryExtension {
         get() = features
 
     /**
-     * Applies the given Action to this extension's internal BuildFeatures instance.
+     * Applies the given [Action] to the extension's internal [BuildFeatures] instance.
      *
-     * Executes the provided [action] with the backing BuildFeatures object so callers (typically tests) can configure feature flags such as `compose`.
+     * Typically used in tests to configure feature flags (for example, `compose`) on the backing
+     * BuildFeatures object.
      *
-     * @param action Action to execute against the internal BuildFeatures instance.
+     * @param action Action to apply to the internal BuildFeatures instance.
      */
     override fun buildFeatures(action: Action<BuildFeatures>) {
         action.execute(features)

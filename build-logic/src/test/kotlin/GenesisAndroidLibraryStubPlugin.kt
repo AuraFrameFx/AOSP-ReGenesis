@@ -6,14 +6,14 @@ import org.gradle.api.tasks.Delete
 
 class GenesisAndroidLibraryStubPlugin : Plugin<Project> {
     /**
-     * Applies the plugin to the given Gradle project.
+     * Apply the plugin to the given Gradle project.
      *
-     * Registers a no-op `Delete` task named `cleanGeneratedSources` (grouped under "verification")
-     * so a separate convention plugin can locate and enhance it later. The task is created
-     * without any default delete targets to allow the convention plugin to add deletions.
+     * Registers a no-op Delete task named `cleanGeneratedSources` (grouped under "verification")
+     * so a convention plugin can locate and enhance it later. The task is created without any
+     * default delete targets to allow the convention plugin to add deletions.
      *
-     * Intentionally does not add Android Library extensions; LibraryExtension configuration is
-     * deferred and performed by the convention plugin only when a CMakeLists file exists at
+     * This method intentionally does not add Android Library extensions; library configuration is
+     * deferred to the convention plugin and performed only when a CMakeLists file exists at
      * apply-time to keep tests lightweight and avoid requiring AGP.
      */
     override fun apply(target: Project) {

@@ -113,11 +113,12 @@ class MarkdownFileValidationAdvancedTest {
         }
 
         /**
-         * Collects all Markdown header lines (levels 1–6) from the loaded README and returns their normalized slugs.
+         * Extracts all Markdown header lines (levels 1–6) from the loaded README and returns their normalized kebab-case slugs.
          *
-         * The normalization is performed by `normalizeToSlug`, and the result is returned as a set (unique slugs).
+         * Scans the file-backed `lines` list for lines matching Markdown headers (`#`–`######`), normalizes each header
+         * with `normalizeToSlug`, and returns the unique set of resulting slugs.
          *
-         * @return a set of kebab-case slugs derived from all Markdown headers found in `lines`.
+         * @return a set of kebab-case slugs derived from the README headers.
          */
         private fun headerSlugs(): Set<String> {
             return lines
@@ -290,10 +291,11 @@ class MarkdownFileValidationAdvancedTest {
         }
 
         /**
-         * Verifies the README Table of Contents entries appear in the same order as the corresponding document sections.
+         * Verifies the README's Table of Contents entries appear in the same order as the corresponding level-2 document sections.
          *
-         * Extracts ToC anchors (trimmed of leading/trailing hyphens), maps document level-2 headers ("## ") to slugs,
-         * and asserts the sequence of anchors matches the headers' order. Anchors without a matching header are ignored.
+         * The test extracts ToC anchors, normalizes them, maps top-level "## " headers to their slugs, and compares the sequence
+         * of anchors to the sequence of headers. Anchors that don't match any header are ignored; the test fails if any matching
+         * anchor appears out of order relative to the document sections.
          */
         @Test
         fun `toc order matches the document section order`() {
@@ -318,9 +320,9 @@ class MarkdownFileValidationAdvancedTest {
     inner class ImagesAndLinks {
 
         /**
-         * Verifies every Markdown image in the README has non-empty alt text and that any local image path points to an existing file.
+         * Ensure every Markdown image in the README has non-empty alt text and that local image paths point to existing files.
          *
-         * Scans the README for image markdown (`![alt](url)`), asserts the captured alt text is not empty, and for non-HTTP(S) URLs resolves the path relative to the README file (stripping any fragment or query) and asserts the target file exists.
+         * Scans the README for image markers (`![alt](url)`), asserts the captured alt text is not empty, and for non-HTTP(S) URLs resolves the path relative to the README (stripping any fragment or query) and asserts the target file exists.
          */
         @Test
         fun `images have alt text and local images exist`() {
@@ -346,6 +348,13 @@ class MarkdownFileValidationAdvancedTest {
             assertTrue(tokens.isEmpty(), "Found TODO-like tokens outside code fences: $tokens")
         }
 
+        /**
+         * Verifies that every local Markdown link in the README resolves to an existing file or directory.
+         *
+         * Matches `[text](path)` links whose target does not start with `http(s)://` or `#`, strips any fragment
+         * (`#...`) or query (`?...`) portion, and resolves the path relative to the README's directory.
+         * Skips targets that start with `build/` or `out/`. Fails the test if any resolved target does not exist.
+         */
         @Test
         fun `all local markdown links resolve to existing files or directories`() {
             // Matches [text](path) where path does not start with http or #
@@ -366,11 +375,13 @@ class MarkdownFileValidationAdvancedTest {
     inner class CodeFences {
 
         /**
-         * Ensures all fenced code blocks in the README declare a language for syntax highlighting.
+         * Verifies every fenced code block in the README declares a language for syntax highlighting.
          *
-         * Scans the README lines for triple-backtick fences (` ``` `), counts fences that include a language token
-         * immediately after the opening backticks and those that do not, and asserts that at least one typed fence
-         * exists and that there are zero untyped fences. Examples of valid openings: ```bash, ```kotlin.
+         * Scans the loaded README lines for triple-backtick fences (` ``` `). Counts opening fences that include a
+         * language identifier immediately after the opening backticks versus those that do not, then asserts that
+         * there is at least one fenced block with a language and that no fenced blocks are untyped.
+         *
+         * Examples of valid openings: ` ```bash `, ` ```kotlin `.
          */
         @Test
         fun `fenced code blocks declare a language`() {
@@ -575,14 +586,12 @@ class MarkdownFileValidationAdvancedTest {
         }
 
         /**
-         * Validates that an Apache 2.0 license badge in the README corresponds to an Apache 2.0 LICENSE file.
+         * Asserts that an Apache 2.0 license badge in the README corresponds to an Apache 2.0 LICENSE file.
          *
-         * If the README includes the shields.io Apache-2.0 badge, this test reads the repository's LICENSE file
-         * and asserts that the file exists and mentions Apache 2.0 (case-insensitive variants such as
-         * "Apache License", "Apache 2", or "Apache License, Version 2.0").
-         *
-         * Side effects:
-         * - Reads the LICENSE file from the repository root when the badge is present.
+         * If the README contains the shields.io Apache-2.0 badge (`img.shields.io/badge/License-Apache-2.0`),
+         * this test verifies a LICENSE file exists at the repository root and that its contents mention
+         * Apache 2.0 (case-insensitive checks such as "Apache License", "Apache 2", or
+         * "Apache License, Version 2.0"). If the badge is not present, the test does nothing.
          */
         @Test
         fun `apache 2 license badge matches LICENSE content`() {

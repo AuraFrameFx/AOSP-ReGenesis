@@ -206,7 +206,6 @@ class DeviceKeyManager @Inject constructor(
 
 ### Encryption Specification
 
-```kotlin
 /**
  * Encryption Configuration:
  * - Algorithm: AES-256-GCM
@@ -224,7 +223,16 @@ class EncryptionConfig {
         const val KEYSTORE_ALIAS_PREFIX = "secure_comm_"
     }
 }
-```
+
+// Example (snippet):
+// cipher.init(Cipher.ENCRYPT_MODE, key, GCMParameterSpec(TAG_SIZE * 8, iv))
+// cipher.updateAAD(buildString {
+//   append("v=").append(version)
+//   append("&mid=").append(messageId)
+//   append("&sid=").append(senderId)
+//   append("&rid=").append(recipientId)
+//   append("&ts=").append(timestamp)
+// }.toByteArray())
 
 ### Key Generation Parameters
 

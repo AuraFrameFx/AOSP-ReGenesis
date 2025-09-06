@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -43,6 +44,7 @@ dependencies {
     // DI / Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.work) // Hilt <-> WorkManager integration
 
     // Concurrency / Network
     implementation(libs.bundles.coroutines)
@@ -56,7 +58,6 @@ dependencies {
 
     // Background work
     implementation(libs.work.runtime.ktx)
-
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)

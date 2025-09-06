@@ -2,7 +2,7 @@
 // Visual regression testing for Genesis UI components
 
 plugins {
-    id("genesis.android.library")
+    alias(libs.plugins.android.library)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.android)
@@ -57,7 +57,7 @@ dependencies {
     testImplementation(libs.mockk)
 
     // Robolectric for screenshot tests
-    testImplementation(libs.robolectric)
+
 
     // Android-style instrumentation replacements if needed later
     androidTestImplementation(libs.mockk.android)

@@ -3,166 +3,79 @@
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android) // Added missing Kotlin Android plugin
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.hilt)
-    // TEMP: google-services plugin removed due to incompatibility with AGP 9.0.0-alpha02 (NoClassDefFoundError Variant)
-    // alias(libs.plugins.google.services)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
-// Configure Kotlin toolchain & compiler options (moved out of android block)
 kotlin {
     jvmToolchain(24)
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
-    }
+    compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24) }
+}
+
+// KSP arguments (moved outside android block)
+ksp {
+    arg("room.incremental", "true")
+    arg("dagger.hilt.android.internal.projectType", "application")
+    arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
+    arg("room.schemaLocation", layout.buildDirectory.dir("schemas").get().asFile.toString())
 }
 
 android {
     namespace = "com.aura.memoria"
     compileSdk = 36
 
+    // Retain app-specific defaultConfig overrides
     defaultConfig {
         applicationId = "com.aura.memoria"
-        minSdk = 34
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
-
-        // NDK configuration
+        // Keep NDK abi filters if native code present
         if (project.file("src/main/cpp/CMakeLists.txt").exists()) {
-            ndk {
-                abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a"))
-            }
+            ndk { abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a")) }
         }
     }
-
-    buildFeatures {
-        buildConfig = true
-        viewBinding = true
-        compose = true
-        aidl = true
-        // Removed deprecated renderScript & unnecessary shaders
-    }
-
     buildTypes {
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            buildConfigField("String", "ENVIRONMENT", "\"production\"")
-        }
-        debug {
-            isMinifyEnabled = false
-            buildConfigField("String", "ENVIRONMENT", "\"debug\"")
-        }
+        release { buildConfigField("String", "ENVIRONMENT", "\"production\"") }
+        debug { buildConfigField("String", "ENVIRONMENT", "\"debug\"") }
     }
-    // Add buildConfig toggle to indicate google services plugin status
-    applicationVariants.all {
-        val taskProvider = tasks.register("printGoogleServicesStatus") {
-            doLast { println("google-services plugin: SKIPPED (manual Firebase initialization required)") }
-        }
+    buildFeatures { compose = true; buildConfig = true }
+    java { toolchain { languageVersion.set(JavaLanguageVersion.of(24)) } }
+    compileOptions { isCoreLibraryDesugaringEnabled = true }
 
-    }
-
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(24))
-        }
-    }
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-    }
-
-    packaging {
-        resources {
-            excludes += setOf(
-                "/META-INF/{AL2.0,LGPL2.1}",
-                "META-INF/versions/**",
-                "META-INF/*.version",
-                "META-INF/*.kotlin_module",
-                "META-INF/licenses/**",
-                "**/attach_hotspot_windows.dll",
-                "META-INF/INDEX.LIST",
-                "META-INF/io.netty.versions.properties"
-            )
-        }
-    }
-
-    ksp {
-        // Enable incremental compilation for better build performance
-        arg("room.incremental", "true")
-
-        // Kotlinx Serialization arguments using modern Gradle API
-        arg(
-            "kotlinx.serialization.generated",
-            layout.buildDirectory.dir("generated/ksp/serialization").get().asFile.toString()
-        )
-
-        // Hilt arguments
-        arg("dagger.hilt.android.internal.projectType", "application")
-        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
-
-        // Room schema location using modern Gradle API
-        arg(
-            "room.schemaLocation",
-            layout.buildDirectory.dir("schemas").get().asFile.toString()
-        )
-    }
-
-    testOptions {
-        unitTests.all {
-            it.useJUnitPlatform()
-        }
-        unitTests.isIncludeAndroidResources = true
-    }
-
-    // CMake configuration
+    // External native build if present
     if (project.file("src/main/cpp/CMakeLists.txt").exists()) {
         externalNativeBuild {
-            cmake {
-                path = file("src/main/cpp/CMakeLists.txt")
-                version = "3.22.1"
-            }
+            cmake { path = file("src/main/cpp/CMakeLists.txt"); version = "3.22.1" }
         }
     }
+    packaging { resources { excludes += setOf("META-INF/io.netty.versions.properties") } }
 }
 
+// Provide a single informational task instead
+tasks.register("googleServicesStatus") { doLast { println("google-services plugin: managed by convention (skipped under AGP 9 alpha unless -PenableGoogleServices=true & AGP8.x)") } }
+
 dependencies {
-    // Desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
-    // Xposed / YukiHook (offline/local JAR mode)
+    // YukiHook offline jars (unchanged)
     compileOnly(files("Libs/api-82.jar"))
     implementation(files("Libs/yukihookapi-core.jar"))
     ksp(files("Libs/yukihookapi-ksp.jar"))
     implementation(files("Libs/yukihookapi-prefs.jar"))
-    // (To switch back to catalog-managed deps, replace above with
-    //  compileOnly(libs.xposed.api) + implementation(libs.yukihook.core/prefs) + ksp(libs.yukihook.ksp))
 
-    // AndroidX & Compose
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(platform(libs.androidx.compose.bom))
 
-    // Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
-    // Modules
     implementation(project(":core-module"))
     implementation(project(":feature-module"))
     implementation(project(":oracle-drive-integration"))
@@ -173,66 +86,29 @@ dependencies {
     implementation(project(":sandbox-ui"))
     implementation(project(":datavein-oracle-native"))
 
-    // DI (Hilt)
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-    testImplementation(libs.hilt.android.testing)
-    androidTestImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.compiler)
-    kspAndroidTest(libs.hilt.compiler)
-
-    // Serialization
+    implementation(libs.hilt.android); ksp(libs.hilt.compiler)
+    implementation(libs.hilt.work) // Hilt <-> WorkManager integration
+    implementation(libs.work.runtime.ktx) // WorkManager runtime
     implementation(libs.kotlinx.serialization.json)
-
-    // Coroutines & Networking bundles
     implementation(libs.bundles.coroutines)
     implementation(libs.bundles.network)
+    implementation(platform(libs.firebase.bom)); implementation(libs.bundles.firebase)
+    implementation(libs.timber); implementation(libs.coil.compose)
 
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
+    testImplementation(libs.bundles.testing); testImplementation(libs.mockk); androidTestImplementation(libs.mockk.android)
+    testImplementation(libs.hilt.android.testing); androidTestImplementation(libs.hilt.android.testing); kspTest(libs.hilt.compiler); kspAndroidTest(libs.hilt.compiler)
+    androidTestImplementation(libs.androidx.test.ext.junit); androidTestImplementation(libs.androidx.test.espresso.core); androidTestImplementation(platform(libs.androidx.compose.bom))
 
-    // Utilities
-    implementation(libs.timber)
-    implementation(libs.coil.compose)
-
-    // Testing
-    testImplementation(libs.bundles.testing)
-    testImplementation(libs.mockk)
-    androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-
-    // Debug
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui)
+    debugImplementation(libs.androidx.compose.ui.tooling); debugImplementation(libs.androidx.compose.ui)
 }
 
+// Keep OpenAPI generate dependency if spec exists
 tasks.named("preBuild") {
-    if (rootProject.file("app/api/unified-aegenesis-api.yml")
-            .exists()
-    ) dependsOn(":openApiGenerate")
+    if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) dependsOn(":openApiGenerate")
 }
 
 tasks.register("appStatus") {
-    group = "aegenesis"
-    description = "Show main application status"
-    doLast {
-        println("📱 MAIN APPLICATION STATUS")
-        println("=".repeat(40))
-        val androidExt =
-            extensions.getByType(com.android.build.gradle.internal.dsl.BaseAppModuleExtension::class.java)
-        val cfg = androidExt.defaultConfig
-        println("🔧 Namespace: ${androidExt.namespace}")
-        println("🎯 App ID: ${cfg.applicationId}")
-        println("📱 Version: ${cfg.versionName ?: "unspecified"} (${cfg.versionCode ?: "unspecified"})")
-        println("📱 SDK: ${androidExt.compileSdk} (Min: ${cfg.minSdk ?: "?"}, Target: ${cfg.targetSdk ?: "?"})")
-        println("🎨 Compose: ✅ Enabled")
-        println("🧠 Desugaring: ✅ Enabled")
-        println("🧪 Tests: MockK + Hilt configured")
-        println("✨ Status: Genesis Protocol Application Ready (Java 24)")
-    }
-}
+    group = "aegenesis"; description = "Show main application status"
+    doLast { println("📱 MAIN APPLICATION STATUS (Convention) :: Namespace=com.aura.memoria :: google-services managed externally") }
 
-// Firebase note: ensure FirebaseApp.initializeApp(context, options) is called if json parsing not auto-applied.
+    }

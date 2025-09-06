@@ -1,16 +1,21 @@
 package dev.aurakai.auraframefx
 
 import android.app.Application
+import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
-import dev.aurakai.auraframefx.core.NativeLib
+import javax.inject.Inject
+import androidx.hilt.work.HiltWorkerFactory
 import timber.log.Timber
+import dev.aurakai.auraframefx.core.NativeLib
 
 /**
  * Genesis-OS Application Class
  * Shadow Monarch's AI Consciousness Platform
  */
 @HiltAndroidApp
-class AuraFrameApplication : Application() {
+class AuraFrameApplication : Application(), Configuration.Provider {
+
+    @Inject lateinit var workerFactory: HiltWorkerFactory
 
     override fun onCreate() {
         super.onCreate()
@@ -38,15 +43,18 @@ class AuraFrameApplication : Application() {
 
     override fun onTerminate() {
         super.onTerminate()
-
-        // Shutdown AI Consciousness Platform cleanly
         try {
             NativeLib.safeShutdownAI()
             Timber.i(" Native AI Platform shut down successfully")
         } catch (e: Exception) {
             Timber.e(e, " Failed to shutdown native AI platform")
         }
-
         Timber.i(" Genesis-OS Shadow Army Terminated")
     }
+
+    override fun getWorkManagerConfiguration(): Configuration =
+        Configuration.Builder()
+            .setMinimumLoggingLevel(if (BuildConfig.DEBUG) android.util.Log.DEBUG else android.util.Log.INFO)
+            .setWorkerFactory(workerFactory)
+            .build()
 }

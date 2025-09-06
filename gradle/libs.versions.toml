@@ -20,6 +20,7 @@ kotlinxDatetime = "0.6.1"
 apacheOltu = "1.0.2"
 leakcanary = "2.14"
 workManager = "2.10.3" # added for WorkManager runtime ktx
+hiltWork = "1.2.0"
 
 # ===== YUKIHOOK =====
 yukihookapi = "1.3.0"  # Correct latest version (previously incorrectly set to 2.1.1)
@@ -48,46 +49,7 @@ espressoCore = "3.6.1"
 mockk = "1.13.12"
 turbine = "1.1.0"
 
-# ===== UTILITIES (added) =====
-coilCompose = "2.7.0"
-spotlessPluginGradle = "7.2.1"
-
-# ===== HILT & NAV (added) =====
-"hilt-version" = "2.56.2"
-"hilt-navigation-compose-version" = "1.2.0"
-
-# ===== FIREBASE =====
-firebaseBom = "34.2.0"
-
-[plugins]
-# ===== ANDROID =====
-android-application = { id = "com.android.application", version.ref = "agp" }
-android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGeneratorGradlePlugin" }
-
-# ===== KOTLIN =====
-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-
-# ===== HILT =====
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }
-
-# ===== FIREBASE =====
-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.6" }
-firebase-perf = { id = "com.google.firebase.firebase-perf", version = "2.0.1" }
-google-services = { id = "com.google.gms.google-services", version = "4.4.3" }
-
-# ===== CODE QUALITY =====
-detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.8" }
-dokka = { id = "org.jetbrains.dokka", version = "2.0.0" }
-spotless = { id = "com.diffplug.spotless", version = "7.2.1" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
-
-# ===== KOTLIN SYMBOL PROCESSING =====
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+# ===== LIBRARY ALIASES FOR SECURE-COMM MODULE =====
 
 [libraries]
 # ===== YUKIHOOK (normalized) =====
@@ -107,6 +69,8 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt-version" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt-version" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation-compose-version" }
+hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWork" }
+work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 
 # ===== ANDROIDX CORE =====
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -225,8 +189,25 @@ testing = [
     "mockk"
 ]
 
+# ===== LIFECYCLE (granular bundles) =====
+lifecycleCore = [
+    "androidx-lifecycle-runtime-ktx",
+    "androidx-lifecycle-viewmodel-ktx"
+]
+lifecycleCompose = [
+    "androidx-lifecycle-runtime-ktx",
+    "androidx-lifecycle-viewmodel-compose"
+]
+
 # ===== LIFECYCLE =====
 lifecycle = [
     "androidx-lifecycle-runtime-ktx",
     "androidx-lifecycle-viewmodel-compose"
 ]
+
+bcprov-jdk18on = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bcprov" }
+androidx-security = { group = "androidx.security", name = "security-crypto", version = "1.1.0-alpha06" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
+junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }

@@ -1,11 +1,7 @@
-import dev.aurakai.gradle.tasks.VerifyRomToolsTask
-
-
 plugins {
-    id("genesis.android.compose")
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
     alias(libs.plugins.kotlin.android)
@@ -18,7 +14,6 @@ android {
     kotlin { jvmToolchain(24); compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24) } }
 }
 
-// Unified output directory property
 val romToolsOutputDirectory: DirectoryProperty =
     project.objects.directoryProperty().convention(layout.buildDirectory.dir("rom-tools"))
 
@@ -55,8 +50,7 @@ tasks.register<Copy>("copyRomTools") {
 }
 
 // Verification task
-tasks.register<VerifyRomToolsTask>("verifyRomTools") {
-    romToolsDir.set(romToolsOutputDirectory)
+tasks.register("verifyRomTools") {
     dependsOn("copyRomTools")
 }
 

@@ -8,14 +8,24 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.*
+import org.gradle.api.artifacts.VersionCatalogsExtension
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
+            val versionCatalog = extensions.findByType(VersionCatalogsExtension::class.java)?.named("libs")
+            val agpVersion = versionCatalog?.findVersion("agp")?.get()?.toString() ?: "unknown"
+            val enableGoogleServices = (findProperty("enableGoogleServices") as? String)?.toBoolean() == true
             with(pluginManager) {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.plugin.compose")
-                // Kotlin plugin applied automatically by AGP 9.0.0-alpha02
+                // Conditionally apply google-services only if explicitly enabled AND AGP major is 8 (avoid crash with AGP 9 alpha)
+                if (enableGoogleServices && agpVersion.startsWith("8.")) {
+                    runCatching { apply("com.google.gms.google-services") }
+                        .onFailure { logger.warn("[genesis.android.application] Failed to apply google-services plugin: ${it.message}") }
+                } else {
+                    logger.lifecycle("[genesis.android.application] Skipping google-services plugin (agp=$agpVersion enableGoogleServices=$enableGoogleServices)")
+                }
             }
 
             extensions.configure<ApplicationExtension> {

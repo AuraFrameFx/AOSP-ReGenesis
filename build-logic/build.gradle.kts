@@ -30,6 +30,7 @@ dependencies {
     implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin")
     implementation("org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin")
     implementation("org.openapitools:openapi-generator-gradle-plugin")
+    implementation("com.google.gms:google-services:4.4.3")
 
     // Development dependencies
     implementation(gradleApi())

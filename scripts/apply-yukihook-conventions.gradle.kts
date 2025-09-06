@@ -45,6 +45,7 @@ subprojects { subproject ->
                     targetCompatibility = JavaVersion.VERSION_24
                 }
 
+
                 // Modern Kotlin configuration (Kotlin 2.2+)
                 kotlin {
                     jvmToolchain {
@@ -55,6 +56,7 @@ subprojects { subproject ->
                         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
                         languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
                         apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+
                         freeCompilerArgs.addAll(
                             "-Xjvm-default=all",
                             "-opt-in=kotlin.RequiresOptIn"

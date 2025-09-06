@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
     alias(libs.plugins.ksp)
-    // Apply the OpenAPI Generator plugin
     id("org.openapi.generator") version "7.15.0" // Use the latest version
 }
 
@@ -27,6 +26,7 @@ android {
         renderScript = true
         shaders = false
     }
+
 
     // Add generated sources to the build configuration
     sourceSets["main"].java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.bundles.lifecycle)
 
     // Networking
+
     implementation(libs.bundles.network)
     implementation(libs.kotlinx.serialization.json)
 

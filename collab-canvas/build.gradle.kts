@@ -30,6 +30,11 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
     
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
+    }
+    
     buildFeatures {
         compose = true
         buildConfig = true

@@ -35,3 +35,4 @@ dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
 }
+tasks.test { useJUnitPlatform() }

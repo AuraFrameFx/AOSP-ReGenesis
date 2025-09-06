@@ -30,12 +30,14 @@ android {
         }
     }
 
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
         isCoreLibraryDesugaringEnabled = true
     }
 }
+
 
 // Kotlin compiler options with modern DSL
 kotlin {
@@ -44,7 +46,6 @@ kotlin {
     }
 }
 
-// Dependencies
 dependencies {
     // Core dependencies
     api(project(":core-module"))
@@ -57,6 +58,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose)
     implementation(libs.androidx.compose.material.icons.extended)
+
 
     // Hilt
     implementation(libs.hilt.android)

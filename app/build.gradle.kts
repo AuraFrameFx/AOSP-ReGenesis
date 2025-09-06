@@ -1,3 +1,4 @@
+
 // Project information
 extra["projectName"] = "MemoriaOS"
 extra["projectGroup"] = "dev.aurakai.memoria"

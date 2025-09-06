@@ -10,6 +10,7 @@ android {
     namespace = "dev.aurakai.auraframefx.module.e"
     compileSdk = 36
 
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24

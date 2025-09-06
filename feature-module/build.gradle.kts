@@ -24,6 +24,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_24
     }
 
+
     // Kotlin compiler options with modern DSL
 
 

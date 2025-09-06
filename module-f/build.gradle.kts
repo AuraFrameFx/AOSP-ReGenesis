@@ -10,6 +10,7 @@ android {
     namespace = "dev.aurakai.auraframefx.module.f"
     compileSdk = 36
 
+
     defaultConfig {
         minSdk = 34
     }
@@ -18,6 +19,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
+
 
     kotlin {
         jvmToolchain(24)

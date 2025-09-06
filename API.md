@@ -88,6 +88,7 @@ class SecureCommunicationImpl @Inject constructor(
         recipient: DeviceId
     ): Result<MessageId> = withContext(Dispatchers.IO) {
         try {
+
             val publicKey = keyManager.getPublicKey(recipient)
             val encryptedMessage = cryptoManager.encrypt(message, publicKey)
             val messageId = networkManager.sendMessage(encryptedMessage, recipient)
@@ -204,6 +205,7 @@ class CloudSyncManager @Inject constructor(
      */
     suspend fun performSync(): Result<SyncReport> = withContext(Dispatchers.IO) {
         val localChanges = localRepository.getChangedItems()
+
         val cloudChanges = oracleService.getChangedItems()
         
         val conflicts = detectConflicts(localChanges, cloudChanges)
@@ -406,6 +408,7 @@ sealed class VerificationResult {
 }
 ```
 
+
 ## 🧠 Core Module API
 
 ### Repository Pattern
@@ -424,6 +427,28 @@ class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val networkService: NetworkService
 ) : Repository<User, UserId> {
+}
+
+// Extension mapping functions
+
+fun UserEntity.toDomain(): User {
+    // TODO: map UserEntity fields to the User domain model
+    return User(
+        id = UserId(this.id),
+        name = this.name,
+        // ...
+    )
+}
+
+fun User.toEntity(): UserEntity {
+    // TODO: map User domain model fields to UserEntity
+    return UserEntity(
+        id = this.id.value,
+        name = this.name,
+        // ...
+    )
+}
+=======
     
     override suspend fun findById(id: UserId): User? {
         return userDao.findById(id.value) ?: run {
@@ -529,6 +554,7 @@ class NetworkManager @Inject constructor(
         try {
             val response = apiCall()
             if (response.isSuccessful) {
+
                 NetworkResult.Success(response.body()!!)
             } else {
                 NetworkResult.Error(response.code(), response.message())
@@ -610,7 +636,7 @@ class SomeClass @Inject constructor(private val logger: Logger) {
 }
 ```
 
----
+
 
 ## 🔗 Error Handling
 
@@ -640,7 +666,6 @@ class ErrorHandler @Inject constructor(
 }
 ```
 
----
 
 ## 📝 Usage Examples
 
@@ -698,6 +723,5 @@ fun LoginScreen() {
 }
 ```
 
----
 
 **This API documentation provides comprehensive coverage of all major components in the AOSP ReGenesis project. Each API is designed with type safety, testability, and maintainability in mind.**

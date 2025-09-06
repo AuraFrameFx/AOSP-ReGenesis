@@ -39,7 +39,9 @@ The `secure-comm` module provides enterprise-grade cryptographic capabilities fo
 
 ```
 secure-comm/
+
 ├── src/main/kotlin/com/aura/memoria/secure/
+
 │   ├── communication/          # Communication protocols
 │   │   ├── SecureCommunication.kt
 │   │   ├── SecureChannel.kt
@@ -59,6 +61,7 @@ secure-comm/
 │   └── di/                     # Dependency injection
 │       └── SecureCommModule.kt
 └── src/test/                   # Tests
+
 ```
 
 ### Core Components
@@ -225,11 +228,13 @@ class EncryptionConfig {
         const val KEYSTORE_ALIAS_PREFIX = "secure_comm_"
     }
 }
+
 ```
 
 ### Key Generation Parameters
 
 ```kotlin
+
 private fun createKeyGenParameterSpec(alias: String): KeyGenParameterSpec {
     return KeyGenParameterSpec.Builder(
         alias,
@@ -355,6 +360,7 @@ class CryptoPerformanceMonitor @Inject constructor() {
         // Perform encryption
         val endTime = System.nanoTime()
         
+
         return PerformanceReport(
             operation = "encryption",
             dataSize = dataSize,
@@ -412,12 +418,14 @@ dependencies {
     
     // Dependency Injection
     implementation(libs.hilt.android)
+
     kapt(libs.hilt.compiler)
     
     // Testing
     testImplementation(libs.bundles.testing)
     androidTestImplementation(libs.bundles.android.testing)
 }
+
 ```
 
 ---

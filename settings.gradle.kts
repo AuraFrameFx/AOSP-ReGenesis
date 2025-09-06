@@ -20,6 +20,7 @@ pluginManagement {
         maven {
             url = uri("https://androidx.dev/kmp/builds/11950322/artifacts/snapshots/repository")
             name = "AndroidX Snapshot"
+
         }
         
         gradlePluginPortal()

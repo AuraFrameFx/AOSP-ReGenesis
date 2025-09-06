@@ -2,15 +2,14 @@
 
 ## 📋 Table of Contents
 
-- [🏗️ Architecture Overview](#️-architecture-overview)
-- [🔒 Security API](#-security-api)
-- [☁️ Cloud Integration API](#️-cloud-integration-api)
-- [🎨 UI Components API](#-ui-components-api)
-- [📱 ROM Tools API](#-rom-tools-api)
-- [🧠 Core Module API](#-core-module-api)
-- [📊 Data Layer API](#-data-layer-api)
-- [🔧 Utilities API](#-utilities-api)
-
+- [🏗️ Architecture Overview](#architecture-overview)
+- [🔒 Security API](#security-api)
+- [☁️ Cloud Integration API](#cloud-integration-api)
+- [🎨 UI Components API](#ui-components-api)
+- [📱 ROM Tools API](#rom-tools-api)
+- [🧠 Core Module API](#core-module-api)
+- [📊 Data Layer API](#data-layer-api)
+- [🔧 Utilities API](#utilities-api)
 ## 🏗️ Architecture Overview
 
 ### Core Principles

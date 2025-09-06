@@ -359,11 +359,14 @@ class CryptoPerformanceMonitor @Inject constructor() {
         // Perform encryption
         val endTime = System.nanoTime()
         
+        val nanos = endTime - startTime
+        val seconds = nanos / 1_000_000_000.0
+        val mebibytes = dataSize / (1024.0 * 1024.0)
         return PerformanceReport(
             operation = "encryption",
             dataSize = dataSize,
-            durationNanos = endTime - startTime,
-            throughputMBps = (dataSize / ((endTime - startTime) / 1_000_000.0)) / 1024.0
+            durationNanos = nanos,
+            throughputMBps = mebibytes / seconds // MiB/s
         )
     }
 }

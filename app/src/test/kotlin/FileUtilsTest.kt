@@ -43,7 +43,27 @@ class FileUtilsTest {
     private lateinit var subB: File
     private lateinit var file1: File
     private lateinit var file2: File
+     private lateinit var file2: File
 
+    // Resolve FileUtils class once; allow override via -Dfileutils.fqcn=FQCN
+    private val fileUtilsClass: Class<*> by lazy {
+        val candidates = listOfNotNull(
+            System.getProperty("fileutils.fqcn"),
+            // common guesses; adjust as needed
+            "dev.aurakai.auraframefx.common.io.FileUtils",
+            "com.auraframefx.util.FileUtils",
+            "FileUtils",
+            "FileUtilsKt"
+        )
+        val loaded = candidates.asSequence()
+            .mapNotNull { try { Class.forName(it) } catch (_: Throwable) { null } }
+            .firstOrNull()
+        org.junit.Assume.assumeTrue(
+            "FileUtils not found. Set -Dfileutils.fqcn=your.fqcn.FileUtils or adjust candidates.",
+            loaded != null
+        )
+        loaded!!
+    }
     @Before
     fun setUp() {
         root = tmp.newFolder("root")

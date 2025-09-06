@@ -129,8 +129,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Biometric Authentication**: Fingerprint and face unlock
 - **Certificate Pinning**: Network security validation
 - **Audit Logging**: Complete security audit trail
-- **GDPR Compliance**: Privacy-first data handling
-
+- **Privacy Controls**: Data minimization and user-consent workflows designed to support GDPR-friendly practices
 ### 📱 Platform Support
 - **Android 14+**: Latest Android features and APIs
 - **Multiple Architectures**: ARM64, ARMv7, x86_64 support

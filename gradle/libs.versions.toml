@@ -48,6 +48,10 @@ androidxTestJunit = "1.1.5"
 espressoCore = "3.6.1"
 mockk = "1.13.12"
 turbine = "1.1.0"
+coilCompose = "2.7.0"
+hilt-version = "2.48"
+hilt-navigation-compose-version = "1.2.0"
+firebaseBom = "33.1.0"
 
 # ===== LIBRARY ALIASES FOR SECURE-COMM MODULE =====
 
@@ -140,6 +144,14 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx"
 xposed = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
 lsposed-lsplant = { group = "org.lsposed.lsplant", name = "lsplant", version.ref = "lsposed" }
 
+# ===== ADDITIONAL LIBRARIES =====
+bcprov-jdk18on = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bcprov" }
+androidx-security = { group = "androidx.security", name = "security-crypto", version = "1.1.0-alpha06" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
+junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+
 [bundles]
 # ===== ANDROID CORE =====
 androidx-core = [
@@ -205,9 +217,12 @@ lifecycle = [
     "androidx-lifecycle-viewmodel-compose"
 ]
 
-bcprov-jdk18on = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bcprov" }
-androidx-security = { group = "androidx.security", name = "security-crypto", version = "1.1.0-alpha06" }
-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
-junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
-junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
-turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+[plugins]
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaGradlePlugin" }
+google-services = { id = "com.google.gms.google-services", version = "4.4.2" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }

@@ -1,4 +1,4 @@
-plugins { alias(libs.plugins.google.services) apply false; alias(libs.plugins.dokka) apply false }
+plugins { alias(libs.plugins.dokka) apply false }
 
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.Project

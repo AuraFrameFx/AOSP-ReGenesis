@@ -43,7 +43,6 @@ class FileUtilsTest {
     private lateinit var subB: File
     private lateinit var file1: File
     private lateinit var file2: File
-     private lateinit var file2: File
 
     // Resolve FileUtils class once; allow override via -Dfileutils.fqcn=FQCN
     private val fileUtilsClass: Class<*> by lazy {

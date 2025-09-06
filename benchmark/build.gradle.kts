@@ -28,7 +28,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "EMULATOR,LOW_BATTERY,DEBUGGABLE"
         testInstrumentationRunnerArguments["android.experimental.self-instrumenting"] = "true"
-        multiDexEnabled = true
+        // MultiDex is configured at the app/test APK level only; not needed here.
     }
 
     // Enable Java 24 toolchain for future compatibility
